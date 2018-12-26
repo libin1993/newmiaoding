@@ -1,0 +1,616 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:fresco="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/light_gray_ed"
+                android:fitsSystemWindows="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:background="@color/dark_gray_15">
+
+        <ImageView
+            android:id="@+id/img_embroidery_back"
+            android:layout_width="60dp"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:paddingRight="20dp"
+            android:scaleType="center"
+            android:src="@mipmap/back_white"/>
+
+        <View
+            android:id="@+id/view_embroidery"
+            android:layout_width="1px"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"/>
+
+        <TextView
+            android:id="@+id/tv_embroidery_customize"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="32dp"
+            android:layout_toLeftOf="@id/view_embroidery"
+            android:text="@string/fast_customize"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:textStyle="bold"/>
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="2dp"
+            android:background="@android:color/white"
+            android:layout_alignLeft="@id/tv_embroidery_customize"
+            android:layout_alignRight="@id/tv_embroidery_customize"
+            android:layout_below="@id/tv_embroidery_customize"
+            android:layout_marginTop="1dp"/>
+
+        <TextView
+            android:id="@+id/tv_more_customize"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="32dp"
+            android:layout_toRightOf="@id/view_embroidery"
+            android:gravity="center"
+            android:text="@string/prosonal_customize"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"/>
+
+
+    </RelativeLayout>
+
+
+    <ScrollView
+        android:id="@+id/scroll_embroidery"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="44dp"
+        android:layout_marginBottom="50dp"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="50dp">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="38dp"
+                android:background="@android:color/white"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="12dp"
+                    android:text="@string/input_infomation"
+                    android:textColor="@color/dark_gray_22"
+                    android:textSize="13sp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="12dp"
+                    android:singleLine="true"
+                    android:text="@string/measure_info"
+                    android:textColor="@color/red_b1"
+                    android:textSize="10sp"/>
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="62dp"
+                android:layout_marginTop="1dp"
+                android:background="@android:color/white"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:padding="12dp">
+
+                <EditText
+                    android:id="@+id/et_username_measure"
+                    android:layout_width="match_parent"
+                    android:layout_height="38dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/bound_97_3dp"
+                    android:hint="姓名"
+                    android:maxLength="12"
+                    android:paddingLeft="26dp"
+                    android:singleLine="true"
+                    android:textColor="@color/dark_gray_22"
+                    android:textColorHint="@color/light_gray_97"
+                    android:textSize="13sp"/>
+            </RelativeLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@android:color/white"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="38dp"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="7dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bound_97_3dp"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/et_user_height"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:gravity="center_vertical"
+                        android:hint="@string/net_height"
+                        android:inputType="numberDecimal"
+                        android:maxLength="6"
+                        android:paddingLeft="26dp"
+                        android:singleLine="true"
+                        android:textColor="@color/dark_gray_22"
+                        android:textColorHint="@color/light_gray_97"
+                        android:textSize="13sp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="38dp"
+                        android:text="CM"
+                        android:textColor="@color/dark_gray_22"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="38dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bound_97_3dp"
+                    android:orientation="horizontal">
+
+
+                    <EditText
+                        android:id="@+id/et_user_weight"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:hint="@string/net_weight"
+                        android:inputType="numberDecimal"
+                        android:maxLength="6"
+                        android:paddingLeft="26dp"
+                        android:singleLine="true"
+                        android:textColor="@color/dark_gray_22"
+                        android:textColorHint="@color/light_gray_97"
+                        android:textSize="13sp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="38dp"
+                        android:text="KG"
+                        android:textColor="@color/dark_gray_22"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="38dp"
+                android:layout_marginTop="9dp"
+                android:background="@android:color/white"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="12dp"
+                    android:text="@string/take_picture_measure"
+                    android:textColor="@color/dark_gray_22"
+                    android:textSize="13sp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="12dp"
+                    android:layout_weight="1"
+                    android:singleLine="true"
+                    android:text="@string/take_picture_info"
+                    android:textColor="@color/red_b1"
+                    android:textSize="10sp"/>
+
+                <TextView
+                    android:id="@+id/tv_photo_help"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ring_black"
+                    android:drawablePadding="6dp"
+                    android:paddingRight="12dp"
+                    android:text="@string/help"
+                    android:textColor="@color/dark_gray_22"
+                    android:textSize="13sp"/>
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_user_photo"
+                android:layout_width="match_parent"
+                android:layout_height="77dp"
+                android:layout_marginTop="1dp"
+                android:background="@android:color/white">
+
+                <com.facebook.drawee.view.SimpleDraweeView
+                    android:id="@+id/img_camera_photo"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="26dp"
+                    fresco:placeholderImage="@mipmap/icon_camera_data"
+                    fresco:placeholderImageScaleType="centerInside"
+                    fresco:roundAsCircle="true"
+                    fresco:roundWithOverlayColor="@color/transparent"
+                    fresco:roundingBorderColor="@color/dark_gray_22"
+                    fresco:roundingBorderWidth="1dp"/>
+
+                <cn.cloudworkshop.miaoding.view.CircleImageView
+                    android:id="@+id/img_is_take"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="26dp"
+                    android:scaleType="centerCrop"
+                    android:src="@mipmap/bg_checked"
+                    android:visibility="gone"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_toRightOf="@id/img_camera_photo"
+                    android:text="@string/measur_explain"
+                    android:textColor="@color/red_b1"
+                    android:textSize="10dp"/>
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="38dp"
+                android:layout_marginTop="9dp"
+                android:background="@android:color/white">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="12dp"
+                    android:text="@string/select_type"
+                    android:textColor="@color/dark_gray_22"
+                    android:textSize="13sp"/>
+
+                <TextView
+                    android:id="@+id/tv_select_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="12dp"
+                    android:textColor="@color/light_gray_a6"
+                    android:textSize="13sp"/>
+            </RelativeLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_embroidery_type"
+                android:layout_width="match_parent"
+                android:layout_height="77dp"
+                android:layout_marginTop="1dp"
+                android:background="@android:color/white">
+            </android.support.v7.widget.RecyclerView>
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="38dp"
+                android:layout_marginTop="9dp"
+                android:background="@android:color/white">
+
+                <TextView
+                    android:id="@+id/tv_embroidery_fabric"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="12dp"
+                    android:text="@string/select_fabric"
+                    android:textColor="@color/dark_gray_22"
+                    android:textSize="13sp"/>
+
+                <TextView
+                    android:id="@+id/tv_select_fabric"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="12dp"
+                    android:layout_toRightOf="@id/tv_embroidery_fabric"
+                    android:gravity="right"
+                    android:textColor="@color/light_gray_a6"
+                    android:textSize="13sp"/>
+            </RelativeLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_embroidery_fabric"
+                android:layout_width="match_parent"
+                android:layout_height="107dp"
+                android:layout_marginTop="1dp"
+                android:background="@android:color/white">
+            </android.support.v7.widget.RecyclerView>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="38dp"
+                android:layout_marginTop="9dp"
+                android:background="@android:color/white">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="12dp"
+                    android:text="@string/select_embroider"
+                    android:textColor="@color/dark_gray_22"
+                    android:textSize="13sp"/>
+
+                <CheckBox
+                    android:id="@+id/cb_select_embroidery"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:button="@null"
+                    android:drawableRight="@drawable/cb_select_embroidery"
+                    android:paddingRight="18dp"/>
+
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_select_embroidery"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="38dp"
+                    android:background="@android:color/white">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="12dp"
+                        android:text="@string/select_embroider_position"
+                        android:textColor="@color/dark_gray_22"
+                        android:textSize="13sp"/>
+
+                    <TextView
+                        android:id="@+id/tv_select_position"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="12dp"
+                        android:textColor="@color/light_gray_a6"
+                        android:textSize="13sp"/>
+                </RelativeLayout>
+
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_embroidery_position"
+                    android:layout_width="match_parent"
+                    android:layout_height="107dp"
+                    android:layout_marginTop="1dp"
+                    android:background="@android:color/white"
+                    android:overScrollMode="never">
+                </android.support.v7.widget.RecyclerView>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="38dp"
+                    android:layout_marginTop="1dp"
+                    android:background="@android:color/white">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="12dp"
+                        android:text="@string/select_font_color"
+                        android:textColor="@color/dark_gray_22"
+                        android:textSize="13sp"/>
+
+                    <TextView
+                        android:id="@+id/tv_select_color"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="12dp"
+                        android:textColor="@color/light_gray_a6"
+                        android:textSize="13sp"/>
+                </RelativeLayout>
+
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_embroidery_color"
+                    android:layout_width="match_parent"
+                    android:layout_height="107dp"
+                    android:layout_marginTop="1dp"
+                    android:background="@android:color/white"
+                    android:overScrollMode="never">
+                </android.support.v7.widget.RecyclerView>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="38dp"
+                    android:layout_marginTop="1dp"
+                    android:background="@android:color/white">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="12dp"
+                        android:text="@string/slelect_font"
+                        android:textColor="@color/dark_gray_22"
+                        android:textSize="13sp"/>
+
+                    <TextView
+                        android:id="@+id/tv_select_font"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="12dp"
+                        android:textColor="@color/light_gray_a6"
+                        android:textSize="13sp"/>
+                </RelativeLayout>
+
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_embroidery_font"
+                    android:layout_width="match_parent"
+                    android:layout_height="107dp"
+                    android:layout_marginTop="1dp"
+                    android:background="@android:color/white"
+                    android:overScrollMode="never">
+
+                </android.support.v7.widget.RecyclerView>
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="38dp"
+                    android:layout_marginTop="1dp"
+                    android:background="@android:color/white"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="12dp"
+                    android:text="@string/select_embroider_content"
+                    android:textColor="@color/dark_gray_22"
+                    android:textSize="13sp"/>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/white">
+
+                    <EditText
+                        android:id="@+id/et_embroidery_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="72dp"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginRight="12dp"
+                        android:layout_marginBottom="12dp"
+                        android:background="@drawable/bound_ed_ff"
+                        android:hint="@string/input_embroider_content"
+                        android:maxLength="12"
+                        android:paddingLeft="10dp"
+                        android:singleLine="true"
+                        android:textColor="@color/dark_gray_22"
+                        android:textColorHint="@color/light_gray_a6"
+                        android:textSize="13sp"/>
+                </RelativeLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="49dp"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="4"
+            android:background="@android:color/white"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@string/subtotal"
+                android:textColor="@color/dark_gray_22"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:id="@+id/tv_customize_price"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@android:color/white"
+                android:gravity="center"
+                android:textColor="@color/light_gray_3d"
+                android:textSize="14sp"
+                android:textStyle="bold"/>
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/tv_add_shop_cart"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:background="#4C4C4C"
+            android:gravity="center"
+            android:text="@string/add_cart"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:id="@+id/tv_confirm_embroidery"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:background="@color/dark_gray_15"
+            android:gravity="center"
+            android:text="@string/buy_immediately"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"/>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/img_large_fabric"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_centerInParent="true"
+        android:background="@color/gray_mask"
+        android:scaleType="fitCenter"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:id="@+id/img_custom_guide"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:visibility="gone"/>
+
+    <include
+        layout="@layout/loading_view"/>
+
+    <include
+        layout="@layout/loading_error"/>
+
+</RelativeLayout>

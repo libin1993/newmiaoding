@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/light_gray_ed"
+                android:fitsSystemWindows="true">
+
+    <include
+        layout="@layout/widget_header_layout"/>
+
+    <com.github.jdsjlzx.recyclerview.LRecyclerView
+        android:id="@+id/rv_measure_user"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="49dp"
+        android:layout_marginTop="56dp">
+    </com.github.jdsjlzx.recyclerview.LRecyclerView>
+
+
+    <RelativeLayout
+        android:id="@+id/rl_add_measure"
+        android:layout_width="match_parent"
+        android:layout_height="49dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/dark_gray_15">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="49dp"
+            android:layout_centerInParent="true"
+            android:drawableLeft="@mipmap/icon_add_measure"
+            android:drawablePadding="13dp"
+            android:gravity="center"
+            android:text="@string/add_measure_data"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"/>
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/img_null_measure"
+        android:layout_width="155dp"
+        android:layout_height="155dp"
+        android:layout_centerInParent="true"
+        android:scaleType="fitCenter"
+        android:src="@mipmap/icon_measure_null"
+        android:visibility="gone"/>
+
+    <include
+        layout="@layout/loading_error"/>
+</RelativeLayout>
