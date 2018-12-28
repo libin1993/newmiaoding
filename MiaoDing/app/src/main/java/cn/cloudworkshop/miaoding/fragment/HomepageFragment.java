@@ -527,8 +527,6 @@ public class HomepageFragment extends BaseFragment {
                 layoutParams.height = height;
                 imgShop.setLayoutParams(layoutParams);
 
-//                GenericDraweeHierarchy hierarchy = imgShop.getHierarchy();
-//                imgShop.setHierarchy(hierarchy);
                 imgShop.setImageURI(Constant.IMG_HOST + indextype.getImg());
             }
         };
@@ -622,3 +620,5 @@ public class HomepageFragment extends BaseFragment {
     }
 
 }
+
+

@@ -489,6 +489,8 @@ public void xxxxxx(**);
 -keepattributes InnerClasses,Signature
 -keepattributes *Annotation*
 
+#picker
+-dontwarn cn.qqtheme.**
 -keep class cn.qqtheme.framework.entity.** { *;}
 -keep class cn.qqtheme.framework.picker.AddressPicker$* { *;}
 

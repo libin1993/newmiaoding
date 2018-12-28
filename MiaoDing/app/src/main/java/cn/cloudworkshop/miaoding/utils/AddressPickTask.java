@@ -4,12 +4,15 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.support.v4.content.ContextCompat;
 
 import java.util.ArrayList;
 
+import cn.cloudworkshop.miaoding.R;
 import cn.qqtheme.framework.entity.Province;
 import cn.qqtheme.framework.picker.AddressPicker;
 import cn.qqtheme.framework.util.ConvertUtils;
+
 
 /**
  * Author：Libin on 2016/10/9 14:13
@@ -78,6 +81,12 @@ public class AddressPickTask extends AsyncTask<String, Void, ArrayList<Province>
     protected void onPostExecute(ArrayList<Province> result) {
         if (result.size() > 0) {
             AddressPicker picker = new AddressPicker((Activity) context, result);
+            picker.setTextSize(14);
+            picker.setTopLineColor(ContextCompat.getColor( context, R.color.dark_gray_15));
+            picker.setCancelTextColor(ContextCompat.getColor(context, R.color.dark_gray_22));
+            picker.setSubmitTextColor(ContextCompat.getColor( context, R.color.dark_gray_22));
+            picker.setDividerColor(ContextCompat.getColor(context, R.color.light_gray_ed));
+            picker.setTextColor(ContextCompat.getColor( context, R.color.dark_gray_15), ContextCompat.getColor( context, R.color.light_gray_6a));
             picker.setHideProvince(hideProvince);
             picker.setHideCounty(hideCounty);
             if (hideCounty) {

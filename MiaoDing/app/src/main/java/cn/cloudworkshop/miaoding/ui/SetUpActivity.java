@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
@@ -292,6 +293,14 @@ public class SetUpActivity extends BaseActivity implements EasyPermissions.Permi
      */
     private void changeBirthday() {
         DatePicker picker = new DatePicker(this);
+        picker.setTextSize(14);
+        picker.setTopLineColor(ContextCompat.getColor(this, R.color.dark_gray_15));
+        picker.setCancelTextColor(ContextCompat.getColor(this, R.color.dark_gray_22));
+        picker.setSubmitTextColor(ContextCompat.getColor(this, R.color.dark_gray_22));
+        picker.setDividerColor(ContextCompat.getColor(this, R.color.light_gray_ed));
+        picker.setTextColor(ContextCompat.getColor(this, R.color.dark_gray_15), ContextCompat.getColor(this, R.color.light_gray_6a));
+        picker.setContentPadding(30, 0);
+        picker.setLabelTextColor(ContextCompat.getColor(this, R.color.dark_gray_15));
         picker.setOffset(2);
         Calendar c = Calendar.getInstance();
         int year = c.get(Calendar.YEAR);

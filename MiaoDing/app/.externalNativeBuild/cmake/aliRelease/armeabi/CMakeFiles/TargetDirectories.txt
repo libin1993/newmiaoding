@@ -1,0 +1,2 @@
+E:/newmiaoding/MiaoDing/app/.externalNativeBuild/cmake/aliRelease/armeabi/CMakeFiles/edit_cache.dir
+E:/newmiaoding/MiaoDing/app/.externalNativeBuild/cmake/aliRelease/armeabi/CMakeFiles/rebuild_cache.dir

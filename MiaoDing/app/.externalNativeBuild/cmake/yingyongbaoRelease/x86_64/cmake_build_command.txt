@@ -1,0 +1,15 @@
+Executable : D:\Application\sdk\cmake\3.6.4111459\bin\cmake.exe
+arguments : 
+-HE:\newmiaoding\MiaoDing\app
+-BE:\newmiaoding\MiaoDing\app\.externalNativeBuild\cmake\yingyongbaoRelease\x86_64
+-DANDROID_ABI=x86_64
+-DANDROID_PLATFORM=android-21
+-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=E:\newmiaoding\MiaoDing\app\build\intermediates\cmake\yingyongbao\release\obj\x86_64
+-DCMAKE_BUILD_TYPE=Release
+-DANDROID_NDK=D:\Application\ndk
+-DCMAKE_CXX_FLAGS=
+-DCMAKE_TOOLCHAIN_FILE=D:\Application\ndk\build\cmake\android.toolchain.cmake
+-DCMAKE_MAKE_PROGRAM=D:\Application\sdk\cmake\3.6.4111459\bin\ninja.exe
+-GAndroid Gradle - Ninja
+jvmArgs : 
+

@@ -8,9 +8,6 @@
 
 package cn.sharesdk.onekeyshare.themes.classic;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.view.Gravity;
@@ -23,6 +20,11 @@ import android.view.animation.TranslateAnimation;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.mob.tools.gui.MobViewPager;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import cn.sharesdk.framework.CustomPlatform;
 import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.Platform.ShareParams;
@@ -30,9 +32,6 @@ import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.onekeyshare.CustomerLogo;
 import cn.sharesdk.onekeyshare.OnekeySharePage;
 import cn.sharesdk.onekeyshare.OnekeyShareThemeImpl;
-
-import com.mob.tools.gui.MobViewPager;
-import com.mob.tools.utils.R;
 
 /**
  * 九宫格的抽象类
@@ -56,7 +55,7 @@ public abstract class PlatformPage extends OnekeySharePage {
 
     public PlatformPage(OnekeyShareThemeImpl impl) {
         super(impl);
-        this.impl = R.forceCast(impl);
+        this.impl = com.mob.tools.utils.R.forceCast(impl);
     }
 
     public void onCreate() {
@@ -81,6 +80,7 @@ public abstract class PlatformPage extends OnekeySharePage {
         llPanel = new LinearLayout(activity);
         llPanel.setOrientation(LinearLayout.VERTICAL);
         lp = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        llPanel.setBackgroundColor(Color.WHITE);
 //        llPanel.setAnimation(animShow);
         llPage.addView(llPanel, lp);
 

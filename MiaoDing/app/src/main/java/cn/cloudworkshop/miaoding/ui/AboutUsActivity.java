@@ -90,6 +90,8 @@ public class AboutUsActivity extends BaseActivity {
             AlertDialog.Builder dialog = new AlertDialog.Builder(AboutUsActivity.this,
                     R.style.Theme_AppCompat_DayNight_Dialog_Alert);
             dialog.setTitle((R.string.check_new_version));
+
+
             dialog.setMessage(MyApplication.updateContent);
             //为“确定”按钮注册监听事件
             dialog.setPositiveButton(R.string.update_immediately, new DialogInterface.OnClickListener() {
@@ -113,6 +115,8 @@ public class AboutUsActivity extends BaseActivity {
         }
 
     }
+
+
 
     /**
      * 下载文件

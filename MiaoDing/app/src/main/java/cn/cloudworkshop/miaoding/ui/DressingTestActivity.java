@@ -2,6 +2,7 @@ package cn.cloudworkshop.miaoding.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -121,6 +122,11 @@ public class DressingTestActivity extends BaseActivity {
         picker.setOffset(2);//偏移量
         picker.setRange(10, 100);//数字范围
         picker.setTextSize(14);
+        picker.setTopLineColor(ContextCompat.getColor(this, R.color.dark_gray_15));
+        picker.setCancelTextColor(ContextCompat.getColor(this, R.color.dark_gray_22));
+        picker.setSubmitTextColor(ContextCompat.getColor(this, R.color.dark_gray_22));
+        picker.setDividerColor(ContextCompat.getColor(this, R.color.light_gray_ed));
+        picker.setTextColor(ContextCompat.getColor(this, R.color.dark_gray_15), ContextCompat.getColor(this, R.color.light_gray_6a));
         picker.setLabel(getString(R.string.year));
         picker.setSelectedItem(25);
         picker.setOnNumberPickListener(new NumberPicker.OnNumberPickListener() {

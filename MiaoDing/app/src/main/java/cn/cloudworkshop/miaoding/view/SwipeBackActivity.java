@@ -2,6 +2,7 @@ package cn.cloudworkshop.miaoding.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 
 import org.opencv.android.CameraBridgeViewBase;
@@ -10,7 +11,7 @@ import org.opencv.android.JavaCameraView;
 import cn.cloudworkshop.miaoding.R;
 import cn.cloudworkshop.miaoding.base.BaseActivity;
 
-public class SwipeBackActivity extends BaseActivity {
+public class SwipeBackActivity extends AppCompatActivity {
 	SwipeBackLayout layout;
 
 	@Override

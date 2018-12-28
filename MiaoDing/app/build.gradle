@@ -1,0 +1,173 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 28
+    buildToolsVersion '28.0.3'
+
+    defaultConfig {
+        applicationId "cn.cloudworkshop.miaoding"
+        minSdkVersion 14
+        targetSdkVersion 28
+        versionCode 61
+        versionName "2.1.8"
+        multiDexEnabled true
+        flavorDimensions "61"
+
+        manifestPlaceholders = [
+                GETUI_APP_ID    : "giNqTlq7c4AAPv4gmSmKL8",
+                GETUI_APP_KEY   : "XbVdzpYsN771CK381mlfq4",
+                GETUI_APP_SECRET: "48KWdZqTYU61sbKimhCb02",
+        ]
+
+        ndk {
+            abiFilters "armeabi", "armeabi-v7a", "x86_64"
+        }
+
+        externalNativeBuild {
+            cmake {
+                cppFlags ""
+            }
+        }
+    }
+
+    // 配置CMakeLists.txt路径
+    externalNativeBuild {
+        cmake {
+            path "CMakeLists.txt"   // 设置所要编写的c源码位置，以及编译后so文件的名字
+        }
+    }
+
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
+    productFlavors {
+        m360 {}
+        yingyongbao {}
+        ali {}
+        huawei {}
+        xiaomi {}
+    }
+
+    productFlavors.all { flavor ->
+        flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
+    }
+
+
+    configurations.all {
+        resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+            def requested = details.requested
+            if (requested.group == 'com.android.support') {
+                if (!requested.name.startsWith("multidex")) {
+                    details.useVersion '25.1.1'
+                }
+            }
+        }
+    }
+
+    sourceSets { main { jni.srcDirs = ['src/main/jni', 'src/main/jniLibs/'] } }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    testImplementation 'junit:junit:4.12'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    //tablayout
+    implementation project(':slidingtablayout')
+    //opencv轮阔识别
+    implementation project(':opencv')
+    //AppBarLayout越界弹性效果
+    implementation project(':appbarbehavior')
+    //recyclerview
+    implementation project(':lrecyclerview')
+    //图片选择
+    implementation project(':photopicker')
+    //banner
+    implementation 'com.bigkoo:convenientbanner:2.0.5'
+    //glide图片加载
+    implementation 'com.github.bumptech.glide:glide:3.7.0'
+    implementation 'com.android.support:support-v4:28.0.0'
+    //recyclerview适配器
+    implementation 'com.zhy:base-rvadapter:3.0.3'
+    //butterknife
+    implementation 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    //okhttp网络请求
+    implementation 'com.zhy:okhttputils:2.6.2'
+    //七鱼客服
+    implementation 'com.qiyukf.unicorn:unicorn:2.7.0'
+    implementation 'com.android.support:design:28.0.0'
+    //cardview
+    implementation 'com.android.support:cardview-v7:28.0.0'
+    //fresco图片加载
+    implementation 'com.facebook.fresco:fresco:1.5.0'
+    //jazzyviewpager动画
+    implementation 'com.nineoldandroids:library:2.4.0'
+    //gson
+    implementation 'com.google.code.gson:gson:2.8.0'
+
+
+    //sharesdk分享
+    implementation files('libs/ShareSDK-Wechat-Moments-2.8.3.jar')
+    implementation files('libs/ShareSDK-Wechat-Core-2.8.3.jar')
+    implementation files('libs/ShareSDK-Wechat-2.8.3.jar')
+    implementation files('libs/ShareSDK-QQ-2.8.3.jar')
+    implementation files('libs/ShareSDK-Core-2.8.3.jar')
+    implementation files('libs/ShareSDK-SinaWeibo-2.8.3.jar')
+    implementation files('libs/MobTools-2017.0412.1554.jar')
+    implementation files('libs/MobCommons-2017.0412.1554.jar')
+
+    //高德地图
+    implementation files('libs/Amap_2DMap_V2.9.2_20161026.jar')
+    implementation files('libs/AMapSearch_3.5.0_AMapLocation_3.1.0_20161027.jar')
+    //支付宝支付
+    implementation files('libs/alipaySdk-20161009.jar')
+    //微信支付
+    implementation files('libs/libammsdk.jar')
+    //图片裁剪
+    implementation 'com.soundcloud.android:android-crop:1.0.1@aar'
+    //个推
+    implementation 'com.getui:sdk:2.10.2.0'
+    //友盟统计
+    implementation 'com.umeng.sdk:common:latest.integration'
+    implementation 'com.umeng.analytics:analytics:latest.integration'
+    //图片缩放
+    implementation 'com.github.chrisbanes:PhotoView:1.3.1'
+    //加载动画
+    implementation 'com.wang.avi:library:2.1.3'
+    //分包
+    implementation 'com.android.support:multidex:1.0.1'
+    //扫描二维码
+    implementation 'com.yanzhenjie.zbar:zbar:1.0.0'
+    implementation 'com.yanzhenjie.zbar:camera:1.0.0'
+    //权限请求
+    implementation 'pub.devrel:easypermissions:0.4.2'
+    //eventbus
+    implementation 'org.greenrobot:eventbus:3.1.1'
+    //选择器
+    implementation('com.github.gzu-liyujiang.AndroidPicker:WheelPicker:1.5.6') {
+        exclude group: 'com.android.support'
+    }
+//    implementation files('libs/MobCommons-2018.1128.1916.jar')
+//    implementation files('libs/MobTools-2018.1128.1916.jar')
+//    implementation files('libs/SDKWrapper-2018.0801.1824.jar')
+//    implementation files('libs/ShareSDK-Core-3.4.0.jar')
+//    implementation files('libs/ShareSDK-QQ-3.4.0.jar')
+//    implementation files('libs/ShareSDK-SinaWeibo-3.4.0.jar')
+//    implementation files('libs/ShareSDK-Wechat-3.4.0.jar')
+//    implementation files('libs/ShareSDK-Wechat-Core-3.4.0.jar')
+//    implementation files('libs/ShareSDK-Wechat-Moments-3.4.0.jar')
+}

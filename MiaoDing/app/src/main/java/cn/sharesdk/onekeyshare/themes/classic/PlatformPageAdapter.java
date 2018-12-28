@@ -14,18 +14,18 @@ import android.content.Context;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.ImageView.ScaleType;
 import cn.sharesdk.framework.Platform;
 import cn.sharesdk.onekeyshare.CustomerLogo;
 
 import com.mob.tools.gui.ViewPagerAdapter;
-import com.mob.tools.utils.R;
+import com.mob.tools.utils.ResHelper;
 
 /** 九宫格的适配器抽象类 */
 public abstract class PlatformPageAdapter extends ViewPagerAdapter implements OnClickListener {
@@ -71,7 +71,7 @@ public abstract class PlatformPageAdapter extends ViewPagerAdapter implements On
 	}
 
 	public int getCount() {
-		return cells == null? 0: cells.length;
+		return cells == null ? 0 : cells.length;
 	}
 
 	public void setIndicator(IndicatorView view) {
@@ -90,8 +90,8 @@ public abstract class PlatformPageAdapter extends ViewPagerAdapter implements On
 			convertView = createPanel(parent.getContext());
 		}
 
-		LinearLayout llPanel = R.forceCast(convertView);
-		LinearLayout[] llCells = R.forceCast(llPanel.getTag());
+		LinearLayout llPanel = ResHelper.forceCast(convertView);
+		LinearLayout[] llCells = ResHelper.forceCast(llPanel.getTag());
 		refreshPanel(llCells, cells[index]);
 		return convertView;
 	}
@@ -104,7 +104,7 @@ public abstract class PlatformPageAdapter extends ViewPagerAdapter implements On
 		int lineCount = panelHeight / cellHeight;
 		LinearLayout[] llCells = new LinearLayout[lineCount * lineSize];
 		llPanel.setTag(llCells);
-		int cellBack = R.getBitmapRes(context, "ssdk_oks_classic_platform_cell_back");
+		int cellBack = ResHelper.getBitmapRes(context, "ssdk_oks_classic_platform_cell_back");
 		LinearLayout.LayoutParams lp;
 		for (int i = 0; i < lineCount; i++) {
 			LinearLayout llLine = new LinearLayout(context);
@@ -132,33 +132,30 @@ public abstract class PlatformPageAdapter extends ViewPagerAdapter implements On
 		}
 
 		for (LinearLayout llCell : llCells) {
-
-			llCell.setGravity(Gravity.CENTER);
-
 			ImageView ivLogo = new ImageView(context);
 			ivLogo.setScaleType(ScaleType.CENTER_INSIDE);
-			lp = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-			lp.bottomMargin = 30;
+			lp = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, logoHeight);
+			lp.topMargin = paddingTop;
 			llCell.addView(ivLogo, lp);
 
 			TextView tvName = new TextView(context);
-			tvName.setTextColor(0xff2e2e2e);
-			tvName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-			tvName.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
+			tvName.setTextColor(0xff646464);
+			tvName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+			tvName.setGravity(Gravity.CENTER);
 			lp = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+			lp.weight = 1;
 			llCell.addView(tvName, lp);
-
 		}
 
 		return llPanel;
 	}
 
 	private void refreshPanel(LinearLayout[] llCells, Object[] logos) {
-		int cellBack = R.getBitmapRes(page.getContext(), "ssdk_oks_classic_platform_cell_back");
-		int disableBack = R.getBitmapRes(page.getContext(), "ssdk_oks_classic_platfrom_cell_back_nor");
+		int cellBack = ResHelper.getBitmapRes(page.getContext(), "ssdk_oks_classic_platform_cell_back");
+		int disableBack = ResHelper.getBitmapRes(page.getContext(), "ssdk_oks_classic_platfrom_cell_back_nor");
 		for (int i = 0; i < logos.length; i++) {
-			ImageView ivLogo = R.forceCast(llCells[i].getChildAt(0));
-			TextView tvName = R.forceCast(llCells[i].getChildAt(1));
+			ImageView ivLogo = ResHelper.forceCast(llCells[i].getChildAt(0));
+			TextView tvName = ResHelper.forceCast(llCells[i].getChildAt(1));
 			if (logos[i] == null) {
 				ivLogo.setVisibility(View.INVISIBLE);
 				tvName.setVisibility(View.INVISIBLE);
@@ -167,12 +164,14 @@ public abstract class PlatformPageAdapter extends ViewPagerAdapter implements On
 			} else {
 				ivLogo.setVisibility(View.VISIBLE);
 				tvName.setVisibility(View.VISIBLE);
+				ivLogo.requestLayout();
+				tvName.requestLayout();
 				llCells[i].setBackgroundResource(cellBack);
 				llCells[i].setOnClickListener(this);
 				llCells[i].setTag(logos[i]);
 
 				if (logos[i] instanceof CustomerLogo) {
-					CustomerLogo logo = R.forceCast(logos[i]);
+					CustomerLogo logo = ResHelper.forceCast(logos[i]);
 					if (logo.logo != null) {
 						ivLogo.setImageBitmap(logo.logo);
 					} else {
@@ -184,15 +183,15 @@ public abstract class PlatformPageAdapter extends ViewPagerAdapter implements On
 						tvName.setText("");
 					}
 				} else {
-					Platform plat = R.forceCast(logos[i]);
+					Platform plat = ResHelper.forceCast(logos[i]);
 					String name = plat.getName().toLowerCase();
-					int resId = R.getBitmapRes(ivLogo.getContext(),"ssdk_oks_classic_" + name);
+					int resId = ResHelper.getBitmapRes(ivLogo.getContext(),"ssdk_oks_classic_" + name);
 					if (resId > 0) {
 						ivLogo.setImageResource(resId);
 					} else {
 						ivLogo.setImageBitmap(null);
 					}
-					resId = R.getStringRes(tvName.getContext(), "ssdk_" + name);
+					resId = ResHelper.getStringRes(tvName.getContext(), "ssdk_" + name);
 					if (resId > 0) {
 						tvName.setText(resId);
 					} else {
@@ -211,10 +210,10 @@ public abstract class PlatformPageAdapter extends ViewPagerAdapter implements On
 		lastClickTime = time;
 
 		if (v.getTag() instanceof CustomerLogo) {
-			CustomerLogo logo = R.forceCast(v.getTag());
+			CustomerLogo logo = ResHelper.forceCast(v.getTag());
 			page.performCustomLogoClick(v, logo);
 		} else {
-			Platform plat = R.forceCast(v.getTag());
+			Platform plat = ResHelper.forceCast(v.getTag());
 			page.showEditPage(plat);
 		}
 	}
