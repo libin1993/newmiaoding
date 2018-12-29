@@ -5,12 +5,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -29,6 +27,8 @@ import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,7 +89,7 @@ public class DeliveryAddressActivity extends BaseActivity {
     }
 
     private void getData() {
-        type = getIntent().getIntExtra("type", 0);
+        type = getIntent().getIntExtra("type", 1);
     }
 
 
@@ -159,7 +159,7 @@ public class DeliveryAddressActivity extends BaseActivity {
             @Override
             protected void convert(ViewHolder holder, final DeliveryAddressBean.DataBean dataBean,
                                    final int position) {
-                holder.setText(R.id.tv_user_name, dataBean.getName());
+                holder.setText(R.id.tv_user_name, dataBean.getAccept_name());
                 holder.setText(R.id.tv_user_phone, dataBean.getPhone());
                 holder.setText(R.id.tv_user_address, dataBean.getProvince() + dataBean.getCity()
                         + dataBean.getArea() + dataBean.getAddress());
@@ -187,7 +187,7 @@ public class DeliveryAddressActivity extends BaseActivity {
                     @Override
                     public void onClick(View v) {
                         if (dataList.get(position - 1).getIs_default() == 0) {
-                            setDefaultAddress(dataList.get(position - 1).getId(),position -1);
+                            setDefaultAddress(dataList.get(position - 1).getId(), position - 1);
                         }
                     }
                 });
@@ -267,7 +267,7 @@ public class DeliveryAddressActivity extends BaseActivity {
         addressListBean.setCity(dataList.get(position).getCity());
         addressListBean.setArea(dataList.get(position).getArea());
         addressListBean.setAddress(dataList.get(position).getAddress());
-        addressListBean.setName(dataList.get(position).getName());
+        addressListBean.setName(dataList.get(position).getAccept_name());
         addressListBean.setPhone(dataList.get(position).getPhone());
         addressListBean.setIs_default(dataList.get(position).getIs_default());
         intent.putExtra("address", addressListBean);
@@ -291,14 +291,22 @@ public class DeliveryAddressActivity extends BaseActivity {
 
                     @Override
                     public void onResponse(String response, int id) {
-                        for (int i = 0; i < dataList.size(); i++) {
-                            if (i == position) {
-                                dataList.get(i).setIs_default(1);
-                            } else {
-                                dataList.get(i).setIs_default(0);
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            if (jsonObject.getInt("code") == 10000) {
+                                for (int i = 0; i < dataList.size(); i++) {
+                                    if (i == position) {
+                                        dataList.get(i).setIs_default(1);
+                                    } else {
+                                        dataList.get(i).setIs_default(0);
+                                    }
+                                }
+                                adapter.notifyDataSetChanged();
                             }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                        adapter.notifyDataSetChanged();
+
                     }
                 });
 

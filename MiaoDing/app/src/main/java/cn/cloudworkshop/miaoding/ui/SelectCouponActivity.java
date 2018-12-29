@@ -161,7 +161,7 @@ public class SelectCouponActivity extends BaseActivity {
                 tvMoney.setText("¥" + (int) Float.parseFloat(usableBean.getMoney()));
                 holder.setText(R.id.tv_coupon_range, usableBean.getTitle());
                 holder.setText(R.id.tv_coupon_discount, usableBean.getSub_title());
-                String term = getString(R.string.validity_term)+"：" + DateUtils.getDate("yyyy-MM-dd", usableBean.getS_time())
+                String term = getString(R.string.validity_term) + "：" + DateUtils.getDate("yyyy-MM-dd", usableBean.getS_time())
                         + getString(R.string.to) + DateUtils.getDate("yyyy-MM-dd", usableBean.getE_time());
                 holder.setText(R.id.tv_coupon_term, term);
 
@@ -209,7 +209,7 @@ public class SelectCouponActivity extends BaseActivity {
                 tvMoney.setText("¥" + (int) Float.parseFloat(disableBean.getMoney()));
                 holder.setText(R.id.tv_coupon_range, disableBean.getTitle());
                 holder.setText(R.id.tv_coupon_discount, disableBean.getSub_title());
-                String term = getString(R.string.validity_term)+"：" + DateUtils.getDate("yyyy-MM-dd", disableBean.getS_time())
+                String term = getString(R.string.validity_term) + "：" + DateUtils.getDate("yyyy-MM-dd", disableBean.getS_time())
                         + getString(R.string.to) + DateUtils.getDate("yyyy-MM-dd", disableBean.getE_time());
                 holder.setText(R.id.tv_coupon_term, term);
 
@@ -220,7 +220,7 @@ public class SelectCouponActivity extends BaseActivity {
 
     }
 
-    @OnClick({R.id.img_header_back, R.id.tv_not_use, R.id.tv_exchange,R.id.img_load_error})
+    @OnClick({R.id.img_header_back, R.id.tv_not_use, R.id.tv_exchange, R.id.img_load_error})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.img_header_back:
@@ -254,7 +254,7 @@ public class SelectCouponActivity extends BaseActivity {
         OkHttpUtils.post()
                 .url(Constant.EXCHANGE_COUPON)
                 .addParams("token", SharedPreferencesUtils.getStr(this, "token"))
-                .addParams("kouling", etCouponCode.getText().toString().trim())
+                .addParams("exchange_code", etCouponCode.getText().toString().trim())
                 .build()
                 .execute(new StringCallback() {
                     @Override

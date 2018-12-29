@@ -35,6 +35,7 @@ import cn.cloudworkshop.miaoding.base.BaseFragment;
 import cn.cloudworkshop.miaoding.bean.GoodsTitleBean;
 import cn.cloudworkshop.miaoding.constant.Constant;
 import cn.cloudworkshop.miaoding.ui.ScanCodeActivity;
+import cn.cloudworkshop.miaoding.utils.DisplayUtils;
 import cn.cloudworkshop.miaoding.utils.GsonUtils;
 import cn.cloudworkshop.miaoding.utils.SharedPreferencesUtils;
 import okhttp3.Call;
@@ -76,7 +77,7 @@ public class CustomizedGoodsFragment extends BaseFragment {
      * 商品分类
      */
     private void initTitle() {
-        OkHttpUtils.get()
+        OkHttpUtils.post()
                 .url(Constant.GOODS_TITLE)
                 .addParams("token", SharedPreferencesUtils.getStr(getActivity(), "token"))
                 .build()
@@ -109,11 +110,19 @@ public class CustomizedGoodsFragment extends BaseFragment {
         }
 
         //tab个数低于5个平分，不可滑动
-        if (titleBean.getData().size() <= 5) {
+        if (titleList.size() <= 2) {
             tabGoods.setTabSpaceEqual(true);
+            tabGoods.setPadding((int) DisplayUtils.dp2px(getActivity(), 70), 0, (int) DisplayUtils.dp2px(getActivity(), 70), 0);
         } else {
+            ViewGroup.LayoutParams layoutParams = tabGoods.getLayoutParams();
+            layoutParams.width = (int) (DisplayUtils.getMetrics(getActivity()).widthPixels - DisplayUtils.dp2px(getActivity(), 55));
+            tabGoods.setLayoutParams(layoutParams);
+
             tabGoods.setTabSpaceEqual(false);
+
         }
+
+
         GoodsFragmentAdapter adapter = new GoodsFragmentAdapter(getChildFragmentManager(),
                 fragmentList, titleList);
         vpGoods.setOffscreenPageLimit(titleList.size());

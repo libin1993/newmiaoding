@@ -31,6 +31,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import cn.cloudworkshop.miaoding.R;
 import cn.cloudworkshop.miaoding.base.BaseFragment;
+import cn.cloudworkshop.miaoding.bean.CustomizedGoodsListBean;
 import cn.cloudworkshop.miaoding.bean.GoodsListBean;
 import cn.cloudworkshop.miaoding.constant.Constant;
 import cn.cloudworkshop.miaoding.ui.CustomizedGoodsActivity;
@@ -57,7 +58,7 @@ public class SubGoodsFragment extends BaseFragment {
     //加载更多
     private boolean isLoadMore;
     private LRecyclerViewAdapter mLRecyclerViewAdapter;
-    private List<GoodsListBean.DataBean.itemDataBean> dataList = new ArrayList<>();
+    private List<CustomizedGoodsListBean.GoodsidBean> dataList = new ArrayList<>();
     private Unbinder unbinder;
 
     @Nullable
@@ -77,10 +78,9 @@ public class SubGoodsFragment extends BaseFragment {
     }
 
     private void initData() {
-        OkHttpUtils.get()
+        OkHttpUtils.post()
                 .url(Constant.GOODS_LIST)
-                .addParams("type", "1")
-                .addParams("classify_id", String.valueOf(classifyId))
+                .addParams("use_goodsid", String.valueOf(classifyId))
                 .addParams("page", String.valueOf(page))
                 .build()
                 .execute(new StringCallback() {
@@ -91,12 +91,12 @@ public class SubGoodsFragment extends BaseFragment {
 
                     @Override
                     public void onResponse(String response, int id) {
-                        GoodsListBean listBean = GsonUtils.jsonToBean(response, GoodsListBean.class);
-                        if (listBean.getData().getData() != null && listBean.getData().getData().size() > 0) {
+                        CustomizedGoodsListBean listBean = GsonUtils.jsonToBean(response, CustomizedGoodsListBean.class);
+                        if (listBean.getGoodsid() != null && listBean.getGoodsid().size() > 0) {
                             if (isRefresh) {
                                 dataList.clear();
                             }
-                            dataList.addAll(listBean.getData().getData());
+                            dataList.addAll(listBean.getGoodsid());
                             if (isRefresh || isLoadMore) {
                                 rvGoods.refreshComplete(0);
                                 mLRecyclerViewAdapter.notifyDataSetChanged();
@@ -117,21 +117,20 @@ public class SubGoodsFragment extends BaseFragment {
         rvGoods.setLayoutManager(new GridLayoutManager(getParentFragment().getActivity(), 2));
         rvGoods.addItemDecoration(new SpaceItemDecoration((int) DisplayUtils.dp2px(
                 getParentFragment().getActivity(), 4.5f), true));
-        CommonAdapter<GoodsListBean.DataBean.itemDataBean> adapter = new CommonAdapter
-                <GoodsListBean.DataBean.itemDataBean>(getParentFragment().getActivity(),
+        CommonAdapter<CustomizedGoodsListBean.GoodsidBean> adapter = new CommonAdapter
+                <CustomizedGoodsListBean.GoodsidBean>(getParentFragment().getActivity(),
                 R.layout.listitem_sub_goods, dataList) {
             @Override
-            protected void convert(ViewHolder holder, GoodsListBean.DataBean.itemDataBean
-                    itemDataBean, int position) {
+            protected void convert(ViewHolder holder, CustomizedGoodsListBean.GoodsidBean goodsidBean, int position) {
                 SimpleDraweeView imgGoods = holder.getView(R.id.img_sub_goods);
-                if (!TextUtils.isEmpty(itemDataBean.getImg_info())) {
-                    imgGoods.setAspectRatio(Float.parseFloat(itemDataBean.getImg_info()));
-                }
-                imgGoods.setImageURI(Constant.IMG_HOST + itemDataBean.getImg_new());
 
-                holder.setText(R.id.tv_sub_title, itemDataBean.getName());
-                holder.setText(R.id.tv_sub_price, itemDataBean.getPrice());
-                holder.setText(R.id.tv_sub_content, itemDataBean.getSub_name());
+                imgGoods.setAspectRatio((float) goodsidBean.getAd_img_info());
+
+                imgGoods.setImageURI(Constant.IMG_HOST + goodsidBean.getAd_img());
+
+                holder.setText(R.id.tv_sub_title, goodsidBean.getName());
+                holder.setText(R.id.tv_sub_price, goodsidBean.getSell_price());
+                holder.setText(R.id.tv_sub_content, goodsidBean.getContent());
             }
 
         };

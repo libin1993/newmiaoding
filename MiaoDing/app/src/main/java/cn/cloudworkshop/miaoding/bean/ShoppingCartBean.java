@@ -11,16 +11,14 @@ public class ShoppingCartBean {
 
 
     /**
-     * code : 1
-     * data : {"total":2,"per_page":20,"current_page":"1","data":[{"id":5024,"mianliao_id":"16","goods_name":"格纹衬衫","goods_thumb":"/uploads/img/2017071315413310055995.jpg","num":1,"price":"999.00","c_time":1501221209,"goods_id":50,"goods_type":1,"size_content":""},{"id":5019,"mianliao_id":"15","goods_name":"始终如\u201c衣\u201d","goods_thumb":"/uploads/img/2017071315401198995799.jpg","num":3,"price":"799.00","c_time":1501221122,"goods_id":39,"goods_type":1,"size_content":""}]}
-     * msg : 成功
-     * token : uqeseln2s3fe13o18hovjj7bn2
+     * code : 10000
+     * pages : {"totalnum":20,"everypage":10,"totalpage":2,"page":1}
+     * data : [{"cart_id":571,"goods_img":"public/20181019/b3524ac85b60727a15ae768ddd14f3bc79a864d5.png","goods_num":10,"price":"428.00"},{"cart_id":602,"goods_img":"public/20181019/b3524ac85b60727a15ae768ddd14f3bc79a864d5.png","goods_num":7,"price":"912.00"},{"cart_id":827,"goods_img":"public/20181019/b3524ac85b60727a15ae768ddd14f3bc79a864d5.png","goods_num":7,"price":"782.00"},{"cart_id":471,"goods_img":"public/20181019/b3524ac85b60727a15ae768ddd14f3bc79a864d5.png","goods_num":2,"price":"521.00"},{"cart_id":227,"goods_img":"public/20181019/b3524ac85b60727a15ae768ddd14f3bc79a864d5.png","goods_num":4,"price":"792.00"},{"cart_id":263,"goods_img":"public/20181019/b3524ac85b60727a15ae768ddd14f3bc79a864d5.png","goods_num":3,"price":"691.00"},{"cart_id":536,"goods_img":"public/20181019/b3524ac85b60727a15ae768ddd14f3bc79a864d5.png","goods_num":2,"price":"924.00"},{"cart_id":900,"goods_img":"public/20181019/b3524ac85b60727a15ae768ddd14f3bc79a864d5.png","goods_num":10,"price":"210.00"},{"cart_id":466,"goods_img":"public/20181019/b3524ac85b60727a15ae768ddd14f3bc79a864d5.png","goods_num":2,"price":"202.00"},{"cart_id":551,"goods_img":"public/20181019/b3524ac85b60727a15ae768ddd14f3bc79a864d5.png","goods_num":5,"price":"254.00"}]
      */
 
     private int code;
-    private DataBeanX data;
-    private String msg;
-    private String token;
+    private PagesBean pages;
+    private List<DataBean> data;
 
     public int getCode() {
         return code;
@@ -30,189 +28,131 @@ public class ShoppingCartBean {
         this.code = code;
     }
 
-    public DataBeanX getData() {
+    public PagesBean getPages() {
+        return pages;
+    }
+
+    public void setPages(PagesBean pages) {
+        this.pages = pages;
+    }
+
+    public List<DataBean> getData() {
         return data;
     }
 
-    public void setData(DataBeanX data) {
+    public void setData(List<DataBean> data) {
         this.data = data;
     }
 
-    public String getMsg() {
-        return msg;
-    }
-
-    public void setMsg(String msg) {
-        this.msg = msg;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public static class DataBeanX {
+    public static class PagesBean {
         /**
-         * total : 2
-         * per_page : 20
-         * current_page : 1
-         * data : [{"id":5024,"mianliao_id":"16","goods_name":"格纹衬衫","goods_thumb":"/uploads/img/2017071315413310055995.jpg","num":1,"price":"999.00","c_time":1501221209,"goods_id":50,"goods_type":1,"size_content":""},{"id":5019,"mianliao_id":"15","goods_name":"始终如\u201c衣\u201d","goods_thumb":"/uploads/img/2017071315401198995799.jpg","num":3,"price":"799.00","c_time":1501221122,"goods_id":39,"goods_type":1,"size_content":""}]
+         * totalnum : 20
+         * everypage : 10
+         * totalpage : 2
+         * page : 1
          */
 
-        private int total;
-        private int per_page;
-        private String current_page;
-        private List<DataBean> data;
+        private int totalnum;
+        private int everypage;
+        private int totalpage;
+        private int page;
 
-        public int getTotal() {
-            return total;
+        public int getTotalnum() {
+            return totalnum;
         }
 
-        public void setTotal(int total) {
-            this.total = total;
+        public void setTotalnum(int totalnum) {
+            this.totalnum = totalnum;
         }
 
-        public int getPer_page() {
-            return per_page;
+        public int getEverypage() {
+            return everypage;
         }
 
-        public void setPer_page(int per_page) {
-            this.per_page = per_page;
+        public void setEverypage(int everypage) {
+            this.everypage = everypage;
         }
 
-        public String getCurrent_page() {
-            return current_page;
+        public int getTotalpage() {
+            return totalpage;
         }
 
-        public void setCurrent_page(String current_page) {
-            this.current_page = current_page;
+        public void setTotalpage(int totalpage) {
+            this.totalpage = totalpage;
         }
 
-        public List<DataBean> getData() {
-            return data;
+        public int getPage() {
+            return page;
         }
 
-        public void setData(List<DataBean> data) {
-            this.data = data;
+        public void setPage(int page) {
+            this.page = page;
+        }
+    }
+
+    public static class DataBean {
+        /**
+         * cart_id : 571
+         * goods_img : public/20181019/b3524ac85b60727a15ae768ddd14f3bc79a864d5.png
+         * goods_num : 10
+         * price : 428.00
+         */
+
+        private int cart_id;
+        private String goods_img;
+        private int goods_num;
+        private String price;
+        private boolean isSelect = true;
+        private String goods_name;
+
+        public String getGoods_name() {
+            return goods_name;
         }
 
-        public static class DataBean {
-            /**
-             * id : 5024
-             * mianliao_id : 16
-             * goods_name : 格纹衬衫
-             * goods_thumb : /uploads/img/2017071315413310055995.jpg
-             * num : 1
-             * price : 999.00
-             * c_time : 1501221209
-             * goods_id : 50
-             * goods_type : 1
-             * size_content :
-             */
+        public void setGoods_name(String goods_name) {
+            this.goods_name = goods_name;
+        }
 
-            private int id;
-            private String mianliao_id;
-            private String goods_name;
-            private String goods_thumb;
-            private int num;
-            private String price;
-            private int c_time;
-            private int goods_id;
-            private int goods_type;
-            private String size_content;
-            private boolean is_select = true;
+        public boolean isSelect() {
 
-            public boolean getIs_select() {
-                return is_select;
-            }
+            return isSelect;
+        }
 
-            public void setIs_select(boolean is_select) {
-                this.is_select = is_select;
-            }
+        public void setSelect(boolean select) {
+            isSelect = select;
+        }
 
-            public int getId() {
-                return id;
 
-            }
+        public int getCart_id() {
+            return cart_id;
+        }
 
-            public void setId(int id) {
-                this.id = id;
-            }
+        public void setCart_id(int cart_id) {
+            this.cart_id = cart_id;
+        }
 
-            public String getMianliao_id() {
-                return mianliao_id;
-            }
+        public String getGoods_img() {
+            return goods_img;
+        }
 
-            public void setMianliao_id(String mianliao_id) {
-                this.mianliao_id = mianliao_id;
-            }
+        public void setGoods_img(String goods_img) {
+            this.goods_img = goods_img;
+        }
 
-            public String getGoods_name() {
-                return goods_name;
-            }
+        public int getGoods_num() {
+            return goods_num;
+        }
 
-            public void setGoods_name(String goods_name) {
-                this.goods_name = goods_name;
-            }
+        public void setGoods_num(int goods_num) {
+            this.goods_num = goods_num;
+        }
 
-            public String getGoods_thumb() {
-                return goods_thumb;
-            }
+        public String getPrice() {
+            return price;
+        }
 
-            public void setGoods_thumb(String goods_thumb) {
-                this.goods_thumb = goods_thumb;
-            }
-
-            public int getNum() {
-                return num;
-            }
-
-            public void setNum(int num) {
-                this.num = num;
-            }
-
-            public String getPrice() {
-                return price;
-            }
-
-            public void setPrice(String price) {
-                this.price = price;
-            }
-
-            public int getC_time() {
-                return c_time;
-            }
-
-            public void setC_time(int c_time) {
-                this.c_time = c_time;
-            }
-
-            public int getGoods_id() {
-                return goods_id;
-            }
-
-            public void setGoods_id(int goods_id) {
-                this.goods_id = goods_id;
-            }
-
-            public int getGoods_type() {
-                return goods_type;
-            }
-
-            public void setGoods_type(int goods_type) {
-                this.goods_type = goods_type;
-            }
-
-            public String getSize_content() {
-                return size_content;
-            }
-
-            public void setSize_content(String size_content) {
-                this.size_content = size_content;
-            }
+        public void setPrice(String price) {
+            this.price = price;
         }
     }
 }

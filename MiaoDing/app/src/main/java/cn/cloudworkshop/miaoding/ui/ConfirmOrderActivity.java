@@ -445,9 +445,8 @@ public class ConfirmOrderActivity extends BaseActivity {
         OkHttpUtils.post()
                 .url(Constant.CART_COUNT)
                 .addParams("token", SharedPreferencesUtils.getStr(this, "token"))
-                .addParams("car_id", confirmOrderBean.getData().getCar_list().get(position).getId() + "")
-                .addParams("num", String.valueOf(currentCount))
-                .addParams("type", "1")
+                .addParams("cart_id", confirmOrderBean.getData().getCar_list().get(position).getId() + "")
+                .addParams("goods_num", String.valueOf(currentCount))
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -460,8 +459,9 @@ public class ConfirmOrderActivity extends BaseActivity {
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             int code = jsonObject.getInt("code");
+                            String msg = jsonObject.getString("msg");
                             //修改购物车数量成功
-                            if (code == 1) {
+                            if (code == 10000) {
                                 confirmOrderBean.getData().getCar_list().get(position).setNum(currentCount);
                                 adapter.notifyDataSetChanged();
 
@@ -481,7 +481,7 @@ public class ConfirmOrderActivity extends BaseActivity {
                                 }
 
                             } else {
-                                ToastUtils.showToast(ConfirmOrderActivity.this, getString(R.string.stock_null));
+                                ToastUtils.showToast(ConfirmOrderActivity.this, msg);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();

@@ -63,14 +63,15 @@ public class LoginActivity extends BaseActivity {
     @BindView(R.id.img_login_bg)
     ImageView bgLogin;
 
-    //验证码token
-    private String msgToken;
 
     //是否输入手机号
     private boolean isPhone;
     //是否输入验证码
     private boolean isCode;
     private String logId;
+
+    //注册协议点击事件处理
+    private boolean isClickable = true;
 
     private MyHandler mHandler = new MyHandler(this);
 
@@ -142,7 +143,6 @@ public class LoginActivity extends BaseActivity {
      * 加载视图
      */
     private void initView() {
-        msgToken = SharedPreferencesUtils.getStr(this, "msg_token");
         if (MyApplication.loginBg != null) {
             Glide.with(this)
                     .load(Constant.IMG_HOST + MyApplication.loginBg)
@@ -222,14 +222,49 @@ public class LoginActivity extends BaseActivity {
                 confirmLogin();
                 break;
             case R.id.tv_user_agreement:
-                if (!TextUtils.isEmpty(MyApplication.userAgreement)) {
-                    Intent intent = new Intent(this, UserRuleActivity.class);
-                    intent.putExtra("title", getString(R.string.user_aggrement));
-                    intent.putExtra("img_url", MyApplication.userAgreement);
-                    startActivity(intent);
+                if (isClickable) {
+                    isClickable = false;
+                    getAgreement();
                 }
                 break;
         }
+    }
+
+    /**
+     * 注册协议
+     */
+    private void getAgreement() {
+        OkHttpUtils.post()
+                .url(Constant.SIGN_AGREEMENT)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        isClickable = true;
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        isClickable = true;
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            int code = jsonObject.getInt("code");
+                            if (code == 10000) {
+                                JSONObject data = jsonObject.getJSONObject("data");
+                                String signAgreement = data.getString("user_manual");
+                                if (!TextUtils.isEmpty(signAgreement)) {
+                                    Intent intent = new Intent(LoginActivity.this, UserRuleActivity.class);
+                                    intent.putExtra("title", getString(R.string.user_aggrement));
+                                    intent.putExtra("img_url", signAgreement);
+                                    startActivity(intent);
+                                }
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
     }
 
 
@@ -237,65 +272,56 @@ public class LoginActivity extends BaseActivity {
      * 登录
      */
     private void confirmLogin() {
-        if (!TextUtils.isEmpty(msgToken)) {
-            Map<String, String> map = new HashMap<>();
-            map.put("phone", etUserName.getText().toString().trim());
-            map.put("code", etUserPassword.getText().toString().trim());
-            map.put("token", msgToken);
-            map.put("device_id", SharedPreferencesUtils.getStr(LoginActivity.this, "client_id"));
-            if (logId != null) {
-                map.put("id", logId);
-            }
-            map.put("device_type", Build.MODEL);
-            map.put("phone_type", "1");
 
-            OkHttpUtils.post()
-                    .url(Constant.LOGIN)
-                    .params(map)
-                    .build()
-                    .execute(new StringCallback() {
-                        @Override
-                        public void onError(Call call, Exception e, int id) {
+        Map<String, String> map = new HashMap<>();
+        map.put("user_phone", etUserName.getText().toString().trim());
+        map.put("sms", etUserPassword.getText().toString().trim());
 
-                        }
+        OkHttpUtils.post()
+                .url(Constant.LOGIN)
+                .params(map)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
 
-                        @Override
-                        public void onResponse(String response, int id) {
-                            try {
-                                JSONObject jsonObject = new JSONObject(response);
-                                int code = jsonObject.getInt("code");
-                                if (code == 1) {
+                    }
 
+                    @Override
+                    public void onResponse(String response, int id) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            int code = jsonObject.getInt("code");
+                            if (code == 10000) {
 
-                                    JSONObject data = jsonObject.getJSONObject("data");
-                                    String loginToken = data.getString("token");
-                                    int uid = data.getInt("uid");
-                                    String name = data.getString("name");
-                                    String avatar = data.getString("avatar");
-                                    String phone = data.getString("phone");
+                                JSONObject data = jsonObject.getJSONObject("data");
+                                String loginToken = data.getString("token");
+                                int uid = data.getInt("id");
+                                String name = data.getString("username");
+                                String avatar = data.getString("head_ico");
+                                String phone = data.getString("user_phone");
 
-                                    SharedPreferencesUtils.saveStr(LoginActivity.this,
-                                            "token", loginToken);
-                                    SharedPreferencesUtils.saveStr(LoginActivity.this,
-                                            "uid", String.valueOf(uid));
-                                    SharedPreferencesUtils.saveStr(LoginActivity.this,
-                                            "avatar", avatar);
-                                    SharedPreferencesUtils.saveStr(LoginActivity.this,
-                                            "username", name);
-                                    SharedPreferencesUtils.saveStr(LoginActivity.this,
-                                            "phone", phone);
-                                    MobclickAgent.onEvent(LoginActivity.this, "log_in");
-                                    finish();
-                                }
-                                ToastUtils.showToast(LoginActivity.this, jsonObject.getString("msg"));
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                                SharedPreferencesUtils.saveStr(LoginActivity.this,
+                                        "token", loginToken);
+                                SharedPreferencesUtils.saveStr(LoginActivity.this,
+                                        "uid", String.valueOf(uid));
+                                SharedPreferencesUtils.saveStr(LoginActivity.this,
+                                        "avatar", avatar);
+                                SharedPreferencesUtils.saveStr(LoginActivity.this,
+                                        "username", name);
+                                SharedPreferencesUtils.saveStr(LoginActivity.this,
+                                        "phone", phone);
+                                MobclickAgent.onEvent(LoginActivity.this, "log_in");
+                                finish();
                             }
+                            ToastUtils.showToast(LoginActivity.this, jsonObject.getString("msg"));
 
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                    });
-        }
+
+                    }
+                });
 
     }
 
@@ -337,7 +363,7 @@ public class LoginActivity extends BaseActivity {
     private void sendPhoneNumber() {
         OkHttpUtils.post()
                 .url(Constant.IDENTIFY_CODE)
-                .addParams("phone", etUserName.getText().toString().trim())
+                .addParams("user_phone", etUserName.getText().toString().trim())
                 .addParams("type", "1")
                 .build()
                 .execute(new StringCallback() {
@@ -351,13 +377,8 @@ public class LoginActivity extends BaseActivity {
                     public void onResponse(String response, int id) {
                         try {
                             JSONObject jsonObject = new JSONObject(response);
-                            int code = jsonObject.getInt("code");
-                            if (code == 1) {
-                                ToastUtils.showToast(LoginActivity.this, jsonObject.getString("msg"));
-                                JSONObject jsonObject1 = jsonObject.getJSONObject("data");
-                                msgToken = jsonObject1.getString("token");
-                                SharedPreferencesUtils.saveStr(LoginActivity.this, "msg_token", msgToken);
-                            }
+
+                            ToastUtils.showToast(LoginActivity.this, jsonObject.getString("msg"));
 
                         } catch (JSONException e) {
                             e.printStackTrace();

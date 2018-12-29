@@ -400,5 +400,7 @@
     <string name="permission">权限，请点击"设置" - "权限管理"，打开所需权限。</string>
     <string name="is_newest_version">已是最新版本！</string>
     <string name="pay_cancel">支付取消</string>
+    <string name="input_card_no">请输入卡号</string>
+    <string name="input_no_pwd">请输入卡号、密码</string>
 
 </resources>

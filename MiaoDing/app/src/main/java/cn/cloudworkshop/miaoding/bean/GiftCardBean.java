@@ -7,15 +7,14 @@ package cn.cloudworkshop.miaoding.bean;
  */
 public class GiftCardBean {
 
+
     /**
-     * code : 1
-     * msg : 获取成功
-     * info : {"gift_card":"0"}
+     * code : 10000
+     * data : {"giftcard_money":"0.00","giftcard_rule":"public/20181019/b3524ac85b60727a15ae768ddd14f3bc79a864d5.png"}
      */
 
     private int code;
-    private String msg;
-    private InfoBean info;
+    private DataBean data;
 
     public int getCode() {
         return code;
@@ -25,44 +24,37 @@ public class GiftCardBean {
         this.code = code;
     }
 
-    public String getMsg() {
-        return msg;
+    public DataBean getData() {
+        return data;
     }
 
-    public void setMsg(String msg) {
-        this.msg = msg;
+    public void setData(DataBean data) {
+        this.data = data;
     }
 
-    public InfoBean getInfo() {
-        return info;
-    }
-
-    public void setInfo(InfoBean info) {
-        this.info = info;
-    }
-
-    public static class InfoBean {
+    public static class DataBean {
         /**
-         * gift_card : 0
+         * giftcard_money : 0.00
+         * giftcard_rule : public/20181019/b3524ac85b60727a15ae768ddd14f3bc79a864d5.png
          */
 
-        private String gift_card;
-        private String card_rule;
+        private String giftcard_money;
+        private String giftcard_rule;
 
-        public String getCard_rule() {
-            return card_rule;
+        public String getGiftcard_money() {
+            return giftcard_money;
         }
 
-        public void setCard_rule(String card_rule) {
-            this.card_rule = card_rule;
+        public void setGiftcard_money(String giftcard_money) {
+            this.giftcard_money = giftcard_money;
         }
 
-        public String getGift_card() {
-            return gift_card;
+        public String getGiftcard_rule() {
+            return giftcard_rule;
         }
 
-        public void setGift_card(String gift_card) {
-            this.gift_card = gift_card;
+        public void setGiftcard_rule(String giftcard_rule) {
+            this.giftcard_rule = giftcard_rule;
         }
     }
 }

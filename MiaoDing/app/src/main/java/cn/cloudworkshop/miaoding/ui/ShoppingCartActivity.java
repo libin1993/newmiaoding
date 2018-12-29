@@ -96,14 +96,14 @@ public class ShoppingCartActivity extends BaseActivity {
     @BindView(R.id.img_load_error)
     ImageView imgLoadError;
 
-    private List<ShoppingCartBean.DataBeanX.DataBean> dataList = new ArrayList<>();
+    private List<ShoppingCartBean.DataBean> dataList = new ArrayList<>();
     //页数
     private int page = 1;
     //刷新
     private boolean isRefresh;
     //加载更多
     private boolean isLoadMore;
-    private CommonAdapter<ShoppingCartBean.DataBeanX.DataBean> adapter;
+    private CommonAdapter<ShoppingCartBean.DataBean> adapter;
     private LRecyclerViewAdapter mLRecyclerViewAdapter;
     //是否编辑状态
     private boolean isEdited;
@@ -150,11 +150,11 @@ public class ShoppingCartActivity extends BaseActivity {
                     public void onResponse(String response, int id) {
                         imgLoadError.setVisibility(View.GONE);
                         ShoppingCartBean cartBean = GsonUtils.jsonToBean(response, ShoppingCartBean.class);
-                        if (cartBean.getData().getData() != null && cartBean.getData().getData().size() > 0) {
+                        if (cartBean.getData() != null && cartBean.getData().size() > 0) {
                             if (isRefresh) {
                                 dataList.clear();
                             }
-                            dataList.addAll(cartBean.getData().getData());
+                            dataList.addAll(cartBean.getData());
                             if (isLoadMore || isRefresh) {
                                 rvGoodsCart.refreshComplete(0);
                                 mLRecyclerViewAdapter.notifyDataSetChanged();
@@ -263,13 +263,13 @@ public class ShoppingCartActivity extends BaseActivity {
 
         checkboxAllSelect.setChecked(true);
         rvGoodsCart.setLayoutManager(new LinearLayoutManager(ShoppingCartActivity.this));
-        adapter = new CommonAdapter<ShoppingCartBean.DataBeanX.DataBean>(ShoppingCartActivity.this,
+        adapter = new CommonAdapter<ShoppingCartBean.DataBean>(ShoppingCartActivity.this,
                 R.layout.listitem_shopping_cart, dataList) {
             @Override
-            protected void convert(final ViewHolder holder, final ShoppingCartBean.DataBeanX.DataBean
+            protected void convert(final ViewHolder holder, final ShoppingCartBean.DataBean
                     dataBean, final int position) {
                 Glide.with(ShoppingCartActivity.this)
-                        .load(Constant.IMG_HOST + dataBean.getGoods_thumb())
+                        .load(Constant.IMG_HOST + dataBean.getGoods_img())
                         .placeholder(R.mipmap.place_holder_news)
                         .dontAnimate()
                         .diskCacheStrategy(DiskCacheStrategy.SOURCE)
@@ -277,33 +277,33 @@ public class ShoppingCartActivity extends BaseActivity {
                 TextView tvGoodsName = holder.getView(R.id.tv_goods_name);
                 tvGoodsName.setTypeface(DisplayUtils.setTextType(mContext));
                 tvGoodsName.setText(dataBean.getGoods_name());
-                switch (dataBean.getGoods_type()) {
-                    case 2:
-                        holder.setText(R.id.tv_goods_content, dataBean.getSize_content());
-                        break;
-                    default:
-                        holder.setText(R.id.tv_goods_content, getString(R.string.customize_type));
-                        break;
-                }
+//                switch (dataBean.getGoods_type()) {
+//                    case 2:
+//                        holder.setText(R.id.tv_goods_content, dataBean.getSize_content());
+//                        break;
+//                    default:
+//                        holder.setText(R.id.tv_goods_content, getString(R.string.customize_type));
+//                        break;
+//                }
 
                 holder.setText(R.id.tv_goods_price, "¥" + DisplayUtils.decimalFormat(
                         Float.parseFloat(dataBean.getPrice())));
-                holder.setText(R.id.tv_goods_count, "x" + dataBean.getNum());
+                holder.setText(R.id.tv_goods_count, "x" + dataBean.getGoods_num());
                 holder.setVisible(R.id.ll_cart_edit, isEdited);
                 holder.setVisible(R.id.tv_goods_content, !isEdited);
                 holder.setVisible(R.id.tv_goods_price, !isEdited);
                 holder.setVisible(R.id.tv_goods_count, !isEdited);
-                holder.setText(R.id.tv_cart_count, dataBean.getNum() + "");
+                holder.setText(R.id.tv_cart_count, dataBean.getGoods_num() + "");
                 final CheckBox checkBox = holder.getView(R.id.checkbox_goods_select);
                 checkBox.setOnCheckedChangeListener(null);
-                holder.setChecked(R.id.checkbox_goods_select, dataBean.getIs_select());
+                holder.setChecked(R.id.checkbox_goods_select, dataBean.isSelect());
 
                 final TextView tvReduce = holder.getView(R.id.tv_cart_reduce);
                 tvReduce.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if (dataBean.getNum() > 1) {
-                            changeCartCount(position - 1, dataBean.getNum() - 1);
+                        if (dataBean.getGoods_num() > 1) {
+                            changeCartCount(position - 1, dataBean.getGoods_num()- 1);
                         }
                     }
                 });
@@ -312,18 +312,18 @@ public class ShoppingCartActivity extends BaseActivity {
                 tvAdd.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        changeCartCount(position - 1, dataBean.getNum() + 1);
+                        changeCartCount(position - 1, dataBean.getGoods_num() + 1);
                     }
                 });
 
                 checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                        dataBean.setIs_select(b);
+                        dataBean.setSelect(b);
                         checkBox.setChecked(b);
                         int count = 0;
                         for (int i = 0; i < dataList.size(); i++) {
-                            if (dataList.get(i).getIs_select()) {
+                            if (dataList.get(i).isSelect()) {
                                 count++;
                             }
                         }
@@ -372,18 +372,18 @@ public class ShoppingCartActivity extends BaseActivity {
             @Override
             public void onItemClick(View view, int position) {
                 if (!isEdited) {
-                    switch (dataList.get(position).getGoods_type()) {
-                        case 1:
-                            cartToCustomResult(position);
-                            break;
-                        case 2:
-                            Intent intent = new Intent(ShoppingCartActivity.this, WorksDetailActivity.class);
-                            intent.putExtra("id", String.valueOf(dataList.get(position).getGoods_id()));
-                            startActivity(intent);
-                            break;
-                        default:
-                            break;
-                    }
+//                    switch (dataList.get(position).getGoods_type()) {
+//                        case 1:
+//                            cartToCustomResult(position);
+//                            break;
+//                        case 2:
+//                            Intent intent = new Intent(ShoppingCartActivity.this, WorksDetailActivity.class);
+//                            intent.putExtra("id", String.valueOf(dataList.get(position).getGoods_id()));
+//                            startActivity(intent);
+//                            break;
+//                        default:
+//                            break;
+//                    }
                 }
             }
         });
@@ -392,7 +392,7 @@ public class ShoppingCartActivity extends BaseActivity {
             @Override
             public void onItemLongClick(View view, int position) {
                 List<Integer> itemList = new ArrayList<>();
-                itemList.add(dataList.get(position).getId());
+                itemList.add(dataList.get(position).getCart_id());
                 deleteGoods(itemList);
             }
         });
@@ -403,12 +403,12 @@ public class ShoppingCartActivity extends BaseActivity {
                 if (checkboxAllSelect.isChecked()) {
                     checkboxAllSelect.setChecked(true);
                     for (int i = 0; i < dataList.size(); i++) {
-                        dataList.get(i).setIs_select(true);
+                        dataList.get(i).setSelect(true);
                     }
                 } else {
                     checkboxAllSelect.setChecked(false);
                     for (int i = 0; i < dataList.size(); i++) {
-                        dataList.get(i).setIs_select(false);
+                        dataList.get(i).setSelect(false);
                     }
                 }
                 adapter.notifyDataSetChanged();
@@ -427,7 +427,7 @@ public class ShoppingCartActivity extends BaseActivity {
         OkHttpUtils.get()
                 .url(Constant.CART_TO_CUSTOM)
                 .addParams("token", SharedPreferencesUtils.getStr(ShoppingCartActivity.this, "token"))
-                .addParams("car_id", dataList.get(position).getId() + "")
+                .addParams("car_id", dataList.get(position).getCart_id() + "")
                 .addParams("phone_type", "3")
                 .build()
                 .execute(new StringCallback() {
@@ -508,7 +508,7 @@ public class ShoppingCartActivity extends BaseActivity {
         OkHttpUtils.post()
                 .url(Constant.CART_COUNT)
                 .addParams("token", SharedPreferencesUtils.getStr(this, "token"))
-                .addParams("car_id", String.valueOf(dataList.get(position).getId()))
+                .addParams("car_id", String.valueOf(dataList.get(position).getCart_id()))
                 .addParams("num", String.valueOf(count))
                 .addParams("type", "1")
                 .build()
@@ -523,7 +523,7 @@ public class ShoppingCartActivity extends BaseActivity {
                             JSONObject jsonObject = new JSONObject(response);
                             int code = jsonObject.getInt("code");
                             if (code == 1) {
-                                dataList.get(position).setNum(count);
+                                dataList.get(position).setGoods_num(count);
                                 adapter.notifyDataSetChanged();
                                 getTotalPrice();
                                 getTotalCount();
@@ -564,7 +564,7 @@ public class ShoppingCartActivity extends BaseActivity {
                 OkHttpUtils.post()
                         .url(Constant.DELETE_CART)
                         .addParams("token", SharedPreferencesUtils.getStr(ShoppingCartActivity.this, "token"))
-                        .addParams("car_id", sb.toString())
+                        .addParams("cart_id", sb.toString())
                         .build()
                         .execute(new StringCallback() {
                             @Override
@@ -577,10 +577,11 @@ public class ShoppingCartActivity extends BaseActivity {
                                 try {
                                     JSONObject jsonObject = new JSONObject(response);
                                     int code = jsonObject.getInt("code");
-                                    if (code == 1) {
+                                    String msg = jsonObject.getString("msg");
+                                    if (code == 10000) {
                                         for (int i = 0; i < dataList.size(); i++) {
                                             for (int j = 0; j < itemList.size(); j++) {
-                                                if (dataList.get(i).getId() == (itemList.get(j))) {
+                                                if (dataList.get(i).getCart_id() == (itemList.get(j))) {
                                                     dataList.remove(i);
                                                     adapter.notifyItemRemoved(i);
                                                     if (i != dataList.size()) {
@@ -595,7 +596,7 @@ public class ShoppingCartActivity extends BaseActivity {
                                             getTotalCount();
                                             getTotalPrice();
                                         }
-                                        ToastUtils.showToast(ShoppingCartActivity.this, getString(R.string.delete_success));
+                                        ToastUtils.showToast(ShoppingCartActivity.this, msg);
                                     }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -683,8 +684,8 @@ public class ShoppingCartActivity extends BaseActivity {
     private List<Integer> getSelected() {
         List<Integer> list = new ArrayList<>();
         for (int i = 0; i < dataList.size(); i++) {
-            if (dataList.get(i).getIs_select()) {
-                list.add(dataList.get(i).getId());
+            if (dataList.get(i).isSelect()) {
+                list.add(dataList.get(i).getCart_id());
             }
         }
 
@@ -699,8 +700,8 @@ public class ShoppingCartActivity extends BaseActivity {
 
         List<Integer> idList = new ArrayList<>();
         for (int i = 0; i < dataList.size(); i++) {
-            if (dataList.get(i).getIs_select()) {
-                idList.add(dataList.get(i).getId());
+            if (dataList.get(i).isSelect()) {
+                idList.add(dataList.get(i).getCart_id());
             }
         }
 
@@ -722,8 +723,8 @@ public class ShoppingCartActivity extends BaseActivity {
     public void getTotalPrice() {
         float sum = 0;
         for (int i = 0; i < dataList.size(); i++) {
-            if (dataList.get(i).getIs_select()) {
-                sum += Float.parseFloat(dataList.get(i).getPrice()) * dataList.get(i).getNum();
+            if (dataList.get(i).isSelect()) {
+                sum += Float.parseFloat(dataList.get(i).getPrice()) * dataList.get(i).getGoods_num();
             }
         }
         tvTotalPrice.setText("¥" + DisplayUtils.decimalFormat(sum));
@@ -736,8 +737,8 @@ public class ShoppingCartActivity extends BaseActivity {
     public int getTotalCount() {
         int selectCount = 0;
         for (int i = 0; i < dataList.size(); i++) {
-            if (dataList.get(i).getIs_select()) {
-                selectCount += dataList.get(i).getNum();
+            if (dataList.get(i).isSelect()) {
+                selectCount += dataList.get(i).getGoods_num();
             }
         }
         if (isEdited) {

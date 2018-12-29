@@ -245,7 +245,7 @@ public class UsableCouponActivity extends BaseActivity {
         OkHttpUtils.post()
                 .url(Constant.EXCHANGE_COUPON)
                 .addParams("token", SharedPreferencesUtils.getStr(this, "token"))
-                .addParams("kouling", etInputCode.getText().toString().trim())
+                .addParams("exchange_code", etInputCode.getText().toString().trim())
                 .build()
                 .execute(new StringCallback() {
                     @Override

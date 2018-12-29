@@ -98,7 +98,7 @@ public class GiftCardActivity extends BaseActivity {
                     public void onResponse(String response, int id) {
                         imgLoadError.setVisibility(View.GONE);
                         cardBean = GsonUtils.jsonToBean(response, GiftCardBean.class);
-                        if (cardBean.getInfo() != null) {
+                        if (cardBean.getData() != null) {
                             initView();
                         }
                     }
@@ -106,7 +106,7 @@ public class GiftCardActivity extends BaseActivity {
     }
 
     private void initView() {
-        float cardMoney = Float.parseFloat(cardBean.getInfo().getGift_card());
+        float cardMoney = Float.parseFloat(cardBean.getData().getGiftcard_money());
         tvCardRemain.setText(DisplayUtils.decimalFormat(cardMoney));
         if (cardMoney > 0) {
             imgNullCard.setVisibility(View.GONE);
@@ -127,7 +127,7 @@ public class GiftCardActivity extends BaseActivity {
             case R.id.img_header_back:
                 if (cardBean != null && type != null && type.equals("select")) {
                     Intent intent = new Intent();
-                    intent.putExtra("card_money", Float.parseFloat(cardBean.getInfo().getGift_card()));
+                    intent.putExtra("card_money", Float.parseFloat(cardBean.getData().getGiftcard_money()));
                     setResult(1, intent);
                 }
                 finish();
@@ -139,10 +139,10 @@ public class GiftCardActivity extends BaseActivity {
                 initData();
                 break;
             case R.id.img_header_share:
-                if (cardBean != null && !TextUtils.isEmpty(cardBean.getInfo().getCard_rule())) {
+                if (cardBean != null && !TextUtils.isEmpty(cardBean.getData().getGiftcard_rule())) {
                     Intent intent = new Intent(this, UserRuleActivity.class);
                     intent.putExtra("title", R.string.gift_card_rule);
-                    intent.putExtra("img_url", cardBean.getInfo().getCard_rule());
+                    intent.putExtra("img_url", cardBean.getData().getGiftcard_rule());
                     startActivity(intent);
                 }
                 break;
@@ -164,6 +164,7 @@ public class GiftCardActivity extends BaseActivity {
         DisplayUtils.setBackgroundAlpha(this, true);
 
         final EditText etNumber = (EditText) popupView.findViewById(R.id.et_card_number);
+        final EditText etPwd = (EditText) popupView.findViewById(R.id.et_card_pwd);
         TextView tvConfirm = (TextView) popupView.findViewById(R.id.tv_confirm_card);
         TextView tvCancel = (TextView) popupView.findViewById(R.id.tv_cancel_card);
 
@@ -177,10 +178,10 @@ public class GiftCardActivity extends BaseActivity {
         tvConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (TextUtils.isEmpty(etNumber.getText().toString().trim())) {
-                    ToastUtils.showToast(GiftCardActivity.this, getString(R.string.input_pwd));
+                if (TextUtils.isEmpty(etNumber.getText().toString().trim()) || TextUtils.isEmpty(etPwd.getText().toString().trim())) {
+                    ToastUtils.showToast(GiftCardActivity.this, getString(R.string.input_no_pwd));
                 } else {
-                    exchangeCard(etNumber.getText().toString());
+                    exchangeCard(etNumber.getText().toString(),etPwd.getText().toString());
                     mPopupWindow.dismiss();
                 }
             }
@@ -199,11 +200,12 @@ public class GiftCardActivity extends BaseActivity {
     /**
      * @param number 兑换礼品卡金额
      */
-    private void exchangeCard(String number) {
+    private void exchangeCard(String number,String code) {
         OkHttpUtils.post()
                 .url(Constant.EXCHANGE_CARD)
                 .addParams("token", SharedPreferencesUtils.getStr(this, "token"))
-                .addParams("exchange_code", number)
+                .addParams("giftcard_no", number)
+                .addParams("exchange_code",code)
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -218,7 +220,7 @@ public class GiftCardActivity extends BaseActivity {
                             int code = jsonObject.getInt("code");
                             String msg = jsonObject.getString("msg");
                             ToastUtils.showToast(GiftCardActivity.this, msg);
-                            if (code == 1) {
+                            if (code == 10000) {
                                 initData();
                             }
                         } catch (JSONException e) {
@@ -233,7 +235,7 @@ public class GiftCardActivity extends BaseActivity {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (type != null && type.equals("select")) {
                 Intent intent = new Intent();
-                intent.putExtra("card_money", Float.parseFloat(cardBean.getInfo().getGift_card()));
+                intent.putExtra("card_money", Float.parseFloat(cardBean.getData().getGiftcard_money()));
                 setResult(1, intent);
             }
             finish();

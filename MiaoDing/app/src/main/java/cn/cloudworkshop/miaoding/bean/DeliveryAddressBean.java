@@ -65,7 +65,7 @@ public class DeliveryAddressBean implements Serializable{
         private static final long serialVersionUID = -146647999512377L;
         private int id;
         private int uid;
-        private String name;
+        private String accept_name;
         private String phone;
         private String province;
         private String city;
@@ -91,12 +91,12 @@ public class DeliveryAddressBean implements Serializable{
             this.uid = uid;
         }
 
-        public String getName() {
-            return name;
+        public String getAccept_name() {
+            return accept_name;
         }
 
-        public void setName(String name) {
-            this.name = name;
+        public void setAccept_name(String accept_name) {
+            this.accept_name = accept_name;
         }
 
         public String getPhone() {

@@ -2,7 +2,6 @@ package cn.cloudworkshop.miaoding.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -109,7 +108,7 @@ public class AddAddressActivity extends BaseActivity {
                 if (bundle != null) {
                     dataBean = (DeliveryAddressBean.DataBean) bundle.getSerializable("edit");
                     if (dataBean != null) {
-                        etAddName.setText(dataBean.getName());
+                        etAddName.setText(dataBean.getAccept_name());
                         etAddNumber.setText(dataBean.getPhone());
                         tvSelectAddress.setText(dataBean.getProvince() + dataBean.getCity() + dataBean.getArea());
                         provinceAddress = dataBean.getProvince();
@@ -202,9 +201,10 @@ public class AddAddressActivity extends BaseActivity {
             ToastUtils.showToast(this, getString(R.string.input_personal_info));
         } else {
             if (PhoneNumberUtils.judgePhoneNumber(etAddNumber.getText().toString().trim())) {
+                String url = Constant.ADD_ADDRESS;
                 Map<String, String> map = new HashMap<>();
                 map.put("token", SharedPreferencesUtils.getStr(this, "token"));
-                map.put("name", etAddName.getText().toString().trim());
+                map.put("accept_name", etAddName.getText().toString().trim());
                 map.put("phone", etAddNumber.getText().toString().trim());
                 map.put("is_default", String.valueOf(defaultAddress));
                 map.put("province", provinceAddress);
@@ -213,10 +213,11 @@ public class AddAddressActivity extends BaseActivity {
                 map.put("address", etDetailedAddress.getText().toString().trim());
                 if (type == 2) {
                     map.put("id", String.valueOf(dataBean.getId()));
+                    url = Constant.UPDATE_ADDRESS;
                 }
 
                 OkHttpUtils.post()
-                        .url(Constant.ADD_ADDRESS)
+                        .url(url)
                         .params(map)
                         .build()
                         .execute(new StringCallback() {
@@ -230,17 +231,18 @@ public class AddAddressActivity extends BaseActivity {
                                 try {
                                     JSONObject jsonObject = new JSONObject(response);
                                     int code = jsonObject.getInt("code");
-                                    String addressId = jsonObject.getString("address_id");
-                                    if (code == 1) {
+//                                    String addressId = jsonObject.getString("address_id");
+                                    String msg = jsonObject.getString("msg");
+                                    ToastUtils.showToast(AddAddressActivity.this, msg);
+                                    if (code == 10000) {
                                         //地址编辑成功
                                         EventBus.getDefault().post("edit_success");
                                         switch (type) {
                                             case 1:
-                                                ToastUtils.showToast(AddAddressActivity.this, getString(R.string.add_success));
                                                 Intent intent = new Intent();
                                                 ConfirmOrderBean.DataBean.AddressListBean addressListBean
                                                         = new ConfirmOrderBean.DataBean.AddressListBean();
-                                                addressListBean.setId(Integer.parseInt(addressId));
+//                                                addressListBean.setId(Integer.parseInt(addressId));
 
                                                 addressListBean.setProvince(provinceAddress);
                                                 addressListBean.setCity(cityAddress);
@@ -256,7 +258,7 @@ public class AddAddressActivity extends BaseActivity {
                                                 finish();
                                                 break;
                                             case 2:
-                                                ToastUtils.showToast(AddAddressActivity.this, getString(R.string.edit_success));
+
                                                 finish();
                                                 break;
                                         }
