@@ -15,6 +15,7 @@ import com.qiyukf.unicorn.api.UICustomization;
 import com.qiyukf.unicorn.api.Unicorn;
 import com.qiyukf.unicorn.api.YSFOptions;
 import com.zhy.http.okhttp.OkHttpUtils;
+
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
@@ -57,11 +58,10 @@ public class MyApplication extends Application {
 
         Fresco.initialize(this);
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
-        if (EasyPermissions.hasPermissions(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
-                    + File.separator + "CloudWorkshop/Cache");
-            builder.cache(new Cache(file, 1024L * 1024L * 100L));
-        }
+
+        File file = new File(getCacheDir(), "HttpCache");
+        builder.cache(new Cache(file, 1024L * 1024L * 100L));
+
         OkHttpClient okHttpClient = builder.connectTimeout(10000L, TimeUnit.MILLISECONDS)
                 .readTimeout(10000L, TimeUnit.MILLISECONDS)
                 //其他配置

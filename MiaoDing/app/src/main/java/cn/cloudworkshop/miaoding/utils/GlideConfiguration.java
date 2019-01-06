@@ -31,8 +31,7 @@ public class GlideConfiguration implements GlideModule {
             builder.setDiskCache(new DiskCache.Factory() {
                 @Override
                 public DiskCache build() {
-                    File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
-                            + File.separator + "CloudWorkshop/GlideCache");
+                    File file = new File(context.getCacheDir(), "GlideCache");
                     return DiskLruCacheWrapper.get(file, 1024 * 1024 * 100);
                 }
             });

@@ -234,6 +234,7 @@
         <activity android:name=".ui.AddMeasureActivity"/>
         <activity android:name=".ui.MeasureDataActivity"/>
         <activity android:name=".ui.TestActivity"/>
+        <activity android:name=".ui.NewCustomizedGoodsActivity"/>
 
         <service android:name="com.amap.api.location.APSService"/>
         <service

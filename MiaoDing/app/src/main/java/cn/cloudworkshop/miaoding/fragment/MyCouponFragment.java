@@ -58,7 +58,7 @@ public class MyCouponFragment extends BaseFragment {
 
     //优惠券状态
     private int couponStatus;
-    private List<CouponBean.DataBean> couponList;
+    private List<CouponBean.TicketsBean> couponList;
 
     @Nullable
     @Override
@@ -91,9 +91,9 @@ public class MyCouponFragment extends BaseFragment {
 
                         couponList = new ArrayList<>();
                         CouponBean couponBean = GsonUtils.jsonToBean(response, CouponBean.class);
-                        if (couponBean.getData() != null && couponBean.getData().size() > 0) {
+                        if (couponBean.getTickets() != null && couponBean.getTickets().size() > 0) {
                             imgNullCoupon.setVisibility(View.GONE);
-                            couponList.addAll(couponBean.getData());
+                            couponList.addAll(couponBean.getTickets());
                             initView();
                         } else {
                             imgNullCoupon.setVisibility(View.VISIBLE);
@@ -107,10 +107,10 @@ public class MyCouponFragment extends BaseFragment {
      */
     private void initView() {
         rvCoupon.setLayoutManager(new LinearLayoutManager(getActivity()));
-        CommonAdapter<CouponBean.DataBean> adapter = new CommonAdapter<CouponBean.DataBean>(
+        CommonAdapter<CouponBean.TicketsBean> adapter = new CommonAdapter<CouponBean.TicketsBean>(
                 getActivity(), R.layout.listitem_coupon, couponList) {
             @Override
-            protected void convert(ViewHolder holder, CouponBean.DataBean dataBean, int position) {
+            protected void convert(ViewHolder holder, CouponBean.TicketsBean dataBean, int position) {
                 switch (couponStatus) {
                     case 2:
                         holder.getView(R.id.ll_coupon_bg).setBackgroundResource(R.mipmap.icon_coupon_used);

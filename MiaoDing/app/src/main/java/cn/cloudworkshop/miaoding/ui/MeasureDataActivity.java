@@ -67,9 +67,9 @@ public class MeasureDataActivity extends BaseActivity {
     private boolean isRefresh;
     //加载更多
     private boolean isLoadMore;
-    private List<MeasureDataBean.DataBeanX.DataBean> dataList = new ArrayList<>();
+    private List<MeasureDataBean.DataBean> dataList = new ArrayList<>();
     private LRecyclerViewAdapter mLRecyclerViewAdapter;
-    private CommonAdapter<MeasureDataBean.DataBeanX.DataBean> adapter;
+    private CommonAdapter<MeasureDataBean.DataBean> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,11 +109,11 @@ public class MeasureDataActivity extends BaseActivity {
                     public void onResponse(String response, int id) {
                         imgLoadError.setVisibility(View.GONE);
                         MeasureDataBean measureBean = GsonUtils.jsonToBean(response, MeasureDataBean.class);
-                        if (measureBean.getData().getData() != null && measureBean.getData().getData().size() > 0) {
+                        if (measureBean.getData() != null && measureBean.getData().size() > 0) {
                             if (isRefresh) {
                                 dataList.clear();
                             }
-                            dataList.addAll(measureBean.getData().getData());
+                            dataList.addAll(measureBean.getData());
                             if (isRefresh || isLoadMore) {
                                 rvMeasure.refreshComplete(0);
                                 mLRecyclerViewAdapter.notifyDataSetChanged();
@@ -141,23 +141,22 @@ public class MeasureDataActivity extends BaseActivity {
      */
     private void initView() {
         rvMeasure.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new CommonAdapter<MeasureDataBean
-                .DataBeanX.DataBean>(this, R.layout.listitem_measure_data, dataList) {
+        adapter = new CommonAdapter<MeasureDataBean.DataBean>(this, R.layout.listitem_measure_data, dataList) {
             @Override
-            protected void convert(ViewHolder holder, MeasureDataBean.DataBeanX.DataBean dataBean, final int position) {
+            protected void convert(ViewHolder holder, MeasureDataBean.DataBean dataBean, final int position) {
                 holder.setText(R.id.tv_name_measure, dataBean.getName());
                 holder.setText(R.id.tv_height_measure, dataBean.getHeight() + "cm");
                 holder.setText(R.id.tv_weight_measure, dataBean.getWeight() + "kg");
 
                 TextView tvDefault = holder.getView(R.id.tv_default_measure);
 
-                if (dataBean.getIs_index() == 1) {
+                if (dataBean.getIs_default() == 1) {
                     Drawable leftDrawable = ContextCompat.getDrawable(MeasureDataActivity.this,
                             R.mipmap.icon_default_address);
                     leftDrawable.setBounds(0, 0, leftDrawable.getMinimumWidth(),
                             leftDrawable.getMinimumHeight());
                     tvDefault.setCompoundDrawables(leftDrawable, null, null, null);
-                } else if (dataBean.getIs_index() == 0) {
+                } else if (dataBean.getIs_default() == 0) {
                     Drawable leftDrawable = ContextCompat.getDrawable(MeasureDataActivity.this,
                             R.mipmap.icon_not_default);
                     leftDrawable.setBounds(0, 0, leftDrawable.getMinimumWidth(),
@@ -168,7 +167,7 @@ public class MeasureDataActivity extends BaseActivity {
                 tvDefault.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (dataList.get(position - 1).getIs_index() == 0) {
+                        if (dataList.get(position - 1).getIs_default() == 0) {
                             setDefaultMeasure(dataList.get(position - 1).getId(), position - 1);
                         }
                     }
@@ -238,9 +237,9 @@ public class MeasureDataActivity extends BaseActivity {
 
                         for (int i = 0; i < dataList.size(); i++) {
                             if (i == position) {
-                                dataList.get(i).setIs_index(1);
+                                dataList.get(i).setIs_default(1);
                             } else {
-                                dataList.get(i).setIs_index(0);
+                                dataList.get(i).setIs_default(0);
                             }
                         }
                         adapter.notifyDataSetChanged();
@@ -257,8 +256,8 @@ public class MeasureDataActivity extends BaseActivity {
         ConfirmOrderBean.LtArrBean measureBean = new ConfirmOrderBean.LtArrBean();
         measureBean.setId(dataList.get(position).getId());
         measureBean.setName(dataList.get(position).getName());
-        measureBean.setHeight(dataList.get(position).getHeight());
-        measureBean.setWeight(dataList.get(position).getWeight());
+        measureBean.setHeight(dataList.get(position).getHeight() + "");
+        measureBean.setWeight(dataList.get(position).getWeight() + "");
         EventBus.getDefault().post(measureBean);
     }
 
@@ -288,7 +287,7 @@ public class MeasureDataActivity extends BaseActivity {
     }
 
     /**
-     * @param msg  添加量体数据成功，刷新页面
+     * @param msg 添加量体数据成功，刷新页面
      */
     @Subscribe
     public void addSuccess(String msg) {

@@ -10,13 +10,14 @@ public class Constant {
     public static final String HOST = "https://www.cloudworkshop.cn";
     //    public static final String NEW_HOST = "http://192.168.1.254/localtest/ygc/public/index.php";
     public static final String NEW_HOST = "http://api.cloudworkshop.cn";
+    public static final String WEB_HOST = "https://h5.morder.cn";
 
-    //测试
-//    public static final String HOST = "http://test.cloudworkshop.cn";
     //oss图片
     public static final String IMG_HOST = "https://newupload.oss-cn-beijing.aliyuncs.com/";
     //微信appid
     public static final String APP_ID = "wx07c2173e7686741e";
+    //图片上传
+    public static final String UPLOAD_FILE = NEW_HOST + "/user/together/uploads";
     private static final String HOST_INDEX = HOST + "/index.php/index/index5_4/";
     //首页资讯
     public static final String HOMEPAGE_LIST = NEW_HOST + "/user/index/index";
@@ -41,7 +42,7 @@ public class Constant {
     //注册协议
     public static final String SIGN_AGREEMENT = NEW_HOST + "/user/login/sys_set";
     //退出登录
-    public static final String LOGOUT = HOST_INDEX + "login_out";
+    public static final String LOGOUT = NEW_HOST + "/md/logout";
     //收藏
     public static final String COLLECTION = HOST_INDEX + "my_collect";
     //穿衣测试
@@ -65,7 +66,7 @@ public class Constant {
     //申请入驻
     public static final String APPLY_JOIN = HOST_INDEX + "apply_in";
     //用户信息
-    public static final String USER_INFO = HOST_INDEX + "user_info";
+    public static final String USER_INFO = NEW_HOST + "/user_center/index";
     //加入购物车
     public static final String ADD_CART = HOST_INDEX + "add_car";
     //订单信息
@@ -73,9 +74,9 @@ public class Constant {
     //确认订单
     public static final String CONFIRM_ORDER = HOST_INDEX + "add_order_v4";
     //修改用户信息
-    public static final String CHANGE_INFO = HOST_INDEX + "change_user_info";
+    public static final String CHANGE_INFO = NEW_HOST + "/user_center/edit";
     //购物车
-    public static final String SHOPPING_CART = NEW_HOST + "/shopping_cart";
+    public static final String SHOPPING_CART = NEW_HOST + "/shopping_cart/list";
     //修改购物车数量
     public static final String CART_COUNT = NEW_HOST + "/shopping_cart/update";
     //删除购物车
@@ -91,7 +92,7 @@ public class Constant {
     //确认收货
     public static final String CONFIRM_RECEIVE = HOST_INDEX + "confirm_order";
     //添加收藏
-    public static final String ADD_COLLECTION = HOST_INDEX + "add_user_collect";
+    public static final String ADD_COLLECTION = NEW_HOST + "/user/collects/add_user_collect";
     //购物车跳转定制详情
     public static final String CART_TO_CUSTOM = HOST_INDEX + "dz_car_data";
     //预约量体
@@ -108,10 +109,8 @@ public class Constant {
     public static final String LOGISTICS_TRACK = HOST_INDEX + "kdcx";
     //微信付款
     public static final String WE_CHAT_PAY = HOST + "/index.php/index/wxpay/mk_pay_order_v4";
-    //邀请有礼
-    public static final String INVITE_FRIEND = HOST_INDEX + "invite";
     //优惠券
-    public static final String MY_COUPON = HOST + "/index.php/index/ticket/my_ticket";
+    public static final String MY_COUPON = NEW_HOST + "/ticket/list";
     //兑换优惠券
     public static final String EXCHANGE_COUPON = NEW_HOST + "/ticket/add";
     //选择优惠券
@@ -157,7 +156,7 @@ public class Constant {
     //商品全部评价
     public static final String EVALUATE_LIST = HOST_INDEX + "get_goods_comment_list";
     //app icon
-    public static final String APP_ICON = HOST_INDEX + "get_app_icon_list";
+    public static final String APP_ICON = NEW_HOST + "/user_center/tab";
     //记录
     public static final String HOMEPAGE_LOG = HOST_INDEX + "save_index_log";
     public static final String GOODS_LOG = HOST_INDEX + "save_goods_log";
@@ -167,7 +166,7 @@ public class Constant {
     //兑换礼品卡
     public static final String EXCHANGE_CARD = NEW_HOST + "/gift_card/add";
     //喜爱
-    public static final String ADD_LOVE = HOST_INDEX + "userlove";
+    public static final String ADD_LOVE = NEW_HOST + "/user/love/add_user_love";
     //店铺列表
     public static final String STORE_LIST = HOST_INDEX + "shop_list";
     //店铺信息
@@ -185,33 +184,35 @@ public class Constant {
     //再次购买
     public static final String BUY_AGAIN = HOST_INDEX + "cloumorder";
     //量体数据
-    public static final String MEASURE_DATA = NEW_HOST + "/volume";
+    public static final String MEASURE_DATA = NEW_HOST + "/volume/list";
     //设置默认量体数据
     public static final String DEFAULT_MEASURE_DATA = HOST_INDEX + "is_lt";
     //量体数据详情
-    public static final String MEASURE_DETAIL = HOST_INDEX + "lt_data_info";
+    public static final String MEASURE_DETAIL = NEW_HOST + "/volume/detail";
 
     //WebView
     //咨讯详情
-//    public static final String HOMEPAGE_INFO = HOST + "/web/jquery-obj/static/web/html/designer.html";
-    public static final String HOMEPAGE_INFO = "http://192.168.1.46/yungongchang_admin/wap/webapp/html/designer.html";
+    public static final String HOMEPAGE_INFO = WEB_HOST + "/webapp/html/designer.html";
     //咨讯详情分享
-    public static final String HOMEPAGE_SHARE = HOST + "/web/jquery-obj/static/fx/html/designer.html";
+    public static final String HOMEPAGE_SHARE = WEB_HOST + "/share/html/designer.html";
     //定制商品分享
-    public static final String CUSTOM_SHARE = HOST + "/web/jquery-obj/static/fx/html/dingzhi.html";
+    public static final String CUSTOM_SHARE = WEB_HOST + "/dd/index.html";
     //设计师成品分享
-    public static final String WORKS_SHARE = HOST + "/web/jquery-obj/static/fx/html/chengping.html";
+    public static final String WORKS_SHARE = WEB_HOST + "/share/html/chengping.html";
     //穿衣测试结果
-    public static final String DRESSING_TEST_RESULT = HOST + "/web/jquery-obj/static/web/html/clo.html";
+    public static final String DRESSING_TEST_RESULT = WEB_HOST + "/webapp/html/clo.html";
     //穿衣测试分享
-    public static final String DRESSING_TEST_SHARE = HOST + "/web/jquery-obj/static/fx/html/clo.html";
+    public static final String DRESSING_TEST_SHARE = WEB_HOST + "/share/html/clo.html";
     //设计师分享
-    public static final String DESIGNER_SHARE = HOST + "/web/jquery-obj/static/fx/html/jiangxin.html";
+    public static final String DESIGNER_SHARE = WEB_HOST + "/share/html/jiangxin.html";
     //邀请好友
-    public static final String INVITE_FRIENDS = HOST + "/web/jquery-obj/static/fx/html/yaoqingyouli.html";
+    public static final String INVITE_FRIENDS = WEB_HOST + "/share/html/yaoqingyouli.html";
     //邀请有礼分享
-    public static final String INVITE_SHARE = HOST + "/web/jquery-obj/static/fx/html/yaoqing.html";
+    public static final String INVITE_SHARE = WEB_HOST + "/share/html/yaoqing.html";
     //分享红包
-    public static final String SHARE_COUPON = HOST + "/web/jquery-obj/static/fx/html/invitation_1000.html";
+    public static final String SHARE_COUPON = WEB_HOST + "/share/html/invitation_1000.html";
 
 }
+
+
+

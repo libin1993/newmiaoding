@@ -34,7 +34,7 @@ public class FragmentTabUtils implements TabLayout.OnTabSelectedListener {
     private int fragmentContentId; // Activity中当前fragment的区域的id
     private int currentTab; // 当前Tab页面索引
     private Context mContext;
-    private List<AppIconBean.DataBean> iconList;
+    private List<AppIconBean.TabBean> iconList;
 
 
     /**
@@ -44,7 +44,7 @@ public class FragmentTabUtils implements TabLayout.OnTabSelectedListener {
      * @param tabLayout
      */
     public FragmentTabUtils(Context context, FragmentManager fragmentManager, List<Fragment> fragmentList,
-                            int fragmentContentId, TabLayout tabLayout, List<AppIconBean.DataBean> iconList) {
+                            int fragmentContentId, TabLayout tabLayout, List<AppIconBean.TabBean> iconList) {
         this.mContext = context;
         this.fragmentList = fragmentList;
         this.tabLayout = tabLayout;

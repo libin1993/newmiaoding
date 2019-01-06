@@ -18,7 +18,6 @@ import android.widget.TextView;
 import com.bigkoo.convenientbanner.ConvenientBanner;
 import com.bigkoo.convenientbanner.holder.CBViewHolderCreator;
 import com.bigkoo.convenientbanner.listener.OnItemClickListener;
-import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.github.jdsjlzx.interfaces.OnLoadMoreListener;
 import com.github.jdsjlzx.interfaces.OnRefreshListener;
@@ -55,7 +54,6 @@ import cn.cloudworkshop.miaoding.ui.HomepageInfoActivity;
 import cn.cloudworkshop.miaoding.ui.JoinUsActivity;
 import cn.cloudworkshop.miaoding.ui.LoginActivity;
 import cn.cloudworkshop.miaoding.ui.NewsListActivity;
-import cn.cloudworkshop.miaoding.ui.StoreInfoActivity;
 import cn.cloudworkshop.miaoding.ui.StoreListActivity;
 import cn.cloudworkshop.miaoding.ui.WorksDetailActivity;
 import cn.cloudworkshop.miaoding.utils.DateUtils;
@@ -153,7 +151,7 @@ public class HomepageFragment extends BaseFragment {
         adapter = new CommonAdapter<HomepageNewsBean.DataBean.ArticleBean>(getActivity(),
                 R.layout.listitem_homepage_news, dataList) {
             @Override
-            protected void convert(ViewHolder holder, final HomepageNewsBean.DataBean.ArticleBean articleBean, int position) {
+            protected void convert(ViewHolder holder, final HomepageNewsBean.DataBean.ArticleBean articleBean, final int position) {
 
 
                 SimpleDraweeView imgNews = holder.getView(R.id.img_homepage_news);
@@ -174,27 +172,27 @@ public class HomepageFragment extends BaseFragment {
 
                 holder.setText(R.id.tv_news_title, articleBean.getTitle());
                 holder.setText(R.id.tv_news_content, articleBean.getSub_title());
-//                tvLove.setText(String.valueOf(articleBean.getLovenum()));
-//                tvComment.setText(String.valueOf(articleBean.getCommentnum()));
 
-//                if (articleBean.getIs_collect() == 1) {
-//                    imgCollect.setImageResource(R.mipmap.icon_collect_check);
-//                } else {
-//                    imgCollect.setImageResource(R.mipmap.icon_collect_normal);
-//                }
-//                if (articleBean.getIs_love() == 1) {
-//                    imgLove.setImageResource(R.mipmap.icon_love_check);
-//                } else {
-//                    imgLove.setImageResource(R.mipmap.icon_love_normal);
-//                }
+                tvLove.setText(String.valueOf(articleBean.getLike_nums()));
+                tvComment.setText(String.valueOf(articleBean.getView_nums()));
+
+                if (articleBean.getIs_collect() == 1) {
+                    imgCollect.setImageResource(R.mipmap.icon_collect_check);
+                } else {
+                    imgCollect.setImageResource(R.mipmap.icon_collect_normal);
+                }
+                if (articleBean.getIs_love() == 1) {
+                    imgLove.setImageResource(R.mipmap.icon_love_check);
+                } else {
+                    imgLove.setImageResource(R.mipmap.icon_love_normal);
+                }
 
                 //图片点击
                 imgNews.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+
                         toHomepageInfo(articleBean);
-
-
 //                        switch (dataBean.getIs_type()) {
 //                            case 1:
 //                                toHomepageInfo(dataBean);
@@ -208,8 +206,21 @@ public class HomepageFragment extends BaseFragment {
                     }
                 });
                 //分享
-//
-//                if (dataBean.getIs_type() == 1) {
+
+                imgShare.setVisibility(View.VISIBLE);
+                imgShare.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        ShareUtils.showShare(getActivity(), Constant.IMG_HOST +
+                                articleBean.getImg(), articleBean.getTitle(), articleBean
+                                .getSub_title(), Constant.HOMEPAGE_SHARE +
+                                "?content=1&id=" + articleBean.getId());
+
+                    }
+                });
+
+//                if (articleBean.getIs_type() == 1) {
 //                    imgShare.setVisibility(View.VISIBLE);
 //                    imgShare.setOnClickListener(new View.OnClickListener() {
 //                        @Override
@@ -228,34 +239,43 @@ public class HomepageFragment extends BaseFragment {
 
 
                 //收藏
-//                imgCollect.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        if (!TextUtils.isEmpty(SharedPreferencesUtils.getStr(getActivity(), "token"))) {
-//                            addCollection(dataBean, position - 2);
-//                        } else {
-//                            Intent login = new Intent(getActivity(), LoginActivity.class);
-//                            login.putExtra("page_name", "收藏");
-//                            startActivity(login);
-//                        }
-//
-//                    }
-//                });
+                imgCollect.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (!TextUtils.isEmpty(SharedPreferencesUtils.getStr(getActivity(), "token"))) {
+                            addCollection(articleBean, position - 2);
+                        } else {
+                            Intent login = new Intent(getActivity(), LoginActivity.class);
+                            login.putExtra("page_name", "收藏");
+                            startActivity(login);
+                        }
+
+                    }
+                });
                 //喜爱
-//                llLove.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        if (!TextUtils.isEmpty(SharedPreferencesUtils.getStr(getActivity(), "token"))) {
-//                            addLove(dataBean, position - 2, dataBean.getLovenum());
-//                        } else {
-//                            Intent login = new Intent(getActivity(), LoginActivity.class);
-//                            login.putExtra("page_name", "喜爱");
-//                            startActivity(login);
-//                        }
-//
-//                    }
-//                });
+                llLove.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (!TextUtils.isEmpty(SharedPreferencesUtils.getStr(getActivity(), "token"))) {
+                            addLove(articleBean, position - 2, articleBean.getLike_nums());
+                        } else {
+                            Intent login = new Intent(getActivity(), LoginActivity.class);
+                            login.putExtra("page_name", "喜爱");
+                            startActivity(login);
+                        }
+
+                    }
+                });
                 //店铺隐藏评论
+                llComment.setVisibility(View.VISIBLE);
+                llComment.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        toHomepageInfo(articleBean);
+                    }
+                });
+
+
 //                if (dataBean.getIs_type() == 1) {
 //                    llComment.setVisibility(View.VISIBLE);
 //                    llComment.setOnClickListener(new View.OnClickListener() {
@@ -317,76 +337,78 @@ public class HomepageFragment extends BaseFragment {
         startActivity(intent);
     }
 
-//    /**
-//     * @param dataBean 添加收藏
-//     */
-//    private void addCollection(HomepageNewsBean.DataBean dataBean, final int position) {
-//        OkHttpUtils.get()
-//                .url(Constant.ADD_COLLECTION)
-//                .addParams("token", SharedPreferencesUtils.getStr(getActivity(), "token"))
-//                .addParams("type", String.valueOf(dataBean.getIs_type()))
-//                .addParams("cid", String.valueOf(dataBean.getId()))
-//                .build()
-//                .execute(new StringCallback() {
-//                    @Override
-//                    public void onError(Call call, Exception e, int id) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onResponse(String response, int id) {
-//                        try {
-//                            JSONObject jsonObject = new JSONObject(response);
-//                            int code = jsonObject.getInt("code");
-//                            if (code == 1) {
-//                                dataList.get(position).setIs_collect(1);
-//                            } else {
-//                                dataList.get(position).setIs_collect(0);
-//                            }
-//                            adapter.notifyDataSetChanged();
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-//
-//                    }
-//                });
-//    }
-//
-//    /**
-//     * 添加喜爱
-//     */
-//    private void addLove(HomepageNewsBean.DataBean dataBean, final int position, final int loveNum) {
-//        OkHttpUtils.get()
-//                .url(Constant.ADD_LOVE)
-//                .addParams("token", SharedPreferencesUtils.getStr(getActivity(), "token"))
-//                .addParams("news_id", String.valueOf(dataBean.getId()))
-//                .addParams("is_type", String.valueOf(dataBean.getIs_type()))
-//                .build()
-//                .execute(new StringCallback() {
-//                    @Override
-//                    public void onError(Call call, Exception e, int id) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onResponse(String response, int id) {
-//                        try {
-//                            JSONObject jsonObject = new JSONObject(response);
-//                            int data = jsonObject.getInt("data");
-//                            if (data == 1) {
-//                                dataList.get(position).setIs_love(1);
-//                                dataList.get(position).setLovenum(loveNum + 1);
-//                            } else {
-//                                dataList.get(position).setIs_love(0);
-//                                dataList.get(position).setLovenum(loveNum - 1);
-//                            }
-//                            adapter.notifyDataSetChanged();
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                });
-//    }
+    /**
+     * @param dataBean 添加收藏
+     */
+    private void addCollection(HomepageNewsBean.DataBean.ArticleBean dataBean, final int position) {
+        OkHttpUtils.post()
+                .url(Constant.ADD_COLLECTION)
+                .addParams("token", SharedPreferencesUtils.getStr(getActivity(), "token"))
+                .addParams("rid", String.valueOf(dataBean.getId()))
+                .addParams("type", "1")
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            int code = jsonObject.getInt("code");
+                            int status = jsonObject.getInt("status");
+                            if (code == 10000) {
+                                dataList.get(position).setIs_collect(status);
+                                adapter.notifyDataSetChanged();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                });
+    }
+
+    /**
+     * 添加喜爱
+     */
+    private void addLove(HomepageNewsBean.DataBean.ArticleBean dataBean, final int position, final int loveNum) {
+        OkHttpUtils.get()
+                .url(Constant.ADD_LOVE)
+                .addParams("token", SharedPreferencesUtils.getStr(getActivity(), "token"))
+                .addParams("rid", String.valueOf(dataBean.getId()))
+                .addParams("type","1")
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            int code = jsonObject.getInt("code");
+                            int status = jsonObject.getInt("status");
+                            if (code == 10000) {
+                                dataList.get(position).setIs_love(status);
+                                if (status == 1) {
+                                    dataList.get(position).setLike_nums(loveNum + 1);
+                                } else {
+                                    dataList.get(position).setLike_nums(loveNum - 1);
+                                }
+                                adapter.notifyDataSetChanged();
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+    }
 
 
     /**
@@ -495,7 +517,7 @@ public class HomepageFragment extends BaseFragment {
                                 invite.putExtra("share_title", getString(R.string.invite_gift));
                                 invite.putExtra("share_content", getString(R.string.friend) + SharedPreferencesUtils
                                         .getStr(getActivity(), "username") + getString(R.string.invite_join));
-                                invite.putExtra("url", Constant.INVITE_FRIEND + "?uid=" + uid);
+                                invite.putExtra("url", Constant.INVITE_FRIENDS + "?id=" + uid);
                                 invite.putExtra("share_url", Constant.INVITE_SHARE + "?id=" + uid);
                                 startActivity(invite);
                             } else {

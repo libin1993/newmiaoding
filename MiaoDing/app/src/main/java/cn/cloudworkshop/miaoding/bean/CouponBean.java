@@ -17,7 +17,15 @@ public class CouponBean {
 
     private int code;
     private String msg;
-    private List<DataBean> data;
+    private List<TicketsBean> tickets;
+
+    public List<TicketsBean> getTickets() {
+        return tickets;
+    }
+
+    public void setTickets(List<TicketsBean> tickets) {
+        this.tickets = tickets;
+    }
 
     public int getCode() {
         return code;
@@ -35,15 +43,8 @@ public class CouponBean {
         this.msg = msg;
     }
 
-    public List<DataBean> getData() {
-        return data;
-    }
 
-    public void setData(List<DataBean> data) {
-        this.data = data;
-    }
-
-    public static class DataBean {
+    public static class TicketsBean {
         /**
          * id : 3
          * uid : 18
@@ -59,16 +60,13 @@ public class CouponBean {
          */
 
         private int id;
-        private int uid;
         private String title;
         private String sub_title;
-        private String ticket_no;
         private String money;
-        private int ticket_id;
-        private int status;
-        private int c_time;
         private int s_time;
         private int e_time;
+        private String re_marks;
+        private String full_money;
 
         public int getId() {
             return id;
@@ -78,12 +76,20 @@ public class CouponBean {
             this.id = id;
         }
 
-        public int getUid() {
-            return uid;
+        public String getRe_marks() {
+            return re_marks;
         }
 
-        public void setUid(int uid) {
-            this.uid = uid;
+        public void setRe_marks(String re_marks) {
+            this.re_marks = re_marks;
+        }
+
+        public String getFull_money() {
+            return full_money;
+        }
+
+        public void setFull_money(String full_money) {
+            this.full_money = full_money;
         }
 
         public String getTitle() {
@@ -102,44 +108,12 @@ public class CouponBean {
             this.sub_title = sub_title;
         }
 
-        public String getTicket_no() {
-            return ticket_no;
-        }
-
-        public void setTicket_no(String ticket_no) {
-            this.ticket_no = ticket_no;
-        }
-
         public String getMoney() {
             return money;
         }
 
         public void setMoney(String money) {
             this.money = money;
-        }
-
-        public int getTicket_id() {
-            return ticket_id;
-        }
-
-        public void setTicket_id(int ticket_id) {
-            this.ticket_id = ticket_id;
-        }
-
-        public int getStatus() {
-            return status;
-        }
-
-        public void setStatus(int status) {
-            this.status = status;
-        }
-
-        public int getC_time() {
-            return c_time;
-        }
-
-        public void setC_time(int c_time) {
-            this.c_time = c_time;
         }
 
         public int getS_time() {

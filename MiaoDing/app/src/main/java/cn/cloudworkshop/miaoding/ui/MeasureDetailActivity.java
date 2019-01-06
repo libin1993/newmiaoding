@@ -65,11 +65,12 @@ public class MeasureDetailActivity extends BaseActivity {
         OkHttpUtils.get()
                 .url(Constant.MEASURE_DETAIL)
                 .addParams("token", SharedPreferencesUtils.getStr(this, "token"))
-                .addParams("lt_id", String.valueOf(id))
+                .addParams("id", String.valueOf(id))
                 .build()
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
+
 
                     }
 
@@ -93,7 +94,7 @@ public class MeasureDetailActivity extends BaseActivity {
                 (this, R.layout.listitem_measure_detail, measureBean.getData()) {
             @Override
             protected void convert(ViewHolder holder, MeasureDetailBean.DataBean measureDataBean, int position) {
-                holder.setText(R.id.tv_measure_name, measureDataBean.getName());
+                holder.setText(R.id.tv_measure_name, measureDataBean.getKey());
                 String value = measureDataBean.getValue();
                 if (!TextUtils.isEmpty(value)) {
                     holder.setText(R.id.tv_measure_value, value);

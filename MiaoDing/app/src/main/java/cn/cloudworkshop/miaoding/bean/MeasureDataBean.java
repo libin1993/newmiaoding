@@ -9,13 +9,16 @@ import java.util.List;
  */
 public class MeasureDataBean {
 
+
     /**
-     * code : 1
-     * data : {"total":1,"per_page":10,"current_page":1,"data":[{"id":302,"sh_name":"哈哈哈哈","height":"175","weight":"66","is_index":0,"img_list":""}]}
+     * code : 10000
+     * pages : {"totalnum":1,"everypage":10,"totalpage":1,"page":1}
+     * data : [{"id":162,"name":"","height":0,"weight":0,"is_default":0}]
      */
 
     private int code;
-    private DataBeanX data;
+    private PagesBean pages;
+    private List<DataBean> data;
 
     public int getCode() {
         return code;
@@ -25,124 +28,121 @@ public class MeasureDataBean {
         this.code = code;
     }
 
-    public DataBeanX getData() {
+    public PagesBean getPages() {
+        return pages;
+    }
+
+    public void setPages(PagesBean pages) {
+        this.pages = pages;
+    }
+
+    public List<DataBean> getData() {
         return data;
     }
 
-    public void setData(DataBeanX data) {
+    public void setData(List<DataBean> data) {
         this.data = data;
     }
 
-    public static class DataBeanX {
+    public static class PagesBean {
         /**
-         * total : 1
-         * per_page : 10
-         * current_page : 1
-         * data : [{"id":302,"sh_name":"哈哈哈哈","height":"175","weight":"66","is_index":0,"img_list":""}]
+         * totalnum : 1
+         * everypage : 10
+         * totalpage : 1
+         * page : 1
          */
 
-        private int total;
-        private int per_page;
-        private int current_page;
-        private List<DataBean> data;
+        private int totalnum;
+        private int everypage;
+        private int totalpage;
+        private int page;
 
-        public int getTotal() {
-            return total;
+        public int getTotalnum() {
+            return totalnum;
         }
 
-        public void setTotal(int total) {
-            this.total = total;
+        public void setTotalnum(int totalnum) {
+            this.totalnum = totalnum;
         }
 
-        public int getPer_page() {
-            return per_page;
+        public int getEverypage() {
+            return everypage;
         }
 
-        public void setPer_page(int per_page) {
-            this.per_page = per_page;
+        public void setEverypage(int everypage) {
+            this.everypage = everypage;
         }
 
-        public int getCurrent_page() {
-            return current_page;
+        public int getTotalpage() {
+            return totalpage;
         }
 
-        public void setCurrent_page(int current_page) {
-            this.current_page = current_page;
+        public void setTotalpage(int totalpage) {
+            this.totalpage = totalpage;
         }
 
-        public List<DataBean> getData() {
-            return data;
+        public int getPage() {
+            return page;
         }
 
-        public void setData(List<DataBean> data) {
-            this.data = data;
+        public void setPage(int page) {
+            this.page = page;
+        }
+    }
+
+    public static class DataBean {
+        /**
+         * id : 162
+         * name :
+         * height : 0
+         * weight : 0
+         * is_default : 0
+         */
+
+        private int id;
+        private String name;
+        private int height;
+        private int weight;
+        private int is_default;
+
+        public int getId() {
+            return id;
         }
 
-        public static class DataBean {
-            /**
-             * id : 302
-             * sh_name : 哈哈哈哈
-             * height : 175
-             * weight : 66
-             * is_index : 0
-             * img_list :
-             */
+        public void setId(int id) {
+            this.id = id;
+        }
 
-            private int id;
-            private String name;
-            private String height;
-            private String weight;
-            private int is_index;
-            private String img_list;
+        public String getName() {
+            return name;
+        }
 
-            public String getName() {
-                return name;
-            }
+        public void setName(String name) {
+            this.name = name;
+        }
 
-            public void setName(String name) {
-                this.name = name;
-            }
+        public int getHeight() {
+            return height;
+        }
 
-            public int getId() {
-                return id;
-            }
+        public void setHeight(int height) {
+            this.height = height;
+        }
 
-            public void setId(int id) {
-                this.id = id;
-            }
+        public int getWeight() {
+            return weight;
+        }
 
+        public void setWeight(int weight) {
+            this.weight = weight;
+        }
 
-            public String getHeight() {
-                return height;
-            }
+        public int getIs_default() {
+            return is_default;
+        }
 
-            public void setHeight(String height) {
-                this.height = height;
-            }
-
-            public String getWeight() {
-                return weight;
-            }
-
-            public void setWeight(String weight) {
-                this.weight = weight;
-            }
-
-            public int getIs_index() {
-                return is_index;
-            }
-
-            public void setIs_index(int is_index) {
-                this.is_index = is_index;
-            }
-
-            public String getImg_list() {
-                return img_list;
-            }
-
-            public void setImg_list(String img_list) {
-                this.img_list = img_list;
-            }
+        public void setIs_default(int is_default) {
+            this.is_default = is_default;
         }
     }
 }

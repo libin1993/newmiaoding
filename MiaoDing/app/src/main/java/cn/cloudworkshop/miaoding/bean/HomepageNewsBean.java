@@ -277,6 +277,33 @@ public class HomepageNewsBean {
             private int view_nums;
             private int like_nums;
             private double img_info;
+            private int is_love;
+            private int is_collect;
+            private int reply_nums;
+
+            public int getIs_love() {
+                return is_love;
+            }
+
+            public void setIs_love(int is_love) {
+                this.is_love = is_love;
+            }
+
+            public int getIs_collect() {
+                return is_collect;
+            }
+
+            public void setIs_collect(int is_collect) {
+                this.is_collect = is_collect;
+            }
+
+            public int getReply_nums() {
+                return reply_nums;
+            }
+
+            public void setReply_nums(int reply_nums) {
+                this.reply_nums = reply_nums;
+            }
 
             public String getName() {
                 return name;

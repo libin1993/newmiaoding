@@ -32,6 +32,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -41,20 +42,29 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.cloudworkshop.miaoding.R;
 import cn.cloudworkshop.miaoding.base.BaseActivity;
+import cn.cloudworkshop.miaoding.bean.UserBean;
 import cn.cloudworkshop.miaoding.constant.Constant;
 import cn.cloudworkshop.miaoding.utils.DataManagerUtils;
 import cn.cloudworkshop.miaoding.utils.DisplayUtils;
+import cn.cloudworkshop.miaoding.utils.GsonUtils;
 import cn.cloudworkshop.miaoding.utils.ImageDisposeUtils;
 import cn.cloudworkshop.miaoding.utils.ImageEncodeUtils;
+import cn.cloudworkshop.miaoding.utils.LogUtils;
 import cn.cloudworkshop.miaoding.utils.PermissionUtils;
 import cn.cloudworkshop.miaoding.utils.SharedPreferencesUtils;
 import cn.cloudworkshop.miaoding.utils.ToastUtils;
 import cn.cloudworkshop.miaoding.view.CircleImageView;
 import cn.qqtheme.framework.picker.DatePicker;
-import cn.qqtheme.framework.picker.NumberPicker;
 import me.iwf.photopicker.PhotoPicker;
 import me.iwf.photopicker.PhotoPreview;
 import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import pub.devrel.easypermissions.EasyPermissions;
 
 /**
@@ -97,7 +107,7 @@ public class SetUpActivity extends BaseActivity implements EasyPermissions.Permi
     ImageView imgLoadError;
 
     //用户头像
-    private String userIcon;
+    private String userAvatar;
     //用户名
     private String userName;
     //用户生日
@@ -130,7 +140,7 @@ public class SetUpActivity extends BaseActivity implements EasyPermissions.Permi
      */
     private void initView() {
         Glide.with(getApplicationContext())
-                .load(userIcon)
+                .load(Constant.IMG_HOST + userAvatar)
                 .placeholder(R.mipmap.place_holder_goods)
                 .dontAnimate()
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
@@ -155,6 +165,7 @@ public class SetUpActivity extends BaseActivity implements EasyPermissions.Permi
         OkHttpUtils.get()
                 .url(Constant.USER_INFO)
                 .addParams("token", SharedPreferencesUtils.getStr(this, "token"))
+                .addParams("is_android", "1")
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -166,18 +177,16 @@ public class SetUpActivity extends BaseActivity implements EasyPermissions.Permi
                     @Override
                     public void onResponse(String response, int id) {
                         imgLoadError.setVisibility(View.GONE);
-                        try {
-                            JSONObject jsonObject = new JSONObject(response);
-                            JSONObject jsonObject1 = jsonObject.getJSONObject("data");
-                            userIcon = jsonObject1.getString("avatar");
-                            userName = jsonObject1.getString("name");
-                            SharedPreferencesUtils.saveStr(SetUpActivity.this, "avatar", userIcon);
+                        UserBean userBean = GsonUtils.jsonToBean(response, UserBean.class);
+                        if (userBean.getCode() == 10000) {
+                            userAvatar = userBean.getData().getUser_info().getAvatar();
+                            userName = userBean.getData().getUser_info().getUsername();
+                            userBirthday = userBean.getData().getUser_info().getBirthday();
+                            SharedPreferencesUtils.saveStr(SetUpActivity.this, "avatar", userAvatar);
                             SharedPreferencesUtils.saveStr(SetUpActivity.this, "username", userName);
-                            userBirthday = jsonObject1.getString("birthday");
                             initView();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
                         }
+
                     }
                 });
     }
@@ -197,7 +206,6 @@ public class SetUpActivity extends BaseActivity implements EasyPermissions.Permi
                 OkHttpUtils.get()
                         .url(Constant.LOGOUT)
                         .addParams("token", SharedPreferencesUtils.getStr(SetUpActivity.this, "token"))
-                        .addParams("device_id", SharedPreferencesUtils.getStr(SetUpActivity.this, "client_id"))
                         .build()
                         .execute(new StringCallback() {
                             @Override
@@ -210,7 +218,7 @@ public class SetUpActivity extends BaseActivity implements EasyPermissions.Permi
                                 try {
                                     JSONObject jsonObject = new JSONObject(response);
                                     int code = jsonObject.getInt("code");
-                                    if (code == 1) {
+                                    if (code == 10000) {
                                         SharedPreferencesUtils.deleteStr(SetUpActivity.this, "token");
                                         SharedPreferencesUtils.deleteStr(SetUpActivity.this, "uid");
                                         SharedPreferencesUtils.deleteStr(SetUpActivity.this, "username");
@@ -357,7 +365,7 @@ public class SetUpActivity extends BaseActivity implements EasyPermissions.Permi
                 if (TextUtils.isEmpty(etName.getText().toString().trim())) {
                     ToastUtils.showToast(SetUpActivity.this, getString(R.string.nicknane_is_empty));
                 } else {
-                    changeInfo("name", etName.getText().toString().trim());
+                    changeInfo("username", etName.getText().toString().trim());
                     mPopupWindow.dismiss();
                 }
             }
@@ -393,7 +401,7 @@ public class SetUpActivity extends BaseActivity implements EasyPermissions.Permi
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             int code = jsonObject.getInt("code");
-                            if (code == 1) {
+                            if (code == 10000) {
                                 if (key.equals("birthday") && setBirthday) {
                                     Intent intent = new Intent();
                                     intent.putExtra("birthday", value);
@@ -476,12 +484,52 @@ public class SetUpActivity extends BaseActivity implements EasyPermissions.Permi
                 if (data != null) {
                     ImageDisposeUtils.rotatingImageView(Crop.getOutput(data).getPath());
                     imgCircleIcon.setImageURI(Crop.getOutput(data));
-                    changeInfo("avatar", ImageEncodeUtils.fileToBase64(Crop.getOutput(data).getPath()));
+                    uploadImg(Crop.getOutput(data).getPath());
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    /**
+     * @param path 上传图片
+     */
+    private void uploadImg(String path) {
+        MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
+        File file = new File(path);
+        builder.addFormDataPart("file[]", file.getName(),
+                RequestBody.create(MediaType.parse("image/png"), file));
+
+        MultipartBody requestBody = builder.build();
+        //构建请求
+        final Request request = new Request.Builder()
+                .url(Constant.UPLOAD_FILE)
+                .post(requestBody)
+                .build();
+        OkHttpClient client = new OkHttpClient();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+            }
+
+            @Override
+            public void onResponse(Call call, final Response response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response.body().string());
+                    int code = jsonObject.getInt("code");
+                    if (code == 10000) {
+                        String imgUrl = jsonObject.getString("info");
+                        changeInfo("avatar", imgUrl);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
     }
 
 

@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
@@ -15,8 +14,6 @@ import android.widget.TextView;
 
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
-
-import org.greenrobot.eventbus.EventBus;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -66,7 +63,8 @@ public class HomepageInfoActivity extends BaseActivity {
         setContentView(R.layout.activity_homepage_info);
         ButterKnife.bind(this);
         enterTime = DateUtils.getCurrentTime();
-        initData();
+        getData();
+        initView();
     }
 
 
@@ -77,17 +75,15 @@ public class HomepageInfoActivity extends BaseActivity {
     }
 
     /**
-     * 商品参数
+     * 参数
      */
-    private void initData() {
+    private void getData() {
         Intent intent = getIntent();
         url = intent.getStringExtra("url");
         title = intent.getStringExtra("title");
         content = intent.getStringExtra("content");
         imgUrl = intent.getStringExtra("img_url");
         shareUrl = intent.getStringExtra("share_url");
-
-        initView();
     }
 
     /**
@@ -105,12 +101,13 @@ public class HomepageInfoActivity extends BaseActivity {
         //支持H5 DOM Storage
         ws.setDomStorageEnabled(true);
         webView.getSettings().setBlockNetworkImage(false); // 解决图片不显示
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             webView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         }
         webView.addJavascriptInterface(this, "nativeMethod");
 
         webView.loadUrl(url + "&token=" + SharedPreferencesUtils.getStr(this, "token"));
+
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -118,6 +115,7 @@ public class HomepageInfoActivity extends BaseActivity {
                 return true;
             }
         });
+
     }
 
 
@@ -154,20 +152,15 @@ public class HomepageInfoActivity extends BaseActivity {
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (webView.canGoBack()) {
-                webView.goBack();// 返回前一个页面
-            } else {
-                homepageLog();
-                MyApplication.homeEnterTime = DateUtils.getCurrentTime();
-                finish();
-            }
-            return true;
+    public void onBackPressed() {
+        if (webView.canGoBack()) {
+            webView.goBack();// 返回前一个页面
+        } else {
+            homepageLog();
+            MyApplication.homeEnterTime = DateUtils.getCurrentTime();
+            finish();
         }
-        return super.onKeyDown(keyCode, event);
     }
-
 
     @OnClick({R.id.img_header_back, R.id.img_header_share})
     public void onClick(View view) {

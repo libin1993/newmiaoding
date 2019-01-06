@@ -35,6 +35,7 @@ import cn.cloudworkshop.miaoding.bean.CustomizedGoodsListBean;
 import cn.cloudworkshop.miaoding.bean.GoodsListBean;
 import cn.cloudworkshop.miaoding.constant.Constant;
 import cn.cloudworkshop.miaoding.ui.CustomizedGoodsActivity;
+import cn.cloudworkshop.miaoding.ui.NewCustomizedGoodsActivity;
 import cn.cloudworkshop.miaoding.utils.DisplayUtils;
 import cn.cloudworkshop.miaoding.utils.GsonUtils;
 import cn.cloudworkshop.miaoding.utils.SpaceItemDecoration;
@@ -168,7 +169,7 @@ public class SubGoodsFragment extends BaseFragment {
         mLRecyclerViewAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Intent intent = new Intent(getParentFragment().getActivity(), CustomizedGoodsActivity.class);
+                Intent intent = new Intent(getParentFragment().getActivity(), NewCustomizedGoodsActivity.class);
                 intent.putExtra("id", String.valueOf(dataList.get(position).getId()));
                 startActivity(intent);
             }

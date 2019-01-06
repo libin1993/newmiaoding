@@ -30,7 +30,7 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import cn.cloudworkshop.miaoding.R;
 import cn.cloudworkshop.miaoding.base.BaseFragment;
-import cn.cloudworkshop.miaoding.bean.UserInfoBean;
+import cn.cloudworkshop.miaoding.bean.UserBean;
 import cn.cloudworkshop.miaoding.constant.Constant;
 import cn.cloudworkshop.miaoding.ui.ApplyMeasureActivity;
 import cn.cloudworkshop.miaoding.ui.AppointmentActivity;
@@ -86,9 +86,8 @@ public class MyCenterFragment extends BaseFragment {
     //未读消息提醒
     BadgeView badgeView;
 
-    private UserInfoBean userInfoBean;
-    //邀请好友点击事件处理
-    private boolean isClickable = true;
+    private UserBean userInfoBean;
+
 
     @Nullable
     @Override
@@ -144,6 +143,7 @@ public class MyCenterFragment extends BaseFragment {
         OkHttpUtils.get()
                 .url(Constant.USER_INFO)
                 .addParams("token", SharedPreferencesUtils.getStr(getActivity(), "token"))
+                .addParams("is_android", "1")
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -155,9 +155,10 @@ public class MyCenterFragment extends BaseFragment {
                     @Override
                     public void onResponse(String response, int id) {
                         imgLoadError.setVisibility(View.GONE);
-                        userInfoBean = GsonUtils.jsonToBean(response, UserInfoBean.class);
-                        if (userInfoBean.getData() != null && userInfoBean.getIcon_list() != null
-                                && userInfoBean.getIcon_list().size() > 0) {
+                        userInfoBean = GsonUtils.jsonToBean(response, UserBean.class);
+                        if (userInfoBean.getCode() == 10000 && userInfoBean.getData() != null
+                                && userInfoBean.getData().getIcon_list() != null
+                                && userInfoBean.getData().getIcon_list().size() > 0) {
                             initView();
                         }
                     }
@@ -170,25 +171,25 @@ public class MyCenterFragment extends BaseFragment {
     protected void initView() {
 
         Glide.with(getActivity())
-                .load(userInfoBean.getData().getAvatar())
+                .load(Constant.IMG_HOST + userInfoBean.getData().getUser_info().getAvatar())
                 .placeholder(R.mipmap.place_holder_goods)
                 .dontAnimate()
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .into(imgIcon);
-        tvCenterName.setText(userInfoBean.getData().getName());
+        tvCenterName.setText(userInfoBean.getData().getUser_info().getUsername());
+//
+//        Glide.with(getActivity())
+//                .load(Constant.IMG_HOST + userInfoBean.getData().getUser_grade().getImg())
+//                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+//                .into(imgGradeCenter);
 
-        Glide.with(getActivity())
-                .load(Constant.IMG_HOST + userInfoBean.getData().getUser_grade().getImg())
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .into(imgGradeCenter);
-
-        if (userInfoBean.getData().getUnread_message_num() > 0) {
+        if (userInfoBean.getData().getUser_info().getUnread_message_num() > 0) {
             badgeView.setVisibility(View.VISIBLE);
             badgeView.setTargetView(imgMessage);
             badgeView.setBackgroundResource(R.drawable.btn_red_bg);
             badgeView.setTextSize(8);
-            if (userInfoBean.getData().getUnread_message_num() < 99) {
-                badgeView.setBadgeCount(userInfoBean.getData().getUnread_message_num());
+            if (userInfoBean.getData().getUser_info().getUnread_message_num() < 99) {
+                badgeView.setBadgeCount(userInfoBean.getData().getUser_info().getUnread_message_num());
             } else {
                 badgeView.setText("99+");
             }
@@ -202,10 +203,10 @@ public class MyCenterFragment extends BaseFragment {
         int widthPixels = DisplayUtils.getMetrics(getActivity()).widthPixels;
         final int itemWidth = (int) ((widthPixels - DisplayUtils.dp2px(getActivity(), 2)) / 3);
         final int itemHeight = itemWidth * 344 / 373;
-        final CommonAdapter<UserInfoBean.IconListBean> adapter = new CommonAdapter<UserInfoBean.IconListBean>
-                (getActivity(), R.layout.listitem_center, userInfoBean.getIcon_list()) {
+        final CommonAdapter<UserBean.DataBean.IconListBean> adapter = new CommonAdapter<UserBean.DataBean.IconListBean>
+                (getActivity(), R.layout.listitem_center, userInfoBean.getData().getIcon_list()) {
             @Override
-            protected void convert(ViewHolder holder, UserInfoBean.IconListBean iconListBean, int position) {
+            protected void convert(ViewHolder holder, UserBean.DataBean.IconListBean iconListBean, int position) {
                 RelativeLayout rlItem = holder.getView(R.id.rl_center_item);
                 ViewGroup.LayoutParams layoutParams = rlItem.getLayoutParams();
                 layoutParams.width = itemWidth;
@@ -240,7 +241,7 @@ public class MyCenterFragment extends BaseFragment {
                         startActivity(new Intent(getActivity(), CollectionActivity.class));
                         break;
                     case 4:
-                        if (userInfoBean.getData().getIs_yuyue() == 1) {
+                        if (userInfoBean.getData().getUser_info().getIs_yuyue() == 1) {
                             Intent intent = new Intent(getActivity(), AppointmentActivity.class);
                             intent.putExtra("type", "appoint_measure");
                             startActivity(intent);
@@ -254,17 +255,16 @@ public class MyCenterFragment extends BaseFragment {
                         break;
                     case 6:
                         Intent intent = new Intent(getActivity(), CameraFormActivity.class);
-                        intent.putExtra("measure_status", userInfoBean.getIs_opencv());
+                        intent.putExtra("measure_status", userInfoBean.getData().getIs_opencv());
                         startActivity(intent);
                         break;
                     case 7:
                         ContactService.contactService(getActivity());
                         break;
                     case 8:
-                        if (isClickable) {
-                            isClickable = false;
-                            inviteFriends();
-                        }
+
+                        inviteFriends();
+
 
                         break;
 
@@ -302,41 +302,15 @@ public class MyCenterFragment extends BaseFragment {
      * 邀请好友
      */
     private void inviteFriends() {
-        OkHttpUtils.get()
-                .url(Constant.INVITE_FRIEND)
-                .addParams("token", SharedPreferencesUtils.getStr(getActivity(), "token"))
-                .build()
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        isClickable = true;
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-                        try {
-                            isClickable = true;
-                            JSONObject jsonObject = new JSONObject(response);
-                            String url = jsonObject.getString("share_url");
-                            JSONObject data = jsonObject.getJSONObject("data");
-                            int uid = data.getInt("up_uid");
-
-                            if (uid != 0) {
-                                Intent intent = new Intent(getActivity(), DressingResultActivity.class);
-                                intent.putExtra("title", getString(R.string.invite_join));
-                                intent.putExtra("share_title", R.string.invite_friend_gift);
-                                intent.putExtra("share_content", userInfoBean.getData()
-                                        .getName() + getString(R.string.invite_your_friend));
-                                intent.putExtra("url", Constant.HOST + url + uid);
-                                intent.putExtra("share_url", Constant.INVITE_SHARE + "?id=" + uid);
-                                startActivity(intent);
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-                });
+        String uid = SharedPreferencesUtils.getStr(getActivity(), "uid");
+        Intent intent = new Intent(getActivity(), DressingResultActivity.class);
+        intent.putExtra("title", getString(R.string.invite_join));
+        intent.putExtra("share_title", R.string.invite_friend_gift);
+        intent.putExtra("share_content", userInfoBean.getData()
+                .getUser_info().getUsername() + getString(R.string.invite_your_friend));
+        intent.putExtra("url", Constant.INVITE_FRIENDS + "?id=" + uid);
+        intent.putExtra("share_url", Constant.INVITE_SHARE + "?id=" + uid);
+        startActivity(intent);
 
     }
 

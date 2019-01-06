@@ -126,8 +126,6 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
     private void initIcon() {
         OkHttpUtils.get()
                 .url(Constant.APP_ICON)
-                .addParams("type", "2")
-                .addParams("is_android", "1")
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -139,7 +137,7 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
                     public void onResponse(String response, int id) {
                         imgLoadingError.setVisibility(View.GONE);
                         iconBean = GsonUtils.jsonToBean(response, AppIconBean.class);
-                        if (iconBean.getData() != null && iconBean.getData().size() > 0) {
+                        if (iconBean.getTab() != null && iconBean.getTab().size() > 0) {
                             initView();
                         }
                     }
@@ -341,7 +339,7 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
         fragmentList.add(AccentFragment.newInstance());
         fragmentList.add(MyCenterFragment.newInstance());
         fragmentUtils = new FragmentTabUtils(this, getSupportFragmentManager(), fragmentList,
-                R.id.frame_container, tabMain, iconBean.getData());
+                R.id.frame_container, tabMain, iconBean.getTab());
 
     }
 

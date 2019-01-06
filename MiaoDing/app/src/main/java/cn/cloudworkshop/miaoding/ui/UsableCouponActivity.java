@@ -69,7 +69,7 @@ public class UsableCouponActivity extends BaseActivity {
     @BindView(R.id.img_header_share)
     ImageView imgHeaderShare;
 
-    private List<CouponBean.DataBean> couponList;
+    private List<CouponBean.TicketsBean> couponList;
     private String couponRule;
 
     @Override
@@ -127,9 +127,9 @@ public class UsableCouponActivity extends BaseActivity {
 
                         couponList = new ArrayList<>();
                         CouponBean couponBean = GsonUtils.jsonToBean(response, CouponBean.class);
-                        if (couponBean.getData() != null && couponBean.getData().size() > 0) {
+                        if (couponBean.getTickets() != null && couponBean.getTickets().size() > 0) {
                             imgNullCoupon.setVisibility(View.GONE);
-                            couponList.addAll(couponBean.getData());
+                            couponList.addAll(couponBean.getTickets());
                             initView();
                         } else {
                             imgNullCoupon.setVisibility(View.VISIBLE);
@@ -169,10 +169,10 @@ public class UsableCouponActivity extends BaseActivity {
         MyLinearLayoutManager linearLayoutManager = new MyLinearLayoutManager(this);
         linearLayoutManager.setScrollEnabled(false);
         rvCoupon.setLayoutManager(linearLayoutManager);
-        CommonAdapter<CouponBean.DataBean> adapter = new CommonAdapter<CouponBean.DataBean>
+        CommonAdapter<CouponBean.TicketsBean> adapter = new CommonAdapter<CouponBean.TicketsBean>
                 (this, R.layout.listitem_coupon, couponList) {
             @Override
-            protected void convert(ViewHolder holder, CouponBean.DataBean dataBean, int position) {
+            protected void convert(ViewHolder holder, CouponBean.TicketsBean dataBean, int position) {
 
                 holder.getView(R.id.ll_coupon_bg).setBackgroundResource(R.mipmap.icon_coupon_available);
                 TextView tvMoney = holder.getView(R.id.tv_coupon_money);
@@ -226,6 +226,7 @@ public class UsableCouponActivity extends BaseActivity {
                 initData();
                 break;
             case R.id.img_header_share:
+
                 if (couponRule != null) {
                     Intent intent = new Intent(this, UserRuleActivity.class);
                     intent.putExtra("title", R.string.use_rule);

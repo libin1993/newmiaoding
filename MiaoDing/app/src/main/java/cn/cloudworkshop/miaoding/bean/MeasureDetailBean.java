@@ -51,15 +51,15 @@ public class MeasureDetailBean {
          * value : 21
          */
 
-        private String name;
+        private String key;
         private String value;
 
-        public String getName() {
-            return name;
+        public String getKey() {
+            return key;
         }
 
-        public void setName(String name) {
-            this.name = name;
+        public void setKey(String key) {
+            this.key = key;
         }
 
         public String getValue() {
