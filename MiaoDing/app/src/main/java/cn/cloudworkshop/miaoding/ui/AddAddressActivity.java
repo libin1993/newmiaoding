@@ -231,10 +231,11 @@ public class AddAddressActivity extends BaseActivity {
                                 try {
                                     JSONObject jsonObject = new JSONObject(response);
                                     int code = jsonObject.getInt("code");
-//                                    String addressId = jsonObject.getString("address_id");
+
                                     String msg = jsonObject.getString("msg");
                                     ToastUtils.showToast(AddAddressActivity.this, msg);
                                     if (code == 10000) {
+                                        String addressId = jsonObject.getString("address_id");
                                         //地址编辑成功
                                         EventBus.getDefault().post("edit_success");
                                         switch (type) {
@@ -242,15 +243,13 @@ public class AddAddressActivity extends BaseActivity {
                                                 Intent intent = new Intent();
                                                 ConfirmOrderBean.DataBean.AddressListBean addressListBean
                                                         = new ConfirmOrderBean.DataBean.AddressListBean();
-//                                                addressListBean.setId(Integer.parseInt(addressId));
-
+                                                addressListBean.setId(Integer.parseInt(addressId));
                                                 addressListBean.setProvince(provinceAddress);
                                                 addressListBean.setCity(cityAddress);
                                                 addressListBean.setArea(countAddress);
                                                 addressListBean.setAddress(etDetailedAddress.getText().toString().trim());
-                                                addressListBean.setName(etAddName.getText().toString().trim());
+                                                addressListBean.setAccept_name(etAddName.getText().toString().trim());
                                                 addressListBean.setPhone(etAddNumber.getText().toString().trim());
-                                                addressListBean.setIs_default(1);
 
                                                 intent.putExtra("address", addressListBean);
 
@@ -258,7 +257,6 @@ public class AddAddressActivity extends BaseActivity {
                                                 finish();
                                                 break;
                                             case 2:
-
                                                 finish();
                                                 break;
                                         }

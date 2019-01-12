@@ -120,6 +120,7 @@ public class SetUpActivity extends BaseActivity implements EasyPermissions.Permi
     //相机权限
     static final String[] permissionStr = {Manifest.permission.CAMERA};
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -129,7 +130,9 @@ public class SetUpActivity extends BaseActivity implements EasyPermissions.Permi
         tvHeaderTitle.setText(R.string.set);
         getData();
         initData();
+
     }
+
 
     private void getData() {
         setBirthday = getIntent().getBooleanExtra("set_birthday", false);
@@ -474,8 +477,13 @@ public class SetUpActivity extends BaseActivity implements EasyPermissions.Permi
 
                 selectedPhotos.addAll(photos);
                 if (selectedPhotos.size() != 0) {
-                    Uri destination = Uri.fromFile(new File(Environment.getExternalStorageDirectory()
-                            .getAbsolutePath() + File.separator + "CloudWorkshop", "avatar.png"));
+                    File file = new File(Environment.getExternalStorageDirectory()
+                            .getAbsolutePath() + File.separator + "CloudWorkshop", "avatar.png");
+                    File parentFile = file.getParentFile();
+                    if (!parentFile.exists()) {
+                        parentFile.mkdirs();
+                    }
+                    Uri destination = Uri.fromFile(file);
                     Crop.of(Uri.fromFile(new File(selectedPhotos.get(0))), destination).asSquare().start(this);
                 }
             }
@@ -503,7 +511,7 @@ public class SetUpActivity extends BaseActivity implements EasyPermissions.Permi
 
         MultipartBody requestBody = builder.build();
         //构建请求
-        final Request request = new Request.Builder()
+        Request request = new Request.Builder()
                 .url(Constant.UPLOAD_FILE)
                 .post(requestBody)
                 .build();
@@ -511,6 +519,7 @@ public class SetUpActivity extends BaseActivity implements EasyPermissions.Permi
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                LogUtils.log(e.getMessage());
             }
 
             @Override
@@ -541,7 +550,10 @@ public class SetUpActivity extends BaseActivity implements EasyPermissions.Permi
 
     @Override
     public void onPermissionsGranted(int requestCode, List<String> perms) {
-
+        PhotoPicker.builder()
+                .setPhotoCount(1)
+                .setShowCamera(true)
+                .start(this);
     }
 
     @Override

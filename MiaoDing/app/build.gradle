@@ -161,13 +161,10 @@ dependencies {
     implementation('com.github.gzu-liyujiang.AndroidPicker:WheelPicker:1.5.6') {
         exclude group: 'com.android.support'
     }
-//    implementation files('libs/MobCommons-2018.1128.1916.jar')
-//    implementation files('libs/MobTools-2018.1128.1916.jar')
-//    implementation files('libs/SDKWrapper-2018.0801.1824.jar')
-//    implementation files('libs/ShareSDK-Core-3.4.0.jar')
-//    implementation files('libs/ShareSDK-QQ-3.4.0.jar')
-//    implementation files('libs/ShareSDK-SinaWeibo-3.4.0.jar')
-//    implementation files('libs/ShareSDK-Wechat-3.4.0.jar')
-//    implementation files('libs/ShareSDK-Wechat-Core-3.4.0.jar')
-//    implementation files('libs/ShareSDK-Wechat-Moments-3.4.0.jar')
+    //vlayout
+    implementation ('com.alibaba.android:vlayout:1.2.8@aar') {
+        transitive = true
+    }
+    //SmartRefreshLayout
+    implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.0.5.1'
 }

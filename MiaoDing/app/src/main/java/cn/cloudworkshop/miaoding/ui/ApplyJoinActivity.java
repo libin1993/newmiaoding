@@ -29,7 +29,11 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,8 +43,11 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.cloudworkshop.miaoding.R;
 import cn.cloudworkshop.miaoding.base.BaseActivity;
+import cn.cloudworkshop.miaoding.bean.ResponseBean;
 import cn.cloudworkshop.miaoding.constant.Constant;
+import cn.cloudworkshop.miaoding.utils.GsonUtils;
 import cn.cloudworkshop.miaoding.utils.ImageEncodeUtils;
+import cn.cloudworkshop.miaoding.utils.LogUtils;
 import cn.cloudworkshop.miaoding.utils.PhoneNumberUtils;
 import cn.cloudworkshop.miaoding.utils.PermissionUtils;
 import cn.cloudworkshop.miaoding.utils.SharedPreferencesUtils;
@@ -49,6 +56,13 @@ import me.iwf.photopicker.PhotoPicker;
 import me.iwf.photopicker.PhotoPreview;
 import me.iwf.photopicker.utils.AndroidLifecycleUtils;
 import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import pub.devrel.easypermissions.EasyPermissions;
 
 /**
@@ -106,40 +120,6 @@ public class ApplyJoinActivity extends BaseActivity implements EasyPermissions.P
     }
 
 
-    Handler handler = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message msg) {
-            OkHttpUtils.post()
-                    .url(Constant.APPLY_JOIN)
-                    .addParams("token", SharedPreferencesUtils.getStr(ApplyJoinActivity.this, "token"))
-                    .addParams("name", etApplyName.getText().toString().trim())
-                    .addParams("phone", etApplyPhone.getText().toString().trim())
-                    .addParams("weixin", etApplyQq.getText().toString().trim())
-                    .addParams("email", etApplyEmail.getText().toString().trim())
-                    .addParams("img_list1", imgList1)
-                    .addParams("img_list2", imgList2)
-                    .build()
-                    .execute(new StringCallback() {
-                        @Override
-                        public void onError(Call call, Exception e, int id) {
-
-                        }
-
-                        @Override
-                        public void onResponse(String response, int id) {
-                            //监听申请入驻事件
-                            MobclickAgent.onEvent(ApplyJoinActivity.this, "apply_join");
-                            loadingView.smoothToHide();
-                            Intent intent = new Intent(ApplyJoinActivity.this, AppointmentActivity.class);
-                            intent.putExtra("type", "apply_join");
-                            startActivity(intent);
-                            finish();
-                        }
-                    });
-            return false;
-        }
-    });
-
 
     private CommonAdapter<String> initPhotos(RecyclerView recyclerView, final ArrayList<String>
             selectedPhotos, final int index) {
@@ -193,6 +173,7 @@ public class ApplyJoinActivity extends BaseActivity implements EasyPermissions.P
                 if (!EasyPermissions.hasPermissions(this, permissionStr)) {
                     EasyPermissions.requestPermissions(this, "", 123, permissionStr);
                 } else {
+                    currentItem = 1;
                     photoAdapter1 = initPhotos(rvApplyWorks, selectedPhotos1, 1);
                     PhotoPicker.builder()
                             .setPhotoCount(4)
@@ -205,6 +186,7 @@ public class ApplyJoinActivity extends BaseActivity implements EasyPermissions.P
                 if (!EasyPermissions.hasPermissions(this, permissionStr)) {
                     EasyPermissions.requestPermissions(this, "", 123, permissionStr);
                 } else {
+                    currentItem = 2;
                     photoAdapter2 = initPhotos(rvApplyCompany, selectedPhotos2, 2);
                     PhotoPicker.builder()
                             .setPhotoCount(2)
@@ -234,16 +216,101 @@ public class ApplyJoinActivity extends BaseActivity implements EasyPermissions.P
         } else {
             loadingView.smoothToShow();
             tvSubmitApply.setEnabled(false);
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    imgList1 = ImageEncodeUtils.encodeFile(selectedPhotos1);
-                    imgList2 = ImageEncodeUtils.encodeFile(selectedPhotos2);
-                    handler.sendEmptyMessage(1);
-                }
-            }).start();
-
+            imgList1 = null;
+            imgList2 = null;
+            uploadImg(1, selectedPhotos1);
+            uploadImg(2, selectedPhotos2);
         }
+    }
+
+
+    /**
+     * @param
+     */
+    private void uploadImg(final int type, List<String> photos) {
+        MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
+        for (int i = 0; i < photos.size(); i++) {
+            File file = new File(photos.get(i));
+            builder.addFormDataPart("file[]", file.getName(),
+                    RequestBody.create(MediaType.parse("image/png"), file));
+        }
+        MultipartBody requestBody = builder.build();
+        //构建请求
+        Request request = new Request.Builder()
+                .url(Constant.UPLOAD_FILE)
+                .post(requestBody)
+                .build();
+        OkHttpClient client = new OkHttpClient();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                LogUtils.log(e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, final Response response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response.body().string());
+                    int code = jsonObject.getInt("code");
+                    if (code == 10000) {
+                        String imgUrl = jsonObject.getString("info");
+                        if (type == 1) {
+                            imgList1 = imgUrl;
+                        } else {
+                            imgList2 = imgUrl;
+                        }
+
+                        if (imgList1 != null && imgList2 != null) {
+                            apply();
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    /**
+     * 申请
+     */
+    private void apply() {
+        OkHttpUtils.post()
+                .url(Constant.APPLY_JOIN)
+                .addParams("token", SharedPreferencesUtils.getStr(ApplyJoinActivity.this, "token"))
+                .addParams("name", etApplyName.getText().toString().trim())
+                .addParams("phone", etApplyPhone.getText().toString().trim())
+                .addParams("weixin", etApplyQq.getText().toString().trim())
+                .addParams("email", etApplyEmail.getText().toString().trim())
+                .addParams("img_list1", imgList1)
+                .addParams("img_list2", imgList2)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        loadingView.smoothToHide();
+                        tvSubmitApply.setEnabled(true);
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        loadingView.smoothToHide();
+                        tvSubmitApply.setEnabled(true);
+                        ResponseBean responseBean = GsonUtils.jsonToBean(response,ResponseBean.class);
+                        if (responseBean.getCode() == 10000){
+                            //监听申请入驻事件
+                            MobclickAgent.onEvent(ApplyJoinActivity.this, "apply_join");
+
+                            Intent intent = new Intent(ApplyJoinActivity.this, AppointmentActivity.class);
+                            intent.putExtra("type", "apply_join");
+                            startActivity(intent);
+                            finish();
+                        }
+                        ToastUtils.showToast(ApplyJoinActivity.this,responseBean.getMsg());
+                    }
+                });
     }
 
 
@@ -277,14 +344,6 @@ public class ApplyJoinActivity extends BaseActivity implements EasyPermissions.P
                 }
             }
         }
-    }
-
-
-    @Override
-    protected void onDestroy() {
-        handler.removeCallbacksAndMessages(null);
-        super.onDestroy();
-
     }
 
     /**

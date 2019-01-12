@@ -152,7 +152,7 @@ public class MessageDetailActivity extends BaseActivity {
 
                 switch (type) {
                     case 2:
-                        Intent intent2 = new Intent(MessageDetailActivity.this, CustomizedGoodsActivity.class);
+                        Intent intent2 = new Intent(MessageDetailActivity.this, NewCustomizedGoodsActivity.class);
                         intent2.putExtra("id", String.valueOf("38"));
                         startActivity(intent2);
                         break;

@@ -58,14 +58,14 @@ public class NewsListActivity extends BaseActivity {
 
 
     private LRecyclerViewAdapter mLRecyclerViewAdapter = null;
-    private List<NewsListBean.DataBeanX.DataBean> dataList = new ArrayList<>();
+    private List<NewsListBean.DataBean.ArticleBean> dataList = new ArrayList<>();
     //当前页
     private int page = 1;
     //刷新
     private boolean isRefresh;
     //加载更多
     private boolean isLoadMore;
-    private CommonAdapter<NewsListBean.DataBeanX.DataBean> adapter;
+    private CommonAdapter<NewsListBean.DataBean.ArticleBean> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +77,7 @@ public class NewsListActivity extends BaseActivity {
     }
 
     private void initData() {
-        OkHttpUtils.get()
+        OkHttpUtils.post()
                 .url(Constant.NEWS_LIST)
                 .addParams("token", SharedPreferencesUtils.getStr(this, "token"))
                 .addParams("page", String.valueOf(page))
@@ -92,13 +92,13 @@ public class NewsListActivity extends BaseActivity {
                     public void onResponse(String response, int id) {
                         imgLoadError.setVisibility(View.GONE);
                         NewsListBean newsListBean = GsonUtils.jsonToBean(response, NewsListBean.class);
-                        if (newsListBean.getData().getData() != null && newsListBean.getData().getData().size() > 0) {
+                        if (newsListBean.getData().getArticle() != null && newsListBean.getData().getArticle().size() > 0) {
                             //刷新，初始化数据
                             if (isRefresh) {
                                 dataList.clear();
                             }
 
-                            dataList.addAll(newsListBean.getData().getData());
+                            dataList.addAll(newsListBean.getData().getArticle());
                             //刷新，加载完成
                             if (isLoadMore || isRefresh) {
                                 rvNewsList.refreshComplete(0);
@@ -119,10 +119,10 @@ public class NewsListActivity extends BaseActivity {
 
     private void initView() {
         rvNewsList.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new CommonAdapter<NewsListBean.DataBeanX.DataBean>(this,
+        adapter = new CommonAdapter<NewsListBean.DataBean.ArticleBean>(this,
                 R.layout.listitem_homepage_news, dataList) {
             @Override
-            protected void convert(ViewHolder holder, final NewsListBean.DataBeanX.DataBean dataBean,
+            protected void convert(ViewHolder holder, final NewsListBean.DataBean.ArticleBean dataBean,
                                    final int position) {
                 SimpleDraweeView imgNews = holder.getView(R.id.img_homepage_news);
                 if (!TextUtils.isEmpty(dataBean.getImg_info())) {
@@ -143,8 +143,8 @@ public class NewsListActivity extends BaseActivity {
 
                 holder.setText(R.id.tv_news_title, dataBean.getTitle());
                 holder.setText(R.id.tv_news_content, dataBean.getSub_title());
-                tvLove.setText(String.valueOf(dataBean.getLovenum()));
-                tvComment.setText(String.valueOf(dataBean.getCommentnum()));
+                tvLove.setText(String.valueOf(dataBean.getLike_nums()));
+                tvComment.setText(String.valueOf(dataBean.getReply_nums()));
 
                 if (dataBean.getIs_collect() == 1) {
                     imgCollect.setImageResource(R.mipmap.icon_collect_check);
@@ -161,21 +161,17 @@ public class NewsListActivity extends BaseActivity {
                 imgNews.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if (dataBean.getIs_type() == 1) {
-                            gotoHomepageInfo(dataBean);
-                        }
+                        gotoHomepageInfo(dataBean);
                     }
                 });
                 //分享
                 imgShare.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (dataBean.getIs_type() == 1) {
-                            ShareUtils.showShare(NewsListActivity.this,
-                                    Constant.IMG_HOST + dataBean.getImg(), dataBean.getTitle(),
-                                    dataBean.getSub_title(), Constant.HOMEPAGE_SHARE
-                                            + "?content=1&id=" + dataBean.getId());
-                        }
+                        ShareUtils.showShare(NewsListActivity.this,
+                                Constant.IMG_HOST + dataBean.getImg(), dataBean.getTitle(),
+                                dataBean.getSub_title(), Constant.HOMEPAGE_SHARE
+                                        + "?content=1&id=" + dataBean.getId());
                     }
                 });
 
@@ -198,7 +194,7 @@ public class NewsListActivity extends BaseActivity {
                     @Override
                     public void onClick(View v) {
                         if (!TextUtils.isEmpty(SharedPreferencesUtils.getStr(NewsListActivity.this, "token"))) {
-                            addLove(dataBean, position - 1, dataBean.getLovenum());
+                            addLove(dataBean, position - 1, dataBean.getLike_nums());
                         } else {
                             Intent login = new Intent(NewsListActivity.this, LoginActivity.class);
                             login.putExtra("page_name", "喜爱");
@@ -248,7 +244,7 @@ public class NewsListActivity extends BaseActivity {
     /**
      * @param dataBean 跳转资讯详情
      */
-    private void gotoHomepageInfo(NewsListBean.DataBeanX.DataBean dataBean) {
+    private void gotoHomepageInfo(NewsListBean.DataBean.ArticleBean dataBean) {
 
         Intent intent = new Intent(NewsListActivity.this, HomepageInfoActivity.class);
         intent.putExtra("url", Constant.HOMEPAGE_INFO + "?content=1&id=" + dataBean.getId());
@@ -263,12 +259,12 @@ public class NewsListActivity extends BaseActivity {
     /**
      * @param dataBean 添加收藏
      */
-    private void addCollection(NewsListBean.DataBeanX.DataBean dataBean, final int position) {
-        OkHttpUtils.get()
+    private void addCollection(NewsListBean.DataBean.ArticleBean dataBean, final int position) {
+        OkHttpUtils.post()
                 .url(Constant.ADD_COLLECTION)
                 .addParams("token", SharedPreferencesUtils.getStr(NewsListActivity.this, "token"))
-                .addParams("type", String.valueOf(dataBean.getIs_type()))
-                .addParams("cid", String.valueOf(dataBean.getId()))
+                .addParams("type", "1")
+                .addParams("rid", String.valueOf(dataBean.getId()))
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -281,12 +277,11 @@ public class NewsListActivity extends BaseActivity {
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             int code = jsonObject.getInt("code");
-                            if (code == 1) {
-                                dataList.get(position).setIs_collect(1);
-                            } else {
-                                dataList.get(position).setIs_collect(0);
+                            int status = jsonObject.getInt("status");
+                            if (code == 10000) {
+                                dataList.get(position).setIs_collect(status);
+                                adapter.notifyDataSetChanged();
                             }
-                            adapter.notifyDataSetChanged();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -298,12 +293,12 @@ public class NewsListActivity extends BaseActivity {
     /**
      * 添加喜爱
      */
-    private void addLove(NewsListBean.DataBeanX.DataBean dataBean, final int position, final int loveNum) {
-        OkHttpUtils.get()
+    private void addLove(NewsListBean.DataBean.ArticleBean dataBean, final int position, final int loveNum) {
+        OkHttpUtils.post()
                 .url(Constant.ADD_LOVE)
                 .addParams("token", SharedPreferencesUtils.getStr(NewsListActivity.this, "token"))
-                .addParams("news_id", String.valueOf(dataBean.getId()))
-                .addParams("is_type", String.valueOf(dataBean.getIs_type()))
+                .addParams("rid", String.valueOf(dataBean.getId()))
+                .addParams("is_type", "1")
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -315,16 +310,17 @@ public class NewsListActivity extends BaseActivity {
                     public void onResponse(String response, int id) {
                         try {
                             JSONObject jsonObject = new JSONObject(response);
-                            int data = jsonObject.getInt("data");
-                            if (data == 1) {
-                                dataList.get(position).setIs_love(1);
-                                dataList.get(position).setLovenum(loveNum + 1);
-                            } else {
-                                dataList.get(position).setIs_love(0);
-                                dataList.get(position).setLovenum(loveNum - 1);
+                            int code = jsonObject.getInt("code");
+                            int status = jsonObject.getInt("status");
+                            if (code == 10000) {
+                                dataList.get(position).setIs_love(status);
+                                if (status == 1) {
+                                    dataList.get(position).setLike_nums(loveNum + 1);
+                                } else {
+                                    dataList.get(position).setLike_nums(loveNum - 1);
+                                }
+                                adapter.notifyDataSetChanged();
                             }
-
-                            adapter.notifyDataSetChanged();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -343,6 +339,4 @@ public class NewsListActivity extends BaseActivity {
                 break;
         }
     }
-
-
 }

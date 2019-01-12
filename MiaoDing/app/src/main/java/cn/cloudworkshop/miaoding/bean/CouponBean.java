@@ -61,10 +61,27 @@ public class CouponBean {
 
         private int id;
         private String title;
+
+        public String getS_time() {
+            return s_time;
+        }
+
+        public void setS_time(String s_time) {
+            this.s_time = s_time;
+        }
+
+        public String getE_time() {
+            return e_time;
+        }
+
+        public void setE_time(String e_time) {
+            this.e_time = e_time;
+        }
+
         private String sub_title;
         private String money;
-        private int s_time;
-        private int e_time;
+        private String s_time;
+        private String e_time;
         private String re_marks;
         private String full_money;
 
@@ -116,20 +133,6 @@ public class CouponBean {
             this.money = money;
         }
 
-        public int getS_time() {
-            return s_time;
-        }
 
-        public void setS_time(int s_time) {
-            this.s_time = s_time;
-        }
-
-        public int getE_time() {
-            return e_time;
-        }
-
-        public void setE_time(int e_time) {
-            this.e_time = e_time;
-        }
     }
 }

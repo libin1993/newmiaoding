@@ -89,6 +89,7 @@ public class UsableCouponActivity extends BaseActivity {
     private void initData() {
         OkHttpUtils.get()
                 .url(Constant.COUPON_RULE)
+                .addParams("token", SharedPreferencesUtils.getStr(this, "token"))
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -102,7 +103,7 @@ public class UsableCouponActivity extends BaseActivity {
                         imgLoadError.setVisibility(View.GONE);
                         try {
                             JSONObject jsonObject = new JSONObject(response);
-                            couponRule = jsonObject.getString("introduce_img");
+                            couponRule = jsonObject.getString("rule");
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -182,9 +183,9 @@ public class UsableCouponActivity extends BaseActivity {
                 holder.setText(R.id.tv_coupon_discount, dataBean.getSub_title());
                 StringBuilder sb = new StringBuilder();
                 sb.append(getString(R.string.validity_term)+"：")
-                        .append(DateUtils.getDate("yyyy-MM-dd", dataBean.getS_time()))
+                        .append(DateUtils.formatTime("yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd", dataBean.getS_time()))
                         .append(getString(R.string.to))
-                        .append(DateUtils.getDate("yyyy-MM-dd", dataBean.getE_time()));
+                        .append(DateUtils.formatTime("yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd", dataBean.getE_time()));
                 holder.setText(R.id.tv_coupon_term, sb.toString());
 
             }
@@ -229,7 +230,7 @@ public class UsableCouponActivity extends BaseActivity {
 
                 if (couponRule != null) {
                     Intent intent = new Intent(this, UserRuleActivity.class);
-                    intent.putExtra("title", R.string.use_rule);
+                    intent.putExtra("title", getString(R.string.use_rule));
                     intent.putExtra("img_url", couponRule);
                     startActivity(intent);
                 }

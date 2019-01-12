@@ -222,8 +222,7 @@ public class MeasureDataActivity extends BaseActivity {
     private void setDefaultMeasure(int id, final int position) {
         OkHttpUtils.post()
                 .url(Constant.DEFAULT_MEASURE_DATA)
-                .addParams("token", SharedPreferencesUtils.getStr(
-                        MeasureDataActivity.this, "token"))
+                .addParams("token", SharedPreferencesUtils.getStr(MeasureDataActivity.this, "token"))
                 .addParams("lt_id", String.valueOf(id))
                 .build()
                 .execute(new StringCallback() {
@@ -253,11 +252,11 @@ public class MeasureDataActivity extends BaseActivity {
      * @param position 选择量体数据，回调到确认订单
      */
     private void selectMeasureData(int position) {
-        ConfirmOrderBean.LtArrBean measureBean = new ConfirmOrderBean.LtArrBean();
+        ConfirmOrderBean.DataBean.LtArrBean measureBean = new ConfirmOrderBean.DataBean.LtArrBean();
         measureBean.setId(dataList.get(position).getId());
         measureBean.setName(dataList.get(position).getName());
-        measureBean.setHeight(dataList.get(position).getHeight() + "");
-        measureBean.setWeight(dataList.get(position).getWeight() + "");
+        measureBean.setHeight(dataList.get(position).getHeight());
+        measureBean.setWeight(dataList.get(position).getWeight());
         EventBus.getDefault().post(measureBean);
     }
 

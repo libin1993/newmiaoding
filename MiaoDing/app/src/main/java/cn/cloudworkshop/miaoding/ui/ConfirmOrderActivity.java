@@ -36,6 +36,7 @@ import butterknife.OnClick;
 import cn.cloudworkshop.miaoding.R;
 import cn.cloudworkshop.miaoding.base.BaseActivity;
 import cn.cloudworkshop.miaoding.bean.ConfirmOrderBean;
+import cn.cloudworkshop.miaoding.bean.ResponseBean;
 import cn.cloudworkshop.miaoding.constant.Constant;
 import cn.cloudworkshop.miaoding.utils.BigDecimalUtils;
 import cn.cloudworkshop.miaoding.utils.DateUtils;
@@ -81,8 +82,6 @@ public class ConfirmOrderActivity extends BaseActivity {
     LinearLayout llFirstOrder;
     @BindView(R.id.view_first_order)
     View viewFirstOrder;
-    @BindView(R.id.tv_coupon_count)
-    TextView tvCouponCount;
     @BindView(R.id.ll_select_coupon)
     LinearLayout llSelectCoupon;
     @BindView(R.id.tv_coupon_content)
@@ -95,12 +94,6 @@ public class ConfirmOrderActivity extends BaseActivity {
     RelativeLayout rlSelectAddress;
     @BindView(R.id.rl_add_address)
     RelativeLayout rlAddAddress;
-    @BindView(R.id.checkbox_card)
-    CheckBox checkboxCard;
-    @BindView(R.id.tv_card_money)
-    TextView tvCardMoney;
-    @BindView(R.id.ll_select_card)
-    LinearLayout llSelectCard;
     @BindView(R.id.img_load_error)
     ImageView imgLoadingError;
     @BindView(R.id.tv_measure_username)
@@ -127,18 +120,10 @@ public class ConfirmOrderActivity extends BaseActivity {
     private String couponMinMoney;
     //优惠券适用的商品
     private String goodsIds;
-    //优惠券数量
-    private int couponNum;
     //显示优惠券优惠金额
     private double displayCoupon = 0.00;
     //实际优惠券优惠金额
     private double actualCoupon = 0.00;
-    //礼品卡金额
-    private double cardMoney = 0.00;
-    //显示礼品卡优惠金额
-    private double displayCard = 0.00;
-    //实际礼品卡优惠金额
-    private double actualCard = 0.00;
     //商品adapter
     private CommonAdapter<ConfirmOrderBean.DataBean.CarListBean> adapter;
 
@@ -153,13 +138,8 @@ public class ConfirmOrderActivity extends BaseActivity {
     private String logId;
     private long goodsTime;
     private long dingzhiTime;
-    //购物车商品数量更改，可能导致优惠券不能使用
-    private boolean canCouponSelect;
 
-    private ConfirmOrderBean.LtArrBean measureBean;
-    //购物车是否包含定制商品，包含则上传量体数据
-    private boolean isContainCustomize;
-
+    private ConfirmOrderBean.DataBean.LtArrBean measureBean;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -179,7 +159,7 @@ public class ConfirmOrderActivity extends BaseActivity {
         OkHttpUtils.get()
                 .url(Constant.ORDER_INFO)
                 .addParams("token", SharedPreferencesUtils.getStr(this, "token"))
-                .addParams("car_ids", cartIds)
+                .addParams("cart_id_s", cartIds)
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -191,22 +171,9 @@ public class ConfirmOrderActivity extends BaseActivity {
                     @Override
                     public void onResponse(String response, int id) {
                         imgLoadingError.setVisibility(View.GONE);
-                        //修改购物车商品数量，可用优惠券数量改变
-                        if (canCouponSelect) {
-                            try {
-                                JSONObject jsonObject = new JSONObject(response);
-                                JSONObject data = jsonObject.getJSONObject("data");
-                                couponNum = data.getInt("ticket_num");
-                                initCoupon();
-                                canCouponSelect = false;
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        } else {
-                            confirmOrderBean = GsonUtils.jsonToBean(response, ConfirmOrderBean.class);
-                            if (confirmOrderBean.getData() != null) {
-                                initView();
-                            }
+                        confirmOrderBean = GsonUtils.jsonToBean(response, ConfirmOrderBean.class);
+                        if (confirmOrderBean.getData() != null) {
+                            initView();
                         }
                     }
                 });
@@ -243,54 +210,13 @@ public class ConfirmOrderActivity extends BaseActivity {
             addressListBean = confirmOrderBean.getData().getAddress_list();
         }
 
-        couponNum = confirmOrderBean.getData().getTicket_num();
-        cardMoney = Float.parseFloat(confirmOrderBean.getData().getGift_card());
-
-        //礼品卡是否可用
-        if (confirmOrderBean.getData().getCard_userable() == 1) {
-            tvCardMoney.setTextColor(ContextCompat.getColor(ConfirmOrderActivity.this,
-                    R.color.dark_gray_22));
-        } else {
-            tvCardMoney.setTextColor(ContextCompat.getColor(ConfirmOrderActivity.this,
-                    R.color.light_gray_93));
-        }
-
-        if (confirmOrderBean.getLt_arr() != null) {
-            measureBean = confirmOrderBean.getLt_arr();
-        }
-
-        //包含定制商品
-        for (int i = 0; i < confirmOrderBean.getData().getCar_list().size(); i++) {
-            int goodsType = confirmOrderBean.getData().getCar_list().get(i).getGoods_type();
-            if (goodsType == 1 || goodsType == 3) {
-                isContainCustomize = true;
-                break;
-            }
+        if (confirmOrderBean.getData().getLt_arr() != null) {
+            measureBean = confirmOrderBean.getData().getLt_arr();
         }
 
         initAddress();
         initMeasureData();
         initCoupon();
-
-        //礼品卡checkbox点击监听
-        checkboxCard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //礼品卡可以使用
-                if (confirmOrderBean.getData().getCard_userable() == 1) {
-                    //已选择优惠券，不能使用礼品卡
-                    if (couponId != null) {
-                        ToastUtils.showToast(ConfirmOrderActivity.this, getString(R.string.coupon_gift_card));
-                        checkboxCard.setChecked(false);
-                    }
-                    discountCard();
-                    initCoupon();
-                } else {
-                    checkboxCard.setChecked(false);
-                    ToastUtils.showToast(ConfirmOrderActivity.this, getString(R.string.not_support_gift_card));
-                }
-            }
-        });
 
 
         MyLinearLayoutManager linearLayoutManager = new MyLinearLayoutManager(this);
@@ -304,7 +230,7 @@ public class ConfirmOrderActivity extends BaseActivity {
                 holder.setVisible(R.id.checkbox_goods_select, false);
                 holder.setVisible(R.id.view_cart_divide, true);
                 Glide.with(ConfirmOrderActivity.this)
-                        .load(Constant.IMG_HOST + carListBean.getGoods_thumb())
+                        .load(Constant.IMG_HOST + carListBean.getImg_info())
                         .placeholder(R.mipmap.place_holder_news)
                         .dontAnimate()
                         .diskCacheStrategy(DiskCacheStrategy.SOURCE)
@@ -313,23 +239,23 @@ public class ConfirmOrderActivity extends BaseActivity {
                 holder.setVisible(R.id.ll_cart_edit, false);
                 holder.setVisible(R.id.ll_cart_edit1, true);
                 holder.setText(R.id.tv_goods_name, carListBean.getGoods_name());
-                switch (carListBean.getGoods_type()) {
-                    case 2:
-                        holder.setText(R.id.tv_goods_content, carListBean.getSize_content());
-                        break;
-                    default:
-                        holder.setText(R.id.tv_goods_content, getString(R.string.customize_type));
-                        break;
-                }
-                holder.setText(R.id.tv_goods_price, "¥" + carListBean.getPrice());
-                holder.setText(R.id.tv_cart_count1, carListBean.getNum() + "");
+//                switch (carListBean.getGoods_type()) {
+//                    case 2:
+//                        holder.setText(R.id.tv_goods_content, carListBean.getSize_content());
+//                        break;
+//                    default:
+//                        holder.setText(R.id.tv_goods_content, getString(R.string.customize_type));
+//                        break;
+//                }
+                holder.setText(R.id.tv_goods_price, "¥" + carListBean.getSell_price());
+                holder.setText(R.id.tv_cart_count1, carListBean.getGoods_num() + "");
                 holder.setVisible(R.id.view_cart, true);
 
                 //增加购物车数量
                 holder.getView(R.id.tv_cart_add1).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        int count = confirmOrderBean.getData().getCar_list().get(position).getNum();
+                        int count = confirmOrderBean.getData().getCar_list().get(position).getGoods_num();
                         changeCartCount(position, count + 1);
 
                     }
@@ -338,7 +264,7 @@ public class ConfirmOrderActivity extends BaseActivity {
                 holder.getView(R.id.tv_cart_reduce1).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        int count = confirmOrderBean.getData().getCar_list().get(position).getNum();
+                        int count = confirmOrderBean.getData().getCar_list().get(position).getGoods_num();
                         if (count > 1) {
                             changeCartCount(position, count - 1);
                         }
@@ -354,7 +280,6 @@ public class ConfirmOrderActivity extends BaseActivity {
      */
     private void initAddress() {
         if (addressListBean == null) {
-            tvNoAddress.setVisibility(View.VISIBLE);
             if (isNoAddress) {
                 tvNoAddress.setText(R.string.add_address);
             } else {
@@ -366,13 +291,8 @@ public class ConfirmOrderActivity extends BaseActivity {
         } else {
             rlAddAddress.setVisibility(View.GONE);
             llUserAddress.setVisibility(View.VISIBLE);
-            if (addressListBean.getIs_default() == 1) {
-                tvDefaultAddress.setVisibility(View.VISIBLE);
-            } else {
-                tvDefaultAddress.setVisibility(View.GONE);
-            }
 
-            tvUserName.setText(addressListBean.getName());
+            tvUserName.setText(addressListBean.getAccept_name());
             tvUserPhone.setText(addressListBean.getPhone());
             tvProvinceAddress.setText(addressListBean.getProvince() + addressListBean.getCity() +
                     addressListBean.getArea() + addressListBean.getAddress());
@@ -385,8 +305,8 @@ public class ConfirmOrderActivity extends BaseActivity {
     private void initMeasureData() {
         if (measureBean != null) {
             tvMeasureName.setText(measureBean.getName());
-            tvMeasureHeight.setText(measureBean.getHeight());
-            tvMeasurerWeight.setText(measureBean.getWeight());
+            tvMeasureHeight.setText(measureBean.getHeight() + "");
+            tvMeasurerWeight.setText(measureBean.getWeight() + "");
         }
     }
 
@@ -396,45 +316,16 @@ public class ConfirmOrderActivity extends BaseActivity {
      */
     private void initCoupon() {
         if (couponId == null) {
-            tvCouponCount.setText(couponNum + getString(R.string.count));
-            tvCouponCount.setVisibility(View.VISIBLE);
+
             tvCouponContent.setText(R.string.please_select_coupon);
             tvCouponContent.setTextColor(ContextCompat.getColor(ConfirmOrderActivity.this,
                     R.color.dark_gray_22));
         } else {
-            tvCouponCount.setVisibility(View.GONE);
             tvCouponContent.setText(couponContent);
             tvCouponContent.setTextColor(0xffea3a37);
         }
-        tvCardMoney.setText(getString(R.string.gift_card_balance) + "(¥" + DisplayUtils.decimalFormat(cardMoney) + ")");
 
         getTotalPrice();
-    }
-
-    /**
-     * 礼品卡优惠金额
-     */
-    private void discountCard() {
-        double maxPrice = 0.00f;
-        int count = 0;
-        //该商品是否可以使用礼品卡
-        for (int i = 0; i < confirmOrderBean.getData().getCar_list().size(); i++) {
-            if (confirmOrderBean.getData().getCar_list().get(i).getCan_use_card() == 1) {
-                float price = Float.parseFloat(confirmOrderBean.getData().getCar_list().get(i).getPrice());
-                int num = confirmOrderBean.getData().getCar_list().get(i).getNum();
-                maxPrice = BigDecimalUtils.add(maxPrice, BigDecimalUtils.mul(price, num));
-                count++;
-            }
-        }
-
-        //单笔订单实付金额为不得低于1分钱
-        if (cardMoney <= (BigDecimalUtils.sub(maxPrice, BigDecimalUtils.mul(0.01, count)))) {
-            displayCard = cardMoney;
-            actualCard = cardMoney;
-        } else {
-            displayCard = maxPrice > cardMoney ? cardMoney : maxPrice;
-            actualCard = BigDecimalUtils.sub(maxPrice, BigDecimalUtils.mul(0.01, count));
-        }
     }
 
 
@@ -445,8 +336,8 @@ public class ConfirmOrderActivity extends BaseActivity {
         OkHttpUtils.post()
                 .url(Constant.CART_COUNT)
                 .addParams("token", SharedPreferencesUtils.getStr(this, "token"))
-                .addParams("cart_id", confirmOrderBean.getData().getCar_list().get(position).getId() + "")
-                .addParams("goods_num", String.valueOf(currentCount))
+                .addParams("cart_id", confirmOrderBean.getData().getCar_list().get(position).getCart_id() + "")
+                .addParams("buy_num", String.valueOf(currentCount))
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -456,36 +347,22 @@ public class ConfirmOrderActivity extends BaseActivity {
 
                     @Override
                     public void onResponse(String response, int id) {
-                        try {
-                            JSONObject jsonObject = new JSONObject(response);
-                            int code = jsonObject.getInt("code");
-                            String msg = jsonObject.getString("msg");
-                            //修改购物车数量成功
-                            if (code == 10000) {
-                                confirmOrderBean.getData().getCar_list().get(position).setNum(currentCount);
-                                adapter.notifyDataSetChanged();
+                        ResponseBean responseBean = GsonUtils.jsonToBean(response, ResponseBean.class);
+                        if (responseBean.getCode() == 10000) {
+                            confirmOrderBean.getData().getCar_list().get(position).setGoods_num(currentCount);
+                            adapter.notifyDataSetChanged();
 
-                                if (couponId != null) {
-                                    //已选择优惠券，判断当前优惠券是否选择
-                                    if (!isCouponAvailable()) {
-                                        couponId = null;
-                                    }
-                                    initCoupon();
-                                } else {
-                                    //未选择优惠券，礼品卡选择
-                                    if (checkboxCard.isChecked()) {
-                                        discountCard();
-                                    }
-                                    canCouponSelect = true;
-                                    initData();
+                            if (couponId != null) {
+                                //已选择优惠券，判断当前优惠券是否选择
+                                if (!isCouponAvailable()) {
+                                    couponId = null;
                                 }
-
-                            } else {
-                                ToastUtils.showToast(ConfirmOrderActivity.this, msg);
+                                initCoupon();
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                        } else {
+                            ToastUtils.showToast(ConfirmOrderActivity.this, responseBean.getMsg());
                         }
+
                     }
                 });
     }
@@ -502,20 +379,20 @@ public class ConfirmOrderActivity extends BaseActivity {
         for (int i = 0; i < confirmOrderBean.getData().getCar_list().size(); i++) {
             if (Arrays.asList(split).contains(confirmOrderBean.getData().getCar_list().get(i)
                     .getGoods_id() + "")) {
-                double price = Double.parseDouble(confirmOrderBean.getData().getCar_list().get(i).getPrice());
-                int num = confirmOrderBean.getData().getCar_list().get(i).getNum();
+                double price = Double.parseDouble(confirmOrderBean.getData().getCar_list().get(i).getSell_price());
+                int num = confirmOrderBean.getData().getCar_list().get(i).getGoods_num();
                 maxPrice = BigDecimalUtils.add(maxPrice, BigDecimalUtils.mul(price, num));
                 count++;
             }
         }
         //可使用优惠券商品的总价格与优惠券最低消费金额
         if (maxPrice >= Double.parseDouble(couponMinMoney)) {
-            if (Double.parseDouble(couponMoney) <= BigDecimalUtils.sub(maxPrice , BigDecimalUtils.mul(0.01 , count))) {
+            if (Double.parseDouble(couponMoney) <= BigDecimalUtils.sub(maxPrice, BigDecimalUtils.mul(0.01, count))) {
                 displayCoupon = Double.parseDouble(couponMoney);
                 actualCoupon = Double.parseDouble(couponMoney);
             } else {
                 displayCoupon = maxPrice > Double.parseDouble(couponMoney) ? Double.parseDouble(couponMoney) : maxPrice;
-                actualCoupon = BigDecimalUtils.sub(maxPrice , BigDecimalUtils.mul(0.01 , count));
+                actualCoupon = BigDecimalUtils.sub(maxPrice, BigDecimalUtils.mul(0.01, count));
             }
             return true;
         } else {
@@ -529,20 +406,15 @@ public class ConfirmOrderActivity extends BaseActivity {
     private String getTotalPrice() {
         double totalPrice = 0.00;
         for (int i = 0; i < confirmOrderBean.getData().getCar_list().size(); i++) {
-            double price = Double.parseDouble(confirmOrderBean.getData().getCar_list().get(i).getPrice());
-            int num = confirmOrderBean.getData().getCar_list().get(i).getNum();
-            totalPrice = BigDecimalUtils.add(totalPrice,BigDecimalUtils.mul(price,num));
+            double price = Double.parseDouble(confirmOrderBean.getData().getCar_list().get(i).getSell_price());
+            int num = confirmOrderBean.getData().getCar_list().get(i).getGoods_num();
+            totalPrice = BigDecimalUtils.add(totalPrice, BigDecimalUtils.mul(price, num));
         }
         tvGoodsTotal.setText("¥" + DisplayUtils.decimalFormat(totalPrice));
         //优惠金额
         if (couponId != null) {
-            totalPrice = BigDecimalUtils.sub(totalPrice,actualCoupon);
+            totalPrice = BigDecimalUtils.sub(totalPrice, actualCoupon);
             tvCouponDiscount.setText("- ¥" + DisplayUtils.decimalFormat(displayCoupon));
-        } else if (checkboxCard.isChecked()) {
-            totalPrice = BigDecimalUtils.sub(totalPrice,actualCard);
-            tvCouponDiscount.setText("- ¥" + DisplayUtils.decimalFormat(displayCard));
-        } else if (!checkboxCard.isChecked() && couponId == null) {
-            tvCouponDiscount.setText("- ¥0.00");
         }
 
         tvNeedPay.setText("¥" + DisplayUtils.decimalFormat(totalPrice));
@@ -550,7 +422,7 @@ public class ConfirmOrderActivity extends BaseActivity {
     }
 
     @OnClick({R.id.img_header_back, R.id.rl_select_address, R.id.tv_confirm_order,
-            R.id.ll_select_coupon, R.id.ll_select_card, R.id.img_load_error, R.id.ll_measure})
+            R.id.ll_select_coupon, R.id.img_load_error, R.id.ll_measure})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.img_header_back:
@@ -581,26 +453,14 @@ public class ConfirmOrderActivity extends BaseActivity {
             case R.id.tv_confirm_order:
                 if (addressListBean == null) {
                     ToastUtils.showToast(this, getString(R.string.select_address));
-                } else if (measureBean == null && isContainCustomize) {
-                    ToastUtils.showToast(this, getString(R.string.select_measure_data));
                 } else {
                     confirmOrder();
                 }
                 break;
             case R.id.ll_select_coupon:
-                if (checkboxCard.isChecked()) {
-                    ToastUtils.showToast(this, getString(R.string.coupon_gift_card));
-                } else {
-                    Intent intent = new Intent(this, SelectCouponActivity.class);
-                    intent.putExtra("cart_ids", cartIds);
-                    startActivityForResult(intent, 1);
-                }
-
-                break;
-            case R.id.ll_select_card:
-                Intent intent = new Intent(this, GiftCardActivity.class);
-                intent.putExtra("type", "select");
-                startActivityForResult(intent, 4);
+                Intent intent = new Intent(this, SelectCouponActivity.class);
+                intent.putExtra("cart_ids", cartIds);
+                startActivityForResult(intent, 1);
                 break;
             case R.id.img_load_error:
                 initData();
@@ -621,33 +481,25 @@ public class ConfirmOrderActivity extends BaseActivity {
     private void confirmOrder() {
         Map<String, String> map = new HashMap<>();
         map.put("token", SharedPreferencesUtils.getStr(this, "token"));
-        map.put("car_ids", cartIds);
-        if (couponId != null) {
-            map.put("ticket_id", couponId);
-        }
-        if (checkboxCard.isChecked()) {
-            map.put("reduce_card", "1");
-        } else {
-            map.put("reduce_card", "0");
-        }
+        map.put("cart_id_s", cartIds);
 
-        map.put("name", addressListBean.getName());
-        map.put("phone", addressListBean.getPhone());
-        map.put("province", addressListBean.getProvince());
-        map.put("city", addressListBean.getCity());
-        map.put("area", addressListBean.getArea());
-        map.put("address", addressListBean.getAddress());
+        String goodsNums = "";
+        for (ConfirmOrderBean.DataBean.CarListBean carListBean : confirmOrderBean.getData().getCar_list()) {
+            goodsNums += carListBean.getGoods_num() + ",";
+        }
+        goodsNums = goodsNums.substring(0,goodsNums.length()-1);
+//        map.put("buy_num_s", goodsNums);
+//        map.put("use_giftcard", "0");
+
+        if (couponId != null) {
+            map.put("ticket_record_id", couponId);
+        }
         map.put("address_id", String.valueOf(addressListBean.getId()));
         if (measureBean != null) {
-            map.put("lt_id", String.valueOf(measureBean.getId()));
+            map.put("volume_id", String.valueOf(measureBean.getId()));
         }
-        if (logId != null) {
-            map.put("log_id", logId);
-        }
-        //1：app支付
-        map.put("method", "1");
 
-        OkHttpUtils.post()
+        OkHttpUtils.get()
                 .url(Constant.CONFIRM_ORDER)
                 .params(map)
                 .build()
@@ -664,7 +516,7 @@ public class ConfirmOrderActivity extends BaseActivity {
                             JSONObject jsonObject = new JSONObject(response);
                             int code = jsonObject.getInt("code");
                             String msg = jsonObject.getString("msg");
-                            if (code == 1) {
+                            if (code == 10000) {
                                 JSONObject jsonObject1 = jsonObject.getJSONObject("data");
                                 String orderId = jsonObject1.getString("order_id");
                                 if (orderId != null) {
@@ -704,13 +556,11 @@ public class ConfirmOrderActivity extends BaseActivity {
                 switch (resultCode) {
                     //点击返回按钮
                     case 1:
-                        couponNum = data.getIntExtra("coupon_num", couponNum);
                         initCoupon();
                         break;
                     //不使用优惠券
                     case 2:
                         couponId = null;
-                        couponNum = data.getIntExtra("coupon_num", couponNum);
                         initCoupon();
                         break;
                     //使用优惠券
@@ -753,16 +603,6 @@ public class ConfirmOrderActivity extends BaseActivity {
                     //收货地址被修改，刷新数据
                     case 4:
                         getAddress(data);
-                        break;
-                }
-                break;
-            //礼品卡
-            case 4:
-                switch (resultCode) {
-                    case 1:
-                        cardMoney = data.getFloatExtra("card_money", 0);
-                        discountCard();
-                        initCoupon();
                         break;
                 }
                 break;
@@ -812,7 +652,7 @@ public class ConfirmOrderActivity extends BaseActivity {
      * @param ltArrBean 选择量体数据回调
      */
     @Subscribe
-    public void selectMeasureData(ConfirmOrderBean.LtArrBean ltArrBean) {
+    public void selectMeasureData(ConfirmOrderBean.DataBean.LtArrBean ltArrBean) {
         measureBean = ltArrBean;
         initMeasureData();
     }

@@ -8,8 +8,8 @@ package cn.cloudworkshop.miaoding.constant;
 
 public class Constant {
     public static final String HOST = "https://www.cloudworkshop.cn";
-    //    public static final String NEW_HOST = "http://192.168.1.254/localtest/ygc/public/index.php";
-    public static final String NEW_HOST = "http://api.cloudworkshop.cn";
+        public static final String NEW_HOST = "http://192.168.1.120/index.php";
+//    public static final String NEW_HOST = "http://api.cloudworkshop.cn";
     public static final String WEB_HOST = "https://h5.morder.cn";
 
     //oss图片
@@ -28,12 +28,14 @@ public class Constant {
     //腔调作品
     public static final String DESIGNER_WORKS = HOST_INDEX + "cobbler_goods_list";
     //定制商品详情
-    public static final String GOODS_DETAILS = NEW_HOST + "/goods/detail";
+    public static final String GOODS_DETAILS = NEW_HOST + "/user/goods/goods_one";
+    //定制商品配件
+    public static final String CUSTOMIZE_PARTS = NEW_HOST + "/goods/detail";
     //定制配件（老版）
     public static final String CUSTOMIZE = HOST_INDEX + "customize";
-    //定制配件（最新版）
+    //定制配件（当前版）
     public static final String CUSTOMIZE_NEW = HOST_INDEX + "customizenew";
-    //定制配件（新版）
+    //定制配件（弃用）
     public static final String NEW_CUSTOMIZE = HOST_INDEX + "new_customize";
     //发送验证码
     public static final String IDENTIFY_CODE = NEW_HOST + "/user/login/send";
@@ -48,7 +50,7 @@ public class Constant {
     //穿衣测试
     public static final String DRESSING_TEST = HOST_INDEX + "add_user_data";
     //意见反馈
-    public static final String FEED_BACK = HOST_INDEX + "add_suggest";
+    public static final String FEED_BACK = NEW_HOST + "/user_center/add_suggest";
     //新增地址
     public static final String ADD_ADDRESS = NEW_HOST + "/delivery_address/add";
     //修改地址
@@ -64,15 +66,15 @@ public class Constant {
     //设计师入驻
     public static final String JOIN_US = HOST_INDEX + "get_img";
     //申请入驻
-    public static final String APPLY_JOIN = HOST_INDEX + "apply_in";
+    public static final String APPLY_JOIN = NEW_HOST + "/user/center/apply_in";
     //用户信息
     public static final String USER_INFO = NEW_HOST + "/user_center/index";
     //加入购物车
-    public static final String ADD_CART = HOST_INDEX + "add_car";
+    public static final String ADD_CART = NEW_HOST + "/shopping_cart/add";
     //订单信息
-    public static final String ORDER_INFO = HOST_INDEX + "buy";
+    public static final String ORDER_INFO = NEW_HOST + "/order/confirm";
     //确认订单
-    public static final String CONFIRM_ORDER = HOST_INDEX + "add_order_v4";
+    public static final String CONFIRM_ORDER = NEW_HOST + "/order/cart";
     //修改用户信息
     public static final String CHANGE_INFO = NEW_HOST + "/user_center/edit";
     //购物车
@@ -82,7 +84,7 @@ public class Constant {
     //删除购物车
     public static final String DELETE_CART = NEW_HOST + "/shopping_cart/delete";
     //我的订单
-    public static final String GOODS_ORDER = HOST_INDEX + "goods_order_v5_2";
+    public static final String GOODS_ORDER = NEW_HOST + "/order/list";
     //订单详情
     public static final String ORDER_DETAIL = HOST_INDEX + "new_order_detail_v5_2";
     //取消订单
@@ -98,9 +100,9 @@ public class Constant {
     //预约量体
     public static final String APPOINTMENT_ORDER = HOST_INDEX + "add_order_list";
     //常见问题
-    public static final String QUESTION_CLASSIFY = HOST_INDEX + "help_classify";
-    public static final String QUESTION_LIST = HOST_INDEX + "help_list";
-    public static final String QUESTION_DETAIL = HOST_INDEX + "help_detail";
+    public static final String QUESTION_CLASSIFY = NEW_HOST + "/user_center/help_classify";
+    public static final String QUESTION_LIST = NEW_HOST + "/user_center/help_list";
+    public static final String QUESTION_DETAIL = NEW_HOST + "/user_center/help_detail";
     //系统配置
     public static final String APP_INDEX = HOST + "/index.php/index/sys/index";
     //支付宝付款
@@ -114,7 +116,7 @@ public class Constant {
     //兑换优惠券
     public static final String EXCHANGE_COUPON = NEW_HOST + "/ticket/add";
     //选择优惠券
-    public static final String SELECT_COUPON = HOST + "/index.php/index/ticket/get_car_ticket";
+    public static final String SELECT_COUPON = NEW_HOST + "/ticket/goods_assoc";
     //检查登录
     public static final String CHECK_LOGIN = NEW_HOST + "/token/is_valid";
     //消息中心
@@ -123,8 +125,6 @@ public class Constant {
     public static final String MESSAGE_DETAIL = HOST + "/index.php/index/message/message_list";
     //售后
     public static final String AFTER_SALE = HOST_INDEX + "add_sh_order";
-    //量体数据
-    public static final String MEASURE_DATA1 = HOST_INDEX + "lt_data";
     //设备Id
     public static final String CLIENT_ID = HOST_INDEX + "add_device";
     //预约状态
@@ -134,11 +134,11 @@ public class Constant {
     //订单评价
     public static final String GOODS_RECOMMEND = HOST_INDEX + "goods_recommend";
     //会员等级
-    public static final String MEMBER_GRADE = HOST + "/index.php/index/user/user_privilege";
+    public static final String MEMBER_GRADE = NEW_HOST + "/user/user/user_privilege";
     //会员规则
-    public static final String MEMBER_RULE = HOST + "/index.php/index/user/user_help";
+    public static final String MEMBER_RULE = NEW_HOST + "/user/user/user_help";
     //会员成长
-    public static final String MEMBER_GROWTH = HOST + "/index.php/index/user/user_credit_record";
+    public static final String MEMBER_GROWTH = NEW_HOST + "/user/user/user_credit_record";
     //升级礼包
     public static final String UPGRADE_GIFT = HOST + "/index.php/index/user/user_upgrade_gift";
     //生日礼包
@@ -150,7 +150,7 @@ public class Constant {
     //设计师详情
     public static final String DESIGNER_DETAILS = HOST_INDEX + "user_intro";
     //优惠券规则
-    public static final String COUPON_RULE = HOST + "/index.php/index/ticket/get_ticket_introduce";
+    public static final String COUPON_RULE = NEW_HOST + "/ticket/rule";
     //订单评价
     public static final String EVALUATE = HOST_INDEX + "save_order_comment";
     //商品全部评价
@@ -178,7 +178,7 @@ public class Constant {
     //店铺下单
     public static final String STORE_ORDER = HOST_INDEX + "quick_order";
     //资讯列表
-    public static final String NEWS_LIST = HOST_INDEX + "index_news_list";
+    public static final String NEWS_LIST = NEW_HOST + "/user/article/article_list";
     //三方登录
     public static final String QUICK_LOGIN = HOST + "/index.php/index/login/partLogin";
     //再次购买
@@ -189,6 +189,8 @@ public class Constant {
     public static final String DEFAULT_MEASURE_DATA = HOST_INDEX + "is_lt";
     //量体数据详情
     public static final String MEASURE_DETAIL = NEW_HOST + "/volume/detail";
+    //客服电话
+    public static final String SERVICE_PHONE = NEW_HOST + "/user/sysset/get_tel";
 
     //WebView
     //咨讯详情

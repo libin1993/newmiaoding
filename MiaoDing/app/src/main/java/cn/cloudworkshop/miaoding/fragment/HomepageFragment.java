@@ -53,6 +53,7 @@ import cn.cloudworkshop.miaoding.ui.DressingResultActivity;
 import cn.cloudworkshop.miaoding.ui.HomepageInfoActivity;
 import cn.cloudworkshop.miaoding.ui.JoinUsActivity;
 import cn.cloudworkshop.miaoding.ui.LoginActivity;
+import cn.cloudworkshop.miaoding.ui.NewCustomizedGoodsActivity;
 import cn.cloudworkshop.miaoding.ui.NewsListActivity;
 import cn.cloudworkshop.miaoding.ui.StoreListActivity;
 import cn.cloudworkshop.miaoding.ui.WorksDetailActivity;
@@ -492,7 +493,7 @@ public class HomepageFragment extends BaseFragment {
                             break;
                         //定制商品
                         case 3:
-                            Intent intent1 = new Intent(getActivity(), CustomizedGoodsActivity.class);
+                            Intent intent1 = new Intent(getActivity(), NewCustomizedGoodsActivity.class);
                             intent1.putExtra("id", String.valueOf(homepageBean.getData().getBanner().get(position).getLink()));
                             startActivity(intent1);
                             break;
@@ -568,7 +569,7 @@ public class HomepageFragment extends BaseFragment {
                         break;
                     //定制
                     case 2:
-                        intent = new Intent(getActivity(), CustomizedGoodsActivity.class);
+                        intent = new Intent(getActivity(), NewCustomizedGoodsActivity.class);
                         intent.putExtra("id", String.valueOf(indextype.getLink()));
                         break;
                     //成品

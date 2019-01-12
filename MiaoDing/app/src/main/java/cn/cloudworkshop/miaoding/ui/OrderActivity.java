@@ -20,13 +20,14 @@ import cn.cloudworkshop.miaoding.R;
 import cn.cloudworkshop.miaoding.adapter.GoodsFragmentAdapter;
 import cn.cloudworkshop.miaoding.base.BaseActivity;
 import cn.cloudworkshop.miaoding.fragment.MyOrderFragment;
+import cn.cloudworkshop.miaoding.fragment.OrderFragment;
 
 /**
  * Author: Libin on 2016/9/1 13:32
  * Email：1993911441@qq.com
  * Describe：我的订单
  */
-public class OrderActivity extends BaseActivity implements MyOrderFragment.OnStateChangeListener {
+public class OrderActivity extends BaseActivity implements OrderFragment.OnStateChangeListener {
     @BindView(R.id.img_header_back)
     ImageView imgHeaderBack;
     @BindView(R.id.tv_header_title)
@@ -82,7 +83,7 @@ public class OrderActivity extends BaseActivity implements MyOrderFragment.OnSta
         titleList.add(getString(R.string.has_send_order));
 //        titleList.add(getString(R.string.return_order));
         for (int i = 0; i < titleList.size(); i++) {
-            fragmentList.add(MyOrderFragment.newInstance(i));
+            fragmentList.add(OrderFragment.newInstance(i));
         }
         initView();
     }

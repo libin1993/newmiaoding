@@ -68,7 +68,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="45dp"
         android:layout_marginTop="20dp"
-        android:text="Copyright © 2015-2016"
+        android:text="Copyright © 2016-2019"
         android:textColor="@android:color/darker_gray"/>
 
     <TextView

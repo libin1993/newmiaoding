@@ -16,6 +16,7 @@ import cn.cloudworkshop.miaoding.base.BaseActivity;
 import cn.cloudworkshop.miaoding.bean.QuestionDetailBean;
 import cn.cloudworkshop.miaoding.constant.Constant;
 import cn.cloudworkshop.miaoding.utils.GsonUtils;
+import cn.cloudworkshop.miaoding.utils.SharedPreferencesUtils;
 import okhttp3.Call;
 
 /**
@@ -55,6 +56,7 @@ public class QuestionDetailsActivity extends BaseActivity {
         OkHttpUtils.get()
                 .url(Constant.QUESTION_DETAIL)
                 .addParams("id", id)
+                .addParams("token", SharedPreferencesUtils.getStr(this, "token"))
                 .build()
                 .execute(new StringCallback() {
                     @Override

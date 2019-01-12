@@ -9,9 +9,14 @@ import java.util.List;
  */
 public class SelectCouponBean {
 
+
+    /**
+     * code : 10000
+     * data : {"valid_tickets":[],"invalid_tickets":[{"id":38,"type":2,"title":"新用户注册专享优惠券","sub_title":"新用户注册专享优惠券","money":"100.00","kouling":"20181221n5p8jJ9R","s_time":"2018-12-25 18:03:39","e_time":"2019-03-25 18:03:39","use_scope":4,"no_use_goodsid":"","use_goodsid":"4","use_rule":"","ticket_img":"","rule_img":"public/20181026/a54a0280aee8384ba577af8b487c12f70728c010.png|750|1334","rule_words":"","ticket_no":"20181221","status":"优惠券满500.00后可用","full_money":"500.00","exchange_code":"20181221n5p8jJ9R","has_use":0,"order_sn":null},{"id":32,"type":2,"title":"新用户注册专享优惠券","sub_title":"新用户注册专享优惠券","money":"100.00","kouling":"20181221VfOKQtT7","s_time":"2018-12-24 16:21:53","e_time":"2019-03-24 16:21:53","use_scope":4,"no_use_goodsid":"","use_goodsid":"4","use_rule":"","ticket_img":"","rule_img":"public/20181026/a54a0280aee8384ba577af8b487c12f70728c010.png|750|1334","rule_words":"","ticket_no":"20181221","status":"优惠券满500.00后可用","full_money":"500.00","exchange_code":"20181221VfOKQtT7","has_use":0,"order_sn":null},{"id":29,"type":2,"title":"新用户注册专享优惠券","sub_title":"新用户注册专享优惠券","money":"100.00","kouling":"20181221QauPq9B6","s_time":"2018-12-24 16:05:40","e_time":"2019-03-24 16:05:40","use_scope":4,"no_use_goodsid":"","use_goodsid":"4","use_rule":"","ticket_img":"","rule_img":"public/20181026/a54a0280aee8384ba577af8b487c12f70728c010.png|750|1334","rule_words":"","ticket_no":"20181221","status":"优惠券满500.00后可用","full_money":"500.00","exchange_code":"20181221QauPq9B6","has_use":0,"order_sn":null}]}
+     */
+
     private int code;
     private DataBean data;
-    private String msg;
 
     public int getCode() {
         return code;
@@ -29,71 +34,48 @@ public class SelectCouponBean {
         this.data = data;
     }
 
-    public String getMsg() {
-        return msg;
-    }
-
-    public void setMsg(String msg) {
-        this.msg = msg;
-    }
-
     public static class DataBean {
-        private List<UsableBean> usable;
-        private List<DisableBean> disable;
+        private List<ValidTicketsBean> valid_tickets;
+        private List<InvalidTicketsBean> invalid_tickets;
 
-        public List<UsableBean> getUsable() {
-            return usable;
+        public List<ValidTicketsBean> getValid_tickets() {
+            return valid_tickets;
         }
 
-        public void setUsable(List<UsableBean> usable) {
-            this.usable = usable;
+        public void setValid_tickets(List<ValidTicketsBean> valid_tickets) {
+            this.valid_tickets = valid_tickets;
         }
 
-        public List<DisableBean> getDisable() {
-            return disable;
+        public List<InvalidTicketsBean> getInvalid_tickets() {
+            return invalid_tickets;
         }
 
-        public void setDisable(List<DisableBean> disable) {
-            this.disable = disable;
+        public void setInvalid_tickets(List<InvalidTicketsBean> invalid_tickets) {
+            this.invalid_tickets = invalid_tickets;
         }
 
-        public static class UsableBean {
-            /**
-             * id : 3
-             * uid : 18
-             * title : 满50减30
-             * sub_title : 满50减30
-             * ticket_no : 2016121946531
-             * money : 30.00
-             * goods_ids : null
-             * ticket_id : 1
-             * status : 1
-             * c_time : 1482111896
-             * s_time : 1482111073
-             * e_time : 1483113600
-             */
-
+        public static  class ValidTicketsBean{
             private int id;
-            private int uid;
+            private int type;
             private String title;
             private String sub_title;
-            private String ticket_no;
             private String money;
-            private String goods_ids;
-            private int ticket_id;
-            private int status;
-            private int c_time;
-            private int s_time;
-            private int e_time;
-            private String min_money;
-
-            public String getMin_money() {
-                return min_money;
-            }
-
-            public void setMin_money(String min_money) {
-                this.min_money = min_money;
-            }
+            private String kouling;
+            private String s_time;
+            private String e_time;
+            private int use_scope;
+            private String no_use_goodsid;
+            private String use_goodsid;
+            private String use_rule;
+            private String ticket_img;
+            private String rule_img;
+            private String rule_words;
+            private String ticket_no;
+            private String status;
+            private String full_money;
+            private String exchange_code;
+            private int has_use;
+            private Object order_sn;
 
             public int getId() {
                 return id;
@@ -103,12 +85,12 @@ public class SelectCouponBean {
                 this.id = id;
             }
 
-            public int getUid() {
-                return uid;
+            public int getType() {
+                return type;
             }
 
-            public void setUid(int uid) {
-                this.uid = uid;
+            public void setType(int type) {
+                this.type = type;
             }
 
             public String getTitle() {
@@ -127,14 +109,6 @@ public class SelectCouponBean {
                 this.sub_title = sub_title;
             }
 
-            public String getTicket_no() {
-                return ticket_no;
-            }
-
-            public void setTicket_no(String ticket_no) {
-                this.ticket_no = ticket_no;
-            }
-
             public String getMoney() {
                 return money;
             }
@@ -143,85 +117,181 @@ public class SelectCouponBean {
                 this.money = money;
             }
 
-            public String getGoods_ids() {
-                return goods_ids;
+            public String getKouling() {
+                return kouling;
             }
 
-            public void setGoods_ids(String goods_ids) {
-                this.goods_ids = goods_ids;
+            public void setKouling(String kouling) {
+                this.kouling = kouling;
             }
 
-            public int getTicket_id() {
-                return ticket_id;
-            }
-
-            public void setTicket_id(int ticket_id) {
-                this.ticket_id = ticket_id;
-            }
-
-            public int getStatus() {
-                return status;
-            }
-
-            public void setStatus(int status) {
-                this.status = status;
-            }
-
-            public int getC_time() {
-                return c_time;
-            }
-
-            public void setC_time(int c_time) {
-                this.c_time = c_time;
-            }
-
-            public int getS_time() {
+            public String getS_time() {
                 return s_time;
             }
 
-            public void setS_time(int s_time) {
+            public void setS_time(String s_time) {
                 this.s_time = s_time;
             }
 
-            public int getE_time() {
+            public String getE_time() {
                 return e_time;
             }
 
-            public void setE_time(int e_time) {
+            public void setE_time(String e_time) {
                 this.e_time = e_time;
+            }
+
+            public int getUse_scope() {
+                return use_scope;
+            }
+
+            public void setUse_scope(int use_scope) {
+                this.use_scope = use_scope;
+            }
+
+            public String getNo_use_goodsid() {
+                return no_use_goodsid;
+            }
+
+            public void setNo_use_goodsid(String no_use_goodsid) {
+                this.no_use_goodsid = no_use_goodsid;
+            }
+
+            public String getUse_goodsid() {
+                return use_goodsid;
+            }
+
+            public void setUse_goodsid(String use_goodsid) {
+                this.use_goodsid = use_goodsid;
+            }
+
+            public String getUse_rule() {
+                return use_rule;
+            }
+
+            public void setUse_rule(String use_rule) {
+                this.use_rule = use_rule;
+            }
+
+            public String getTicket_img() {
+                return ticket_img;
+            }
+
+            public void setTicket_img(String ticket_img) {
+                this.ticket_img = ticket_img;
+            }
+
+            public String getRule_img() {
+                return rule_img;
+            }
+
+            public void setRule_img(String rule_img) {
+                this.rule_img = rule_img;
+            }
+
+            public String getRule_words() {
+                return rule_words;
+            }
+
+            public void setRule_words(String rule_words) {
+                this.rule_words = rule_words;
+            }
+
+            public String getTicket_no() {
+                return ticket_no;
+            }
+
+            public void setTicket_no(String ticket_no) {
+                this.ticket_no = ticket_no;
+            }
+
+            public String getStatus() {
+                return status;
+            }
+
+            public void setStatus(String status) {
+                this.status = status;
+            }
+
+            public String getFull_money() {
+                return full_money;
+            }
+
+            public void setFull_money(String full_money) {
+                this.full_money = full_money;
+            }
+
+            public String getExchange_code() {
+                return exchange_code;
+            }
+
+            public void setExchange_code(String exchange_code) {
+                this.exchange_code = exchange_code;
+            }
+
+            public int getHas_use() {
+                return has_use;
+            }
+
+            public void setHas_use(int has_use) {
+                this.has_use = has_use;
+            }
+
+            public Object getOrder_sn() {
+                return order_sn;
+            }
+
+            public void setOrder_sn(Object order_sn) {
+                this.order_sn = order_sn;
             }
         }
 
-        public static class DisableBean {
+        public static class InvalidTicketsBean {
             /**
-             * id : 10
-             * uid : 18
-             * title : 满50减30
-             * sub_title : 满50减30（部分商品可用）
-             * ticket_no : 2016121954668
-             * money : 30.00
-             * goods_ids : 36,31,26
-             * ticket_id : 1
-             * status : 1
-             * c_time : 1482115772
-             * s_time : 1482111313
-             * e_time : 1483113600
-             * goods_ids_arr : ["36","31","26"]
+             * id : 38
+             * type : 2
+             * title : 新用户注册专享优惠券
+             * sub_title : 新用户注册专享优惠券
+             * money : 100.00
+             * kouling : 20181221n5p8jJ9R
+             * s_time : 2018-12-25 18:03:39
+             * e_time : 2019-03-25 18:03:39
+             * use_scope : 4
+             * no_use_goodsid :
+             * use_goodsid : 4
+             * use_rule :
+             * ticket_img :
+             * rule_img : public/20181026/a54a0280aee8384ba577af8b487c12f70728c010.png|750|1334
+             * rule_words :
+             * ticket_no : 20181221
+             * status : 优惠券满500.00后可用
+             * full_money : 500.00
+             * exchange_code : 20181221n5p8jJ9R
+             * has_use : 0
+             * order_sn : null
              */
 
             private int id;
-            private int uid;
+            private int type;
             private String title;
             private String sub_title;
-            private String ticket_no;
             private String money;
-            private String goods_ids;
-            private int ticket_id;
-            private int status;
-            private int c_time;
-            private int s_time;
-            private int e_time;
-            private List<String> goods_ids_arr;
+            private String kouling;
+            private String s_time;
+            private String e_time;
+            private int use_scope;
+            private String no_use_goodsid;
+            private String use_goodsid;
+            private String use_rule;
+            private String ticket_img;
+            private String rule_img;
+            private String rule_words;
+            private String ticket_no;
+            private String status;
+            private String full_money;
+            private String exchange_code;
+            private int has_use;
+            private Object order_sn;
 
             public int getId() {
                 return id;
@@ -231,12 +301,12 @@ public class SelectCouponBean {
                 this.id = id;
             }
 
-            public int getUid() {
-                return uid;
+            public int getType() {
+                return type;
             }
 
-            public void setUid(int uid) {
-                this.uid = uid;
+            public void setType(int type) {
+                this.type = type;
             }
 
             public String getTitle() {
@@ -255,14 +325,6 @@ public class SelectCouponBean {
                 this.sub_title = sub_title;
             }
 
-            public String getTicket_no() {
-                return ticket_no;
-            }
-
-            public void setTicket_no(String ticket_no) {
-                this.ticket_no = ticket_no;
-            }
-
             public String getMoney() {
                 return money;
             }
@@ -271,60 +333,132 @@ public class SelectCouponBean {
                 this.money = money;
             }
 
-            public String getGoods_ids() {
-                return goods_ids;
+            public String getKouling() {
+                return kouling;
             }
 
-            public void setGoods_ids(String goods_ids) {
-                this.goods_ids = goods_ids;
+            public void setKouling(String kouling) {
+                this.kouling = kouling;
             }
 
-            public int getTicket_id() {
-                return ticket_id;
-            }
-
-            public void setTicket_id(int ticket_id) {
-                this.ticket_id = ticket_id;
-            }
-
-            public int getStatus() {
-                return status;
-            }
-
-            public void setStatus(int status) {
-                this.status = status;
-            }
-
-            public int getC_time() {
-                return c_time;
-            }
-
-            public void setC_time(int c_time) {
-                this.c_time = c_time;
-            }
-
-            public int getS_time() {
+            public String getS_time() {
                 return s_time;
             }
 
-            public void setS_time(int s_time) {
+            public void setS_time(String s_time) {
                 this.s_time = s_time;
             }
 
-            public int getE_time() {
+            public String getE_time() {
                 return e_time;
             }
 
-            public void setE_time(int e_time) {
+            public void setE_time(String e_time) {
                 this.e_time = e_time;
             }
 
-            public List<String> getGoods_ids_arr() {
-                return goods_ids_arr;
+            public int getUse_scope() {
+                return use_scope;
             }
 
-            public void setGoods_ids_arr(List<String> goods_ids_arr) {
-                this.goods_ids_arr = goods_ids_arr;
+            public void setUse_scope(int use_scope) {
+                this.use_scope = use_scope;
+            }
+
+            public String getNo_use_goodsid() {
+                return no_use_goodsid;
+            }
+
+            public void setNo_use_goodsid(String no_use_goodsid) {
+                this.no_use_goodsid = no_use_goodsid;
+            }
+
+            public String getUse_goodsid() {
+                return use_goodsid;
+            }
+
+            public void setUse_goodsid(String use_goodsid) {
+                this.use_goodsid = use_goodsid;
+            }
+
+            public String getUse_rule() {
+                return use_rule;
+            }
+
+            public void setUse_rule(String use_rule) {
+                this.use_rule = use_rule;
+            }
+
+            public String getTicket_img() {
+                return ticket_img;
+            }
+
+            public void setTicket_img(String ticket_img) {
+                this.ticket_img = ticket_img;
+            }
+
+            public String getRule_img() {
+                return rule_img;
+            }
+
+            public void setRule_img(String rule_img) {
+                this.rule_img = rule_img;
+            }
+
+            public String getRule_words() {
+                return rule_words;
+            }
+
+            public void setRule_words(String rule_words) {
+                this.rule_words = rule_words;
+            }
+
+            public String getTicket_no() {
+                return ticket_no;
+            }
+
+            public void setTicket_no(String ticket_no) {
+                this.ticket_no = ticket_no;
+            }
+
+            public String getStatus() {
+                return status;
+            }
+
+            public void setStatus(String status) {
+                this.status = status;
+            }
+
+            public String getFull_money() {
+                return full_money;
+            }
+
+            public void setFull_money(String full_money) {
+                this.full_money = full_money;
+            }
+
+            public String getExchange_code() {
+                return exchange_code;
+            }
+
+            public void setExchange_code(String exchange_code) {
+                this.exchange_code = exchange_code;
+            }
+
+            public int getHas_use() {
+                return has_use;
+            }
+
+            public void setHas_use(int has_use) {
+                this.has_use = has_use;
+            }
+
+            public Object getOrder_sn() {
+                return order_sn;
+            }
+
+            public void setOrder_sn(Object order_sn) {
+                this.order_sn = order_sn;
             }
         }
     }

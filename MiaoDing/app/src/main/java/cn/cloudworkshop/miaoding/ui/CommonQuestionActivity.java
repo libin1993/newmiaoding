@@ -25,6 +25,7 @@ import cn.cloudworkshop.miaoding.base.BaseActivity;
 import cn.cloudworkshop.miaoding.bean.QuestionClassifyBean;
 import cn.cloudworkshop.miaoding.constant.Constant;
 import cn.cloudworkshop.miaoding.utils.GsonUtils;
+import cn.cloudworkshop.miaoding.utils.SharedPreferencesUtils;
 import okhttp3.Call;
 
 /**
@@ -65,6 +66,7 @@ public class CommonQuestionActivity extends BaseActivity {
         OkHttpUtils.get()
                 .url(Constant.QUESTION_LIST)
                 .addParams("classify_id", id)
+                .addParams("token",SharedPreferencesUtils.getStr(this,"token"))
                 .build()
                 .execute(new StringCallback() {
                     @Override

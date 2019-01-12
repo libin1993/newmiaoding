@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -21,6 +22,9 @@ import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +40,7 @@ import cn.cloudworkshop.miaoding.constant.Constant;
 import cn.cloudworkshop.miaoding.utils.ContactService;
 import cn.cloudworkshop.miaoding.utils.GsonUtils;
 import cn.cloudworkshop.miaoding.utils.PermissionUtils;
+import cn.cloudworkshop.miaoding.utils.SharedPreferencesUtils;
 import okhttp3.Call;
 import pub.devrel.easypermissions.EasyPermissions;
 
@@ -65,7 +70,9 @@ public class UserHelpActivity extends BaseActivity implements EasyPermissions.Pe
     private List<QuestionClassifyBean.DataBean> dataList = new ArrayList<>();
 
 
-    static final String[] permissionStr = {Manifest.permission.CALL_PHONE,};
+    static final String[] permissionStr = {Manifest.permission.CALL_PHONE};
+    //客服电话
+    private String phone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +80,7 @@ public class UserHelpActivity extends BaseActivity implements EasyPermissions.Pe
         setContentView(R.layout.activity_user_help);
         ButterKnife.bind(this);
         initData();
-        initView();
+        initTel();
     }
 
     /**
@@ -81,9 +88,9 @@ public class UserHelpActivity extends BaseActivity implements EasyPermissions.Pe
      */
     private void initData() {
         tvHeaderTitle.setText(R.string.feed_back);
-        tvServerPhone.setText(MyApplication.serverPhone);
         OkHttpUtils.get()
                 .url(Constant.QUESTION_CLASSIFY)
+                .addParams("token",SharedPreferencesUtils.getStr(this,"token"))
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -104,6 +111,37 @@ public class UserHelpActivity extends BaseActivity implements EasyPermissions.Pe
                     }
                 });
     }
+
+    /**
+     * 客服热线
+     */
+    private void initTel() {
+        OkHttpUtils.get()
+                .url(Constant.SERVICE_PHONE)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            int code = jsonObject.getInt("code");
+                            if (code == 10000){
+                                JSONObject data = jsonObject.getJSONObject("data");
+                                phone = data.getString("kf_tel");
+                                tvServerPhone.setText(phone);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+    }
+
 
     /**
      * 加载视图
@@ -161,13 +199,16 @@ public class UserHelpActivity extends BaseActivity implements EasyPermissions.Pe
      * 电话联系客服
      */
     private void callPhone() {
-        if (!EasyPermissions.hasPermissions(this, permissionStr)) {
-            EasyPermissions.requestPermissions(this, "", 123, permissionStr);
-        } else {
-            Intent intent = new Intent(Intent.ACTION_DIAL);
-            intent.setData(Uri.parse("tel:" + MyApplication.serverPhone));
-            startActivity(intent);
+        if (!TextUtils.isEmpty(phone)){
+            if (!EasyPermissions.hasPermissions(this, permissionStr)) {
+                EasyPermissions.requestPermissions(this, "", 123, permissionStr);
+            } else {
+                Intent intent = new Intent(Intent.ACTION_DIAL);
+                intent.setData(Uri.parse("tel:" + phone));
+                startActivity(intent);
+            }
         }
+
     }
 
     /**
@@ -189,7 +230,9 @@ public class UserHelpActivity extends BaseActivity implements EasyPermissions.Pe
 
     @Override
     public void onPermissionsGranted(int requestCode, List<String> perms) {
-
+        Intent intent = new Intent(Intent.ACTION_DIAL);
+        intent.setData(Uri.parse("tel:" + phone));
+        startActivity(intent);
     }
 
     @Override

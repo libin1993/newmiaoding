@@ -32,6 +32,7 @@ import cn.cloudworkshop.miaoding.R;
 import cn.cloudworkshop.miaoding.base.BaseFragment;
 import cn.cloudworkshop.miaoding.bean.UserBean;
 import cn.cloudworkshop.miaoding.constant.Constant;
+import cn.cloudworkshop.miaoding.ui.ApplyJoinActivity;
 import cn.cloudworkshop.miaoding.ui.ApplyMeasureActivity;
 import cn.cloudworkshop.miaoding.ui.AppointmentActivity;
 import cn.cloudworkshop.miaoding.ui.CameraFormActivity;
@@ -262,10 +263,7 @@ public class MyCenterFragment extends BaseFragment {
                         ContactService.contactService(getActivity());
                         break;
                     case 8:
-
                         inviteFriends();
-
-
                         break;
 
                 }

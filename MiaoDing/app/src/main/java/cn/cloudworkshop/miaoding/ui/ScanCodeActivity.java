@@ -85,7 +85,7 @@ public class ScanCodeActivity extends BaseActivity {
                             if (goods_id != null && goods_type != null) {
                                 switch (goods_type) {
                                     case "1":
-                                        toGoodsDetail(CustomizedGoodsActivity.class, goods_id, shop_id, market_id);
+                                        toGoodsDetail(NewCustomizedGoodsActivity.class, goods_id, shop_id, market_id);
                                         break;
                                     case "2":
                                         toGoodsDetail(WorksDetailActivity.class, goods_id, shop_id, market_id);

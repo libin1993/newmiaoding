@@ -69,7 +69,7 @@ import okhttp3.Call;
 /**
  * Author：Libin on 2019/1/4 15:23
  * Email：1993911441@qq.com
- * Describe：
+ * Describe：定制商品详情
  */
 public class NewCustomizedGoodsActivity extends BaseActivity {
     @BindView(R.id.tv_goods_sort)
@@ -130,7 +130,6 @@ public class NewCustomizedGoodsActivity extends BaseActivity {
     private String shop_id;
     private String market_id;
     private CustomizedGoodsBean customBean;
-    private long enterTime;
     //监听banner滑动状态
     private boolean isScrolled;
 
@@ -151,7 +150,6 @@ public class NewCustomizedGoodsActivity extends BaseActivity {
         id = intent.getStringExtra("id");
         shop_id = intent.getStringExtra("shop_id");
         market_id = intent.getStringExtra("market_id");
-        enterTime = DateUtils.getCurrentTime();
     }
 
     @Override
@@ -196,6 +194,7 @@ public class NewCustomizedGoodsActivity extends BaseActivity {
     private void initView() {
 
         tvGoodsName.setText(customBean.getData().getName());
+
         tvGoodsContent.setText(customBean.getData().getName());
         if (customBean.getData().getIs_collect() == 1) {
             imgAddLike.setImageResource(R.mipmap.icon_add_like);
@@ -249,7 +248,6 @@ public class NewCustomizedGoodsActivity extends BaseActivity {
                     case ViewPager.SCROLL_STATE_IDLE:
                         //划到最后一张，再左滑跳转详情页
                         if (!isScrolled && bannerGoods.getCurrentItem() == banners.size() - 1) {
-//                            scrollContainer.setAutoUp();
                             Intent intent = new Intent(NewCustomizedGoodsActivity.this, GoodsDetailActivity.class);
                             intent.putExtra("img", (Serializable) customBean.getData().getImg_info());
                             startActivity(intent);
@@ -357,7 +355,6 @@ public class NewCustomizedGoodsActivity extends BaseActivity {
                     startActivity(login);
                 } else {
                     if (customBean != null && customBean.getData() != null) {
-//                        selectGoodsPrice();
                         buyGoods();
                     }
                 }
@@ -375,8 +372,6 @@ public class NewCustomizedGoodsActivity extends BaseActivity {
 
                 break;
             case R.id.img_tailor_back:
-                if (customBean != null && customBean.getData() != null) {
-                }
                 finish();
                 break;
             case R.id.img_add_like:
@@ -429,31 +424,9 @@ public class NewCustomizedGoodsActivity extends BaseActivity {
      * 购买商品
      */
     private void buyGoods() {
-//        Intent intent = new Intent(NewCustomizedGoodsActivity.this, EmbroideryActivity.class);
-//        Bundle bundle = new Bundle();
-//
-//        CustomItemBean customItemBean = new CustomItemBean();
-//        customItemBean.setId(id);
-//        customItemBean.setClassify_id(customBean.getData().getClassify_id());
-//        if (shop_id != null) {
-//            customItemBean.setShop_id(shop_id);
-//        }
-//        if (market_id != null) {
-//            customItemBean.setMarket_id(market_id);
-//        }
-//        customItemBean.setGoods_name(customBean.getData().getName());
-//
-//        customItemBean.setImg_url(customBean.getData().getThumb());
-//        customItemBean.setLog_id(customBean.getId());
-//        customItemBean.setGoods_time(enterTime);
-//        customItemBean.setDingzhi_time(0);
-//
-//        customItemBean.setSpec_ids(customBean.getData().getDefault_spec_ids());
-//        customItemBean.setSpec_content(customBean.getData().getDefault_spec_content());
-//
-//        bundle.putSerializable("tailor", customItemBean);
-//        intent.putExtras(bundle);
-//        startActivity(intent);
+        Intent intent = new Intent(this,NewEmbroideryActivity.class);
+        intent.putExtra("goods_id",customBean.getData().getId());
+        startActivity(intent);
 
     }
 

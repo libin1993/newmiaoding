@@ -54,7 +54,7 @@
             android:layout_marginLeft="32dp"
             android:layout_toRightOf="@id/view_embroidery"
             android:gravity="center"
-            android:text="@string/prosonal_customize"
+            android:text="@string/personal_customize"
             android:textColor="@android:color/white"
             android:textSize="14sp"/>
 

@@ -236,7 +236,7 @@ public class ShoppingCartActivity extends BaseActivity {
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
                 Intent intent;
                 if (recommendBean.get(position).getType() == 1) {
-                    intent = new Intent(ShoppingCartActivity.this, CustomizedGoodsActivity.class);
+                    intent = new Intent(ShoppingCartActivity.this, NewCustomizedGoodsActivity.class);
                 } else {
                     intent = new Intent(ShoppingCartActivity.this, WorksDetailActivity.class);
                 }
@@ -427,7 +427,7 @@ public class ShoppingCartActivity extends BaseActivity {
         OkHttpUtils.get()
                 .url(Constant.CART_TO_CUSTOM)
                 .addParams("token", SharedPreferencesUtils.getStr(ShoppingCartActivity.this, "token"))
-                .addParams("car_id", dataList.get(position).getCart_id() + "")
+                .addParams("cart_id", dataList.get(position).getCart_id() + "")
                 .addParams("phone_type", "3")
                 .build()
                 .execute(new StringCallback() {
@@ -508,9 +508,8 @@ public class ShoppingCartActivity extends BaseActivity {
         OkHttpUtils.post()
                 .url(Constant.CART_COUNT)
                 .addParams("token", SharedPreferencesUtils.getStr(this, "token"))
-                .addParams("car_id", String.valueOf(dataList.get(position).getCart_id()))
-                .addParams("num", String.valueOf(count))
-                .addParams("type", "1")
+                .addParams("cart_id", String.valueOf(dataList.get(position).getCart_id()))
+                .addParams("buy_num", String.valueOf(count))
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -522,13 +521,14 @@ public class ShoppingCartActivity extends BaseActivity {
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             int code = jsonObject.getInt("code");
-                            if (code == 1) {
+                            String msg = jsonObject.getString("msg");
+                            if (code == 10000) {
                                 dataList.get(position).setGoods_num(count);
                                 adapter.notifyDataSetChanged();
                                 getTotalPrice();
                                 getTotalCount();
                             } else {
-                                ToastUtils.showToast(ShoppingCartActivity.this, getString(R.string.stock_null));
+                                ToastUtils.showToast(ShoppingCartActivity.this, msg);
                             }
 
                         } catch (JSONException e) {

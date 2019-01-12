@@ -21,7 +21,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.umeng.analytics.MobclickAgent;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -43,7 +42,7 @@ import butterknife.OnClick;
 import cn.cloudworkshop.miaoding.R;
 import cn.cloudworkshop.miaoding.base.BaseActivity;
 import cn.cloudworkshop.miaoding.bean.CustomResultBean;
-import cn.cloudworkshop.miaoding.bean.CustomItemBean;
+import cn.cloudworkshop.miaoding.bean.CustomizePartsBean;
 import cn.cloudworkshop.miaoding.constant.Constant;
 import cn.cloudworkshop.miaoding.utils.MyLinearLayoutManager;
 import cn.cloudworkshop.miaoding.utils.SharedPreferencesUtils;
@@ -95,7 +94,7 @@ public class CustomizeResultActivity extends BaseActivity {
     private float x1 = 0;
     private float x2 = 0;
 
-    private CustomItemBean customBean;
+    private CustomizePartsBean partsBean;
 
 
     @Override
@@ -109,7 +108,6 @@ public class CustomizeResultActivity extends BaseActivity {
         imgShoppingBag.setVisibility(View.VISIBLE);
         imgShoppingBag.setImageResource(R.mipmap.icon_shopping_bag);
         getData();
-
     }
 
     /**
@@ -118,9 +116,9 @@ public class CustomizeResultActivity extends BaseActivity {
 
     private void getData() {
         Bundle bundle = getIntent().getExtras();
-        if (bundle != null){
-            customBean = (CustomItemBean) bundle.getSerializable("tailor");
-            if (customBean != null){
+        if (bundle != null) {
+            partsBean = (CustomizePartsBean) bundle.getSerializable("customize");
+            if (partsBean != null) {
                 initView();
             }
         }
@@ -133,178 +131,174 @@ public class CustomizeResultActivity extends BaseActivity {
      */
     private void initView() {
 
-        //部件图展示
-        switch (customBean.getIs_scan()) {
-            //自选定制配件，展示配件拼接图片
-            case 0:
-                for (int i = 0; i < customBean.getItemBean().size(); i++) {
-                    ImageView img = new ImageView(this);
-                    Glide.with(getApplicationContext())
-                            .load(Constant.IMG_HOST + customBean.getItemBean().get(i).getImg())
-                            .fitCenter()
-                            .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                            .into(img);
-                    switch (customBean.getItemBean().get(i).getPosition_id()) {
-                        case 1:
-                            rlTailorPositive.addView(img);
-                            break;
-                        case 2:
-                            rgsTailorPosition.getChildAt(1).setVisibility(View.VISIBLE);
-                            rlTailorBack.addView(img);
-                            break;
-                        case 3:
-                            rgsTailorPosition.getChildAt(2).setVisibility(View.VISIBLE);
-                            rlTailorInside.addView(img);
-                            break;
+        for (int i = 0; i < partsBean.getPartsBeans().size(); i++) {
+            ImageView img = new ImageView(this);
+            Glide.with(getApplicationContext())
+                    .load(Constant.IMG_HOST + partsBean.getPartsBeans().get(i).getImg())
+                    .fitCenter()
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .into(img);
+            switch (partsBean.getPartsBeans().get(i).getPositionId()) {
+                case 1:
+                    rlTailorPositive.addView(img);
+                    break;
+                case 2:
+                    rgsTailorPosition.getChildAt(1).setVisibility(View.VISIBLE);
+                    rlTailorBack.addView(img);
+                    break;
+                case 3:
+                    rgsTailorPosition.getChildAt(2).setVisibility(View.VISIBLE);
+                    rlTailorInside.addView(img);
+                    break;
+            }
+
+        }
+
+        //正面
+        ((RadioButton) rgsTailorPosition.getChildAt(0)).setChecked(true);
+        rgsTailorPosition.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+
+                for (int m = 0; m < rgsTailorPosition.getChildCount(); m++) {
+                    RadioButton rBtn = (RadioButton) radioGroup.getChildAt(m);
+                    if (rBtn.getId() == i) {
+                        switch (m) {
+                            case 0:
+                                rlTailorPositive.setVisibility(View.VISIBLE);
+                                rlTailorBack.setVisibility(View.GONE);
+                                rlTailorInside.setVisibility(View.GONE);
+                                break;
+                            case 1:
+                                rlTailorBack.setVisibility(View.VISIBLE);
+                                rlTailorPositive.setVisibility(View.GONE);
+                                rlTailorInside.setVisibility(View.GONE);
+                                break;
+                            case 2:
+                                rlTailorInside.setVisibility(View.VISIBLE);
+                                rlTailorPositive.setVisibility(View.GONE);
+                                rlTailorBack.setVisibility(View.GONE);
+                                break;
+                        }
                     }
-
                 }
-
-                //正面
-                ((RadioButton) rgsTailorPosition.getChildAt(0)).setChecked(true);
-                rgsTailorPosition.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(RadioGroup radioGroup, int i) {
-
-                        for (int m = 0; m < rgsTailorPosition.getChildCount(); m++) {
-                            RadioButton rBtn = (RadioButton) radioGroup.getChildAt(m);
-                            if (rBtn.getId() == i) {
-                                switch (m) {
-                                    case 0:
-                                        rlTailorPositive.setVisibility(View.VISIBLE);
-                                        rlTailorBack.setVisibility(View.GONE);
-                                        rlTailorInside.setVisibility(View.GONE);
-                                        break;
-                                    case 1:
-                                        rlTailorBack.setVisibility(View.VISIBLE);
-                                        rlTailorPositive.setVisibility(View.GONE);
-                                        rlTailorInside.setVisibility(View.GONE);
-                                        break;
-                                    case 2:
-                                        rlTailorInside.setVisibility(View.VISIBLE);
-                                        rlTailorPositive.setVisibility(View.GONE);
-                                        rlTailorBack.setVisibility(View.GONE);
-                                        break;
-                                }
+            }
+        });
+        //正面，滑动监听
+        rlTailorPositive.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                switch (motionEvent.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        x1 = motionEvent.getX();
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        x2 = motionEvent.getX();
+                    case MotionEvent.ACTION_UP:
+                        if (x1 < x2) {
+                            if (rgsTailorPosition.getChildAt(1).getVisibility() == View.VISIBLE) {
+                                ((RadioButton) rgsTailorPosition.getChildAt(1)).setChecked(true);
                             }
                         }
-                    }
-                });
-                //正面，滑动监听
-                rlTailorPositive.setOnTouchListener(new View.OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View view, MotionEvent motionEvent) {
-                        switch (motionEvent.getAction()) {
-                            case MotionEvent.ACTION_DOWN:
-                                x1 = motionEvent.getX();
-                                break;
-                            case MotionEvent.ACTION_MOVE:
-                                x2 = motionEvent.getX();
-                            case MotionEvent.ACTION_UP:
-                                if (x1 < x2) {
-                                    if (rgsTailorPosition.getChildAt(1).getVisibility() == View.VISIBLE) {
-                                        ((RadioButton) rgsTailorPosition.getChildAt(1)).setChecked(true);
-                                    }
-                                }
-                                break;
-                        }
-                        return true;
-                    }
-                });
-                //反面，滑动监听
-                rlTailorBack.setOnTouchListener(new View.OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View view, MotionEvent motionEvent) {
-                        switch (motionEvent.getAction()) {
-                            case MotionEvent.ACTION_DOWN:
-                                x1 = motionEvent.getX();
-                                break;
-                            case MotionEvent.ACTION_MOVE:
-                                x2 = motionEvent.getX();
-                            case MotionEvent.ACTION_UP:
-                                if (x1 > x2) {
-                                    ((RadioButton) rgsTailorPosition.getChildAt(0)).setChecked(true);
-                                } else if (x1 < x2) {
-                                    if (rgsTailorPosition.getChildAt(2).getVisibility() == View.VISIBLE) {
-                                        ((RadioButton) rgsTailorPosition.getChildAt(2)).setChecked(true);
-                                    }
-                                }
-                                break;
-                        }
-                        return true;
-                    }
-                });
-
-                //里子，滑动监听
-                rlTailorInside.setOnTouchListener(new View.OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View view, MotionEvent motionEvent) {
-                        switch (motionEvent.getAction()) {
-                            case MotionEvent.ACTION_DOWN:
-                                x1 = motionEvent.getX();
-                                break;
-                            case MotionEvent.ACTION_MOVE:
-                                x2 = motionEvent.getX();
-                            case MotionEvent.ACTION_UP:
-                                if (x1 > x2) {
-                                    ((RadioButton) rgsTailorPosition.getChildAt(1)).setChecked(true);
-                                }
-                                break;
-                        }
-                        return true;
-                    }
-                });
-                break;
-            //定制同款，显示默认图片
-            case 1:
-                rgsTailorPosition.setVisibility(View.GONE);
-                rlTailorPosition.setVisibility(View.GONE);
-                imgDefaultItem.setVisibility(View.VISIBLE);
-
-                Glide.with(getApplicationContext())
-                        .load(Constant.IMG_HOST + customBean.getDefault_img())
-                        .placeholder(R.mipmap.place_holder_goods)
-                        .dontAnimate()
-                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                        .into(imgDefaultItem);
-                break;
-        }
-
-
-        tvTailorName.setText(customBean.getGoods_name());
-        tvTailorPrice.setText("¥" + customBean.getPrice());
-        rvTailorName.setFocusable(false);
-        //配件字符串和个性绣花字符串拼接
-        if (!TextUtils.isEmpty(customBean.getSpec_content())) {
-            String customStr = customBean.getSpec_content();
-            if (!TextUtils.isEmpty(customBean.getDiy_contet())) {
-                customStr += ";" + customBean.getDiy_contet();
-            }
-
-            List<CustomResultBean> itemList = new ArrayList<>();
-            String[] typeStr = customStr.split(";");
-            for (String aTypeStr : typeStr) {
-                String[] nameStr = aTypeStr.split(":");
-                CustomResultBean tailorInfoBean = new CustomResultBean();
-                tailorInfoBean.setType(nameStr[0]);
-                tailorInfoBean.setName(nameStr[1]);
-                itemList.add(tailorInfoBean);
-            }
-
-
-            MyLinearLayoutManager linearLayoutManager = new MyLinearLayoutManager(this);
-            linearLayoutManager.setScrollEnabled(false);
-            rvTailorName.setLayoutManager(linearLayoutManager);
-            CommonAdapter<CustomResultBean> adapter = new CommonAdapter<CustomResultBean>(this,
-                    R.layout.listitem_customize_result, itemList) {
-                @Override
-                protected void convert(ViewHolder holder, CustomResultBean tailorInfoBean, int position) {
-                    holder.setText(R.id.tv_tailor_type, tailorInfoBean.getType());
-                    holder.setText(R.id.tv_tailor_item, tailorInfoBean.getName());
+                        break;
                 }
-            };
-            rvTailorName.setAdapter(adapter);
+                return true;
+            }
+        });
+        //反面，滑动监听
+        rlTailorBack.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                switch (motionEvent.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        x1 = motionEvent.getX();
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        x2 = motionEvent.getX();
+                    case MotionEvent.ACTION_UP:
+                        if (x1 > x2) {
+                            ((RadioButton) rgsTailorPosition.getChildAt(0)).setChecked(true);
+                        } else if (x1 < x2) {
+                            if (rgsTailorPosition.getChildAt(2).getVisibility() == View.VISIBLE) {
+                                ((RadioButton) rgsTailorPosition.getChildAt(2)).setChecked(true);
+                            }
+                        }
+                        break;
+                }
+                return true;
+            }
+        });
+
+        //里子，滑动监听
+        rlTailorInside.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                switch (motionEvent.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        x1 = motionEvent.getX();
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        x2 = motionEvent.getX();
+                    case MotionEvent.ACTION_UP:
+                        if (x1 > x2) {
+                            ((RadioButton) rgsTailorPosition.getChildAt(1)).setChecked(true);
+                        }
+                        break;
+                }
+                return true;
+            }
+        });
+
+
+        tvTailorName.setText(partsBean.getGoodsName());
+        tvTailorPrice.setText("¥" + partsBean.getPrice());
+        rvTailorName.setFocusable(false);
+
+
+        List<CustomResultBean> itemList = new ArrayList<>();
+
+
+        for (CustomizePartsBean.PartsBean bean : partsBean.getPartsBeans()) {
+            CustomResultBean partsBean = new CustomResultBean();
+            partsBean.setType(bean.getTitle());
+            partsBean.setName(bean.getName());
+            itemList.add(partsBean);
         }
+
+        CustomResultBean fabricBean = new CustomResultBean();
+        fabricBean.setType(getString(R.string.fabric));
+        fabricBean.setName(partsBean.getFabricBean().getFabricName());
+        itemList.add(fabricBean);
+
+
+        for (CustomizePartsBean.EmbroideryBean embroideryBean : partsBean.getEmbroideryBeans()) {
+            CustomResultBean embroidery = new CustomResultBean();
+            embroidery.setType(embroideryBean.getTitle());
+            embroidery.setName(embroideryBean.getName());
+            itemList.add(embroidery);
+        }
+
+        if (!TextUtils.isEmpty(partsBean.getContent())){
+            CustomResultBean contentBean = new CustomResultBean();
+            contentBean.setType(getString(R.string.embroidery_content));
+            contentBean.setName(partsBean.getContent());
+            itemList.add(contentBean);
+        }
+
+
+
+        MyLinearLayoutManager linearLayoutManager = new MyLinearLayoutManager(this);
+        linearLayoutManager.setScrollEnabled(false);
+        rvTailorName.setLayoutManager(linearLayoutManager);
+        CommonAdapter<CustomResultBean> adapter = new CommonAdapter<CustomResultBean>(this,
+                R.layout.listitem_customize_result, itemList) {
+            @Override
+            protected void convert(ViewHolder holder, CustomResultBean tailorInfoBean, int position) {
+                holder.setText(R.id.tv_tailor_type, tailorInfoBean.getType());
+                holder.setText(R.id.tv_tailor_item, tailorInfoBean.getName());
+            }
+        };
+        rvTailorName.setAdapter(adapter);
     }
 
 
@@ -336,42 +330,16 @@ public class CustomizeResultActivity extends BaseActivity {
         Map<String, String> map = new HashMap<>();
         map.put("token", SharedPreferencesUtils.getStr(this, "token"));
         map.put("type", String.valueOf(type));
-        map.put("price_id", customBean.getPrice_type());
-        map.put("goods_id", customBean.getId());
-        if (!TextUtils.isEmpty(customBean.getShop_id())) {
-            map.put("shop_id", customBean.getShop_id());
-        }
-        if (!TextUtils.isEmpty(customBean.getMarket_id())) {
-            map.put("market_id", customBean.getMarket_id());
-        }
-        map.put("goods_type", "1");
-        map.put("price", customBean.getPrice());
-        map.put("goods_name", customBean.getGoods_name());
-        if (TextUtils.isEmpty(customBean.getDefault_img())) {
-            map.put("goods_thumb", customBean.getImg_url());
-        } else {
-            map.put("goods_thumb", customBean.getDefault_img());
+        map.put("goods_id", String.valueOf(partsBean.getGoodsId()));
+        map.put("goods_num", "1");
+        map.put("fabric_id", partsBean.getFabricBean().getFabricId());
+        if (!TextUtils.isEmpty(partsBean.getContent())) {
+            map.put("re_marks", partsBean.getContent());
         }
 
-        if (!TextUtils.isEmpty(customBean.getSpec_ids())) {
-            map.put("spec_ids", customBean.getSpec_ids());
-        }
-        if (!TextUtils.isEmpty(customBean.getSpec_content())) {
-            map.put("spec_content", customBean.getSpec_content());
-        }
+        map.put("special_mark_part_ids", partsBean.getSpecial_mark_part_ids());
 
-        if (!TextUtils.isEmpty(customBean.getFabric_id())) {
-            map.put("mianliao_id", customBean.getFabric_id());
-        }
-
-        if (!TextUtils.isEmpty(customBean.getBanxing_id())) {
-            map.put("banxing_id", customBean.getBanxing_id());
-        }
-
-        map.put("is_scan", String.valueOf(customBean.getIs_scan()));
-        if (!TextUtils.isEmpty(customBean.getDiy_contet())) {
-            map.put("diy_content", customBean.getDiy_contet());
-        }
+        map.put("must_display_part_ids", partsBean.getMust_display_part_ids());
 
         OkHttpUtils.post()
                 .url(Constant.ADD_CART)
@@ -387,31 +355,20 @@ public class CustomizeResultActivity extends BaseActivity {
                     public void onResponse(String response, int id) {
                         try {
                             JSONObject jsonObject = new JSONObject(response);
-                            JSONObject jsonObject1 = jsonObject.getJSONObject("data");
+                            int code = jsonObject.getInt("code");
                             String msg = jsonObject.getString("msg");
-                            //加入购物车成功
-                            if (type == 2) {
-                                ToastUtils.showToast(CustomizeResultActivity.this, msg);
-                                aadCartAnim();
-                            }
-                            String cartId = jsonObject1.getString("car_id");
-                            if (!TextUtils.isEmpty(cartId)) {
-                                MobclickAgent.onEvent(CustomizeResultActivity.this, "add_cart");
-                                //直接购买，跳转确认订单页面
+                            if (code == 10000) {
+                                int cartId = jsonObject.getInt("cart_id");
                                 if (type == 1) {
-                                    Intent intent = new Intent(CustomizeResultActivity.this,
-                                            ConfirmOrderActivity.class);
-                                    Bundle bundle = new Bundle();
-                                    bundle.putString("cart_id", cartId);
-                                    bundle.putString("log_id", customBean.getLog_id());
-                                    bundle.putLong("goods_time", customBean.getGoods_time());
-                                    bundle.putLong("dingzhi_time", customBean.getDingzhi_time());
-                                    bundle.putString("goods_id", customBean.getId());
-                                    bundle.putString("goods_name", customBean.getGoods_name());
-                                    intent.putExtras(bundle);
+                                    Intent intent = new Intent(CustomizeResultActivity.this, ConfirmOrderActivity.class);
+                                    intent.putExtra("cart_id", String.valueOf(cartId));
                                     startActivity(intent);
+                                } else {
+                                    ToastUtils.showToast(CustomizeResultActivity.this, msg);
+                                    addCartAnim();
                                 }
-
+                            } else {
+                                ToastUtils.showToast(CustomizeResultActivity.this, msg);
                             }
 
                         } catch (JSONException e) {
@@ -419,22 +376,18 @@ public class CustomizeResultActivity extends BaseActivity {
                         }
                     }
                 });
+
     }
+
 
     /**
      * 加入购物车动画效果，经过一个抛物线（贝塞尔曲线），移动到购物车里
      */
-    private void aadCartAnim() {
+    private void addCartAnim() {
         //1、添加执行动画效果的图片
         final ImageView imgGoods = new ImageView(this);
-        String imgUrl;
-        if (TextUtils.isEmpty(customBean.getDefault_img())) {
-            imgUrl = Constant.IMG_HOST + customBean.getImg_url();
-        } else {
-            imgUrl = Constant.IMG_HOST + customBean.getDefault_img();
-        }
         Glide.with(this)
-                .load(imgUrl)
+                .load(Constant.IMG_HOST + partsBean.getGoodsImg())
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .into(imgGoods);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(80, 80);

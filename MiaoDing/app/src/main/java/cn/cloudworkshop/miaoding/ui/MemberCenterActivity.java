@@ -139,18 +139,18 @@ public class MemberCenterActivity extends BaseActivity {
      */
     private void initView() {
         Glide.with(getApplicationContext())
-                .load(memberBean.getData().getUser_info().getAvatar())
+                .load(memberBean.getData().getUser_info().getHead_ico())
                 .placeholder(R.mipmap.place_holder_goods)
                 .dontAnimate()
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .into(imgMemberHead);
-        tvMemberName.setText(memberBean.getData().getUser_info().getName());
+        tvMemberName.setText(memberBean.getData().getUser_info().getUsername());
         Glide.with(getApplicationContext())
                 .load(Constant.IMG_HOST + memberBean.getData().getUser_info().getUser_grade().getImg2())
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .into(imgGradeIcon);
 
-        credit = (int) Float.parseFloat(memberBean.getData().getUser_info().getCredit());
+        credit = memberBean.getData().getUser_info().getExp();
 
         float maxCredit = Float.parseFloat(memberBean.getData().getUser_info().getUser_grade().getMax_credit());
         progressMember.setProgress((int) (credit / maxCredit * 100));

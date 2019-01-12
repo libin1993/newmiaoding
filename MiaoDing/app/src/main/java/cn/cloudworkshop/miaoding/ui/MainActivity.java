@@ -229,15 +229,13 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
                     .execute(new StringCallback() {
                         @Override
                         public void onError(Call call, Exception e, int id) {
-                            LogUtils.log(e.getMessage());
+
                         }
 
                         @Override
                         public void onResponse(String response, int id) {
-                            LogUtils.log(response);
                             final AppIndexBean appIndexBean = GsonUtils.jsonToBean(response, AppIndexBean.class);
                             MyApplication.serverPhone = appIndexBean.getData().getKf_tel();
-                            MyApplication.userAgreement = appIndexBean.getData().getUser_manual();
                             MyApplication.loginBg = appIndexBean.getData().getLogin_img();
                             if (appIndexBean.getData().getVersion().getAndroid() != null &&
                                     Integer.valueOf(appIndexBean.getData().getVersion().getAndroid()
@@ -475,5 +473,9 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
         initIcon();
     }
 }
+
+
+
+
 
 

@@ -75,10 +75,8 @@ public class MemberRuleActivity extends BaseActivity {
                             dataList.addAll(bean.getData());
                             initView();
                         }
-
                     }
                 });
-
     }
 
     private void initView() {
@@ -96,13 +94,12 @@ public class MemberRuleActivity extends BaseActivity {
         adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-                if (!TextUtils.isEmpty(dataList.get(position).getImg_list().get(0))) {
+                if (!TextUtils.isEmpty(dataList.get(position).getImg_list().get(0).getImg())) {
                     Intent intent = new Intent(MemberRuleActivity.this, UserRuleActivity.class);
                     intent.putExtra("title", dataList.get(position).getName());
-                    intent.putExtra("img_url", dataList.get(position).getImg_list().get(0));
+                    intent.putExtra("img_url", dataList.get(position).getImg_list().get(0).getImg());
                     startActivity(intent);
                 }
-
             }
 
             @Override

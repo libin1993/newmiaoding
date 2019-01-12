@@ -235,6 +235,9 @@
         <activity android:name=".ui.MeasureDataActivity"/>
         <activity android:name=".ui.TestActivity"/>
         <activity android:name=".ui.NewCustomizedGoodsActivity"/>
+        <activity android:name=".ui.NewEmbroideryActivity"
+                  android:windowSoftInputMode="adjustPan"/>
+        <activity android:name=".ui.PayOrderActivity"/>
 
         <service android:name="com.amap.api.location.APSService"/>
         <service

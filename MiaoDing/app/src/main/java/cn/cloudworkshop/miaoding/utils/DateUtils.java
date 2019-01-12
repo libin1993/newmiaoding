@@ -2,6 +2,7 @@ package cn.cloudworkshop.miaoding.utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -17,26 +18,25 @@ public class DateUtils {
      * @param time
      * @return 获取日期
      */
-    public static String getDate(String type, int time) {
+    public static String getDate(String type, long time) {
         SimpleDateFormat sdf = new SimpleDateFormat(type, Locale.CHINA);
-        return sdf.format(new Date(time * 1000L));
+        return sdf.format(new Date(time));
     }
 
     /**
-     * @param type
      * @param time
-     * @return 毫秒
+     * @return 字符串转时间戳毫秒
      */
-    public static long getMillisecond(String type, String time) {
-        SimpleDateFormat sdf = new SimpleDateFormat(type, Locale.CHINA);
-        long seconds = 0;
-        try {
-            seconds = sdf.parse(time).getTime();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+    public static long getTime(String type, String time) {
 
-        return seconds;
+        try {
+            Calendar c = Calendar.getInstance();
+            c.setTime(new SimpleDateFormat(type).parse(time));
+            return c.getTimeInMillis();
+        } catch (ParseException e) {
+
+        }
+        return 0;
     }
 
     /**
@@ -45,4 +45,14 @@ public class DateUtils {
     public static long getCurrentTime() {
         return System.currentTimeMillis() / 1000;
     }
+
+
+    /**
+     * @return 时间格式转换
+     */
+    public static String formatTime(String type, String formatType, String time) {
+        long time1 = getTime(type, time);
+        return getDate(formatType, time1);
+    }
+
 }

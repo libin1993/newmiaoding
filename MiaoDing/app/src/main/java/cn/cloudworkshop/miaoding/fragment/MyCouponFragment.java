@@ -115,7 +115,7 @@ public class MyCouponFragment extends BaseFragment {
                     case 2:
                         holder.getView(R.id.ll_coupon_bg).setBackgroundResource(R.mipmap.icon_coupon_used);
                         break;
-                    case -1:
+                    case 3:
                         holder.getView(R.id.ll_coupon_bg).setBackgroundResource(R.mipmap.icon_coupon_overdue);
                         break;
                 }
@@ -128,9 +128,9 @@ public class MyCouponFragment extends BaseFragment {
                 holder.setText(R.id.tv_coupon_discount, dataBean.getSub_title());
                 StringBuilder sb = new StringBuilder();
                 sb.append(getString(R.string.validity_term)+"：")
-                        .append(DateUtils.getDate("yyyy-MM-dd", dataBean.getS_time()))
+                        .append(DateUtils.formatTime("yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd", dataBean.getS_time()))
                         .append(getString(R.string.to))
-                        .append(DateUtils.getDate("yyyy-MM-dd", dataBean.getE_time()));
+                        .append(DateUtils.formatTime("yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd", dataBean.getE_time()));
                 holder.setText(R.id.tv_coupon_term, sb.toString());
 
             }

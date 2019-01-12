@@ -42,6 +42,7 @@ import cn.cloudworkshop.miaoding.bean.ConfirmOrderBean;
 import cn.cloudworkshop.miaoding.bean.DeliveryAddressBean;
 import cn.cloudworkshop.miaoding.constant.Constant;
 import cn.cloudworkshop.miaoding.utils.GsonUtils;
+import cn.cloudworkshop.miaoding.utils.LogUtils;
 import cn.cloudworkshop.miaoding.utils.SharedPreferencesUtils;
 import okhttp3.Call;
 
@@ -104,6 +105,7 @@ public class DeliveryAddressActivity extends BaseActivity {
             case 2:
                 tvHeaderTitle.setText(R.string.select_address_receive);
                 addressId = getIntent().getIntExtra("address_id", -1);
+
                 break;
         }
 
@@ -122,10 +124,10 @@ public class DeliveryAddressActivity extends BaseActivity {
                     public void onResponse(String response, int id) {
                         imgLoadError.setVisibility(View.GONE);
                         DeliveryAddressBean addressBean = GsonUtils.jsonToBean(response, DeliveryAddressBean.class);
+                        if (isRefresh) {
+                            dataList.clear();
+                        }
                         if (addressBean.getData() != null && addressBean.getData().size() > 0) {
-                            if (isRefresh) {
-                                dataList.clear();
-                            }
                             dataList.addAll(addressBean.getData());
                             if (isRefresh || isLoadMore) {
                                 recyclerView.refreshComplete(0);
@@ -267,9 +269,8 @@ public class DeliveryAddressActivity extends BaseActivity {
         addressListBean.setCity(dataList.get(position).getCity());
         addressListBean.setArea(dataList.get(position).getArea());
         addressListBean.setAddress(dataList.get(position).getAddress());
-        addressListBean.setName(dataList.get(position).getAccept_name());
+        addressListBean.setAccept_name(dataList.get(position).getAccept_name());
         addressListBean.setPhone(dataList.get(position).getPhone());
-        addressListBean.setIs_default(dataList.get(position).getIs_default());
         intent.putExtra("address", addressListBean);
         setResult(resultCode, intent);
     }

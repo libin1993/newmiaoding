@@ -64,7 +64,7 @@ public class CouponActivity extends BaseActivity {
         titleList.add(getString(R.string.invalid));
 
         fragmentList.add(MyCouponFragment.newInstance(2));
-        fragmentList.add(MyCouponFragment.newInstance(-1));
+        fragmentList.add(MyCouponFragment.newInstance(3));
 
         initView();
     }

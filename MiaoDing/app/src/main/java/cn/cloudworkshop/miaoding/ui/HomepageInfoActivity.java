@@ -136,13 +136,12 @@ public class HomepageInfoActivity extends BaseActivity {
      */
     @JavascriptInterface
     public void toGoods(String str) {
-
         if (!TextUtils.isEmpty(str)) {
             String[] split = str.split(",");
             Intent intent;
             //1位定制商品，2为成品
             if (split[1].equals("1")) {
-                intent = new Intent(this, CustomizedGoodsActivity.class);
+                intent = new Intent(this, NewCustomizedGoodsActivity.class);
             } else {
                 intent = new Intent(this, WorksDetailActivity.class);
             }

@@ -123,7 +123,7 @@
     <string name="add_receive_address">新增地址</string>
     <string name="test_age">年龄：</string>
     <string name="fast_customize">快速定制</string>
-    <string name="prosonal_customize">个性定制</string>
+    <string name="personal_customize">个性定制</string>
     <string name="measur_explain">系统会自动对图像脸部进行模糊处理</string>
     <string name="select_type">选择版型</string>
     <string name="select_fabric">选择面料 (长按显示大图)</string>
@@ -402,5 +402,6 @@
     <string name="pay_cancel">支付取消</string>
     <string name="input_card_no">请输入卡号</string>
     <string name="input_no_pwd">请输入卡号、密码</string>
+    <string name="embroidery_content">绣花内容</string>
 
 </resources>

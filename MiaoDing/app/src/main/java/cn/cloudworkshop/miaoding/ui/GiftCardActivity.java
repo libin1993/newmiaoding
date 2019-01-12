@@ -243,5 +243,5 @@ public class GiftCardActivity extends BaseActivity {
         }
         return super.onKeyDown(keyCode, event);
     }
-
+    
 }

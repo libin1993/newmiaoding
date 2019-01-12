@@ -41,6 +41,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import cn.cloudworkshop.miaoding.R;
+import cn.cloudworkshop.miaoding.adapter.SectionedRecyclerViewAdapter;
 import cn.cloudworkshop.miaoding.base.BaseFragment;
 import cn.cloudworkshop.miaoding.bean.HomepageNewsBean;
 import cn.cloudworkshop.miaoding.bean.NewDesignWorksBean;
@@ -87,6 +88,7 @@ public class AccentFragment extends BaseFragment {
         unbinder = ButterKnife.bind(this, view);
         initData();
         return view;
+
     }
 
     /**

@@ -484,6 +484,10 @@ public class CustomCameraView extends FrameLayout implements SurfaceHolder.Callb
                         if (file.exists()) {
                             file.delete();
                         }
+                        File parentFile = file.getParentFile();
+                        if (!parentFile.exists()){
+                            parentFile.mkdirs();
+                        }
                         bos = new BufferedOutputStream(new FileOutputStream(file));
                         newBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);//将图片压缩到流中
                         onTakeFinish.takeFinish(newBitmap);

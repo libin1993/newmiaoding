@@ -49,6 +49,7 @@ import cn.cloudworkshop.miaoding.constant.Constant;
 import cn.cloudworkshop.miaoding.ui.CustomizedGoodsActivity;
 import cn.cloudworkshop.miaoding.ui.HomepageInfoActivity;
 import cn.cloudworkshop.miaoding.ui.MainActivity;
+import cn.cloudworkshop.miaoding.ui.NewCustomizedGoodsActivity;
 import cn.cloudworkshop.miaoding.ui.StoreInfoActivity;
 import cn.cloudworkshop.miaoding.ui.WorksDetailActivity;
 import cn.cloudworkshop.miaoding.utils.DisplayUtils;
@@ -208,8 +209,8 @@ public class CollectionFragment extends BaseFragment {
                                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                                 .into((ImageView) holder.getView(R.id.img_store));
                         holder.setText(R.id.tv_store_name, itemBean.getFactory_name());
-                        holder.setText(R.id.tv_store_love_num, getString(R.string.fans)+"： " + itemBean.getLovenum());
-                        holder.setText(R.id.tv_address_store, getString(R.string.store_address)+"： " + itemBean.getAddress());
+                        holder.setText(R.id.tv_store_love_num, getString(R.string.fans) + "： " + itemBean.getLovenum());
+                        holder.setText(R.id.tv_address_store, getString(R.string.store_address) + "： " + itemBean.getAddress());
                     }
                 };
                 break;
@@ -262,7 +263,7 @@ public class CollectionFragment extends BaseFragment {
                         break;
                     case 2:
                         if (itemList.get(position).getGoods_type() == 1) {
-                            intent = new Intent(getActivity(), CustomizedGoodsActivity.class);
+                            intent = new Intent(getActivity(), NewCustomizedGoodsActivity.class);
                         } else {
                             intent = new Intent(getActivity(), WorksDetailActivity.class);
                         }

@@ -14,6 +14,14 @@ import com.qiyukf.unicorn.api.StatusBarNotificationConfig;
 import com.qiyukf.unicorn.api.UICustomization;
 import com.qiyukf.unicorn.api.Unicorn;
 import com.qiyukf.unicorn.api.YSFOptions;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.DefaultRefreshFooterCreator;
+import com.scwang.smartrefresh.layout.api.DefaultRefreshHeaderCreator;
+import com.scwang.smartrefresh.layout.api.RefreshFooter;
+import com.scwang.smartrefresh.layout.api.RefreshHeader;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
+import com.wang.avi.indicators.BallSpinFadeLoaderIndicator;
 import com.zhy.http.okhttp.OkHttpUtils;
 
 import java.io.File;
@@ -22,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 import cn.cloudworkshop.miaoding.constant.Constant;
 import cn.cloudworkshop.miaoding.utils.FrescoImageLoader;
 import cn.cloudworkshop.miaoding.utils.SharedPreferencesUtils;
+import cn.cloudworkshop.miaoding.view.MyRefreshHeader;
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import pub.devrel.easypermissions.EasyPermissions;
@@ -40,8 +49,6 @@ public class MyApplication extends Application {
     public static String serverPhone;
     //登录背景图
     public static String loginBg;
-    //用户协议
-    public static String userAgreement;
     //量体协议
     //public static String measureAgreement;
     //订单id
@@ -71,6 +78,32 @@ public class MyApplication extends Application {
         Unicorn.init(this, "e98a79aca99f25ebf9bacbc8c334b76b", options(), new FrescoImageLoader(this));
     }
 
+
+    static {
+        //设置全局的Header构建器
+        SmartRefreshLayout.setDefaultRefreshHeaderCreator(new DefaultRefreshHeaderCreator() {
+            @Override
+            public RefreshHeader createRefreshHeader(Context context, RefreshLayout layout) {
+                layout.setPrimaryColors(0xfff2f4f5, 0xffaaaaaa);//全局设置主题颜色
+                return new MyRefreshHeader(context);
+
+            }
+        });
+        //设置全局的Footer构建器
+        SmartRefreshLayout.setDefaultRefreshFooterCreator(new DefaultRefreshFooterCreator() {
+            @Override
+            public RefreshFooter createRefreshFooter(Context context, RefreshLayout layout) {
+                layout.setPrimaryColors(0xfff2f4f5, 0xffaaaaaa);//全局设置主题颜色
+                ClassicsFooter classicsFooter = new ClassicsFooter(context);
+                BallSpinFadeLoaderIndicator ball = new BallSpinFadeLoaderIndicator();
+                ball.setColor(0xffaaaaaa);
+                classicsFooter.setProgressDrawable(ball);
+                classicsFooter.setTextSizeTitle(12);
+
+                return classicsFooter;
+            }
+        });
+    }
 
     /**
      * @return 七鱼配置

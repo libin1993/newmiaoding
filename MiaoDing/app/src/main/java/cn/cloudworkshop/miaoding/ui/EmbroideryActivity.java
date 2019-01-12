@@ -133,7 +133,7 @@ public class EmbroideryActivity extends BaseActivity implements EasyPermissions.
     private int flowerPosition = 0;
     //当前绣花颜色
     private int flowerColor = 0;
-    //当前字体颜色
+    //当前字体
     private int flowerFont = 0;
     //当前面料
     private int currentFabric = 0;
@@ -743,10 +743,10 @@ public class EmbroideryActivity extends BaseActivity implements EasyPermissions.
 
         if (!TextUtils.isEmpty(etEmbroideryContent.getText().toString().trim())) {
             //个性绣花
-            String sb = getString(R.string.position)+":" + tvPosition.getText().toString()
-                    + ";"+getString(R.string.color)+":" + tvColor.getText().toString()
-                    + ";"+getString(R.string.font)+":" + tvFont.getText().toString()
-                    + ";"+getString(R.string.words)+":" + etEmbroideryContent.getText().toString();
+            String sb = getString(R.string.position) + ":" + tvPosition.getText().toString()
+                    + ";" + getString(R.string.color) + ":" + tvColor.getText().toString()
+                    + ";" + getString(R.string.font) + ":" + tvFont.getText().toString()
+                    + ";" + getString(R.string.words) + ":" + etEmbroideryContent.getText().toString();
             customItemBean.setDiy_contet(sb);
         } else {
             customItemBean.setDiy_contet(null);
@@ -831,7 +831,7 @@ public class EmbroideryActivity extends BaseActivity implements EasyPermissions.
                             if (type == 2) {
                                 ToastUtils.showToast(EmbroideryActivity.this, msg);
                             }
-                            String cartId = jsonObject1.getString("car_id");
+                            String cartId = jsonObject1.getString("cart_id");
                             //直接购买，跳转确认订单页面
                             if (!TextUtils.isEmpty(cartId)) {
                                 MobclickAgent.onEvent(EmbroideryActivity.this, "add_cart");
@@ -960,5 +960,3 @@ public class EmbroideryActivity extends BaseActivity implements EasyPermissions.
     }
 
 }
-
-

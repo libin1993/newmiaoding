@@ -61,7 +61,7 @@ public class MemberGrowthActivity extends BaseActivity {
     //加载更多
     private boolean isLoadMore;
     private LRecyclerViewAdapter mLRecyclerViewAdapter;
-    private List<MemberGrowthBean.DataBean> dataList = new ArrayList<>();
+    private List<MemberGrowthBean.DataBeanX.DataBean> dataList = new ArrayList<>();
 
 
     @Override
@@ -93,11 +93,11 @@ public class MemberGrowthActivity extends BaseActivity {
                     public void onResponse(String response, int id) {
                         imgLoadError.setVisibility(View.GONE);
                         MemberGrowthBean bean = GsonUtils.jsonToBean(response, MemberGrowthBean.class);
-                        if (bean.getData() != null && bean.getData().size() > 0) {
+                        if (bean.getData() != null && bean.getData().getData().size() > 0) {
                             if (isRefresh) {
                                 dataList.clear();
                             }
-                            dataList.addAll(bean.getData());
+                            dataList.addAll(bean.getData().getData());
                             if (isLoadMore || isRefresh) {
                                 rvMemberGrow.refreshComplete(0);
                                 mLRecyclerViewAdapter.notifyDataSetChanged();
@@ -132,14 +132,16 @@ public class MemberGrowthActivity extends BaseActivity {
      */
     private void initView() {
         rvMemberGrow.setLayoutManager(new LinearLayoutManager(this));
-        CommonAdapter<MemberGrowthBean.DataBean> adapter = new CommonAdapter<MemberGrowthBean.DataBean>
+        CommonAdapter<MemberGrowthBean.DataBeanX.DataBean> adapter = new CommonAdapter<
+                MemberGrowthBean.DataBeanX.DataBean>
                 (this, R.layout.listitem_member_score, dataList) {
             @Override
-            protected void convert(ViewHolder holder, MemberGrowthBean.DataBean dataBean, int position) {
-                holder.setText(R.id.tv_member_title, dataBean.getName());
-                holder.setText(R.id.tv_member_time, DateUtils.getDate("yyyy-MM-dd", dataBean.getC_time()));
+            protected void convert(ViewHolder holder, MemberGrowthBean.DataBeanX.DataBean dataBean, int position) {
+                holder.setText(R.id.tv_member_title, dataBean.getType_name());
+                holder.setText(R.id.tv_member_time, dataBean.getCreate_time());
                 holder.setText(R.id.tv_member_value, "+" + dataBean.getCredit());
             }
+
         };
 
         mLRecyclerViewAdapter = new LRecyclerViewAdapter(adapter);
@@ -161,8 +163,8 @@ public class MemberGrowthActivity extends BaseActivity {
         rvMemberGrow.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
-                RecyclerViewStateUtils.setFooterViewState(MemberGrowthActivity.this, rvMemberGrow,
-                        0, LoadingFooter.State.Loading, null);
+                RecyclerViewStateUtils.setFooterViewState(MemberGrowthActivity.this,
+                        rvMemberGrow, 0, LoadingFooter.State.Loading, null);
                 isLoadMore = true;
                 page++;
                 initData();

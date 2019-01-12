@@ -53,15 +53,36 @@ public class CustomizedGoodsBean {
         private String goods_no;
         private String sell_price;
         private String up_time;
-        private SeriesBean series;
+        private String series;
         private List<AdImgBean> ad_img;
         private List<ImgInfoBean> img_info;
-        private List<FabricBean> fabric;
-        private List<CategoryBean> category;
+
         private int collect_num;
         private List<CollectListBean> collect_list;
         private String content;
         private int is_collect;
+        private String part_id;
+        private String moren_part_id;
+
+        public void setSeries(String series) {
+            this.series = series;
+        }
+
+        public String getMoren_part_id() {
+            return moren_part_id;
+        }
+
+        public void setMoren_part_id(String moren_part_id) {
+            this.moren_part_id = moren_part_id;
+        }
+
+        public String getPart_id() {
+            return part_id;
+        }
+
+        public void setPart_id(String part_id) {
+            this.part_id = part_id;
+        }
 
         public int getIs_collect() {
             return is_collect;
@@ -136,13 +157,6 @@ public class CustomizedGoodsBean {
             this.up_time = up_time;
         }
 
-        public SeriesBean getSeries() {
-            return series;
-        }
-
-        public void setSeries(SeriesBean series) {
-            this.series = series;
-        }
 
         public List<AdImgBean> getAd_img() {
             return ad_img;
@@ -160,21 +174,6 @@ public class CustomizedGoodsBean {
             this.img_info = img_info;
         }
 
-        public List<FabricBean> getFabric() {
-            return fabric;
-        }
-
-        public void setFabric(List<FabricBean> fabric) {
-            this.fabric = fabric;
-        }
-
-        public List<CategoryBean> getCategory() {
-            return category;
-        }
-
-        public void setCategory(List<CategoryBean> category) {
-            this.category = category;
-        }
 
         public static class CollectListBean {
             private String head_ico;
@@ -203,32 +202,6 @@ public class CustomizedGoodsBean {
 
             public void setUsername(String username) {
                 this.username = username;
-            }
-        }
-
-        public static class SeriesBean {
-            /**
-             * id : 4
-             * name : 衬衫
-             */
-
-            private String id;
-            private String name;
-
-            public String getId() {
-                return id;
-            }
-
-            public void setId(String id) {
-                this.id = id;
-            }
-
-            public String getName() {
-                return name;
-            }
-
-            public void setName(String name) {
-                this.name = name;
             }
         }
 
@@ -284,56 +257,7 @@ public class CustomizedGoodsBean {
             }
         }
 
-        public static class FabricBean {
-            /**
-             * id : 1
-             * name : VBC 班长会团购款
-             */
 
-            private String id;
-            private String name;
 
-            public String getId() {
-                return id;
-            }
-
-            public void setId(String id) {
-                this.id = id;
-            }
-
-            public String getName() {
-                return name;
-            }
-
-            public void setName(String name) {
-                this.name = name;
-            }
-        }
-
-        public static class CategoryBean {
-            /**
-             * id : 1
-             * name : 定制商品
-             */
-
-            private int id;
-            private String name;
-
-            public int getId() {
-                return id;
-            }
-
-            public void setId(int id) {
-                this.id = id;
-            }
-
-            public String getName() {
-                return name;
-            }
-
-            public void setName(String name) {
-                this.name = name;
-            }
-        }
     }
 }

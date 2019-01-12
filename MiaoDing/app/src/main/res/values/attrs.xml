@@ -85,4 +85,9 @@
         </attr>
     </declare-styleable>
 
+    <declare-styleable name="GifView">
+        <attr name="gif" format="reference" />
+        <attr name="paused" format="boolean" />
+    </declare-styleable>
+
 </resources>

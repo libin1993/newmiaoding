@@ -28,6 +28,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.cloudworkshop.miaoding.R;
 import cn.cloudworkshop.miaoding.base.BaseActivity;
+import cn.cloudworkshop.miaoding.bean.ResponseBean;
 import cn.cloudworkshop.miaoding.bean.SelectCouponBean;
 import cn.cloudworkshop.miaoding.constant.Constant;
 import cn.cloudworkshop.miaoding.utils.DateUtils;
@@ -66,8 +67,8 @@ public class SelectCouponActivity extends BaseActivity {
     private String cartIds;
     //优惠券数量
     private int couponNum;
-    private List<SelectCouponBean.DataBean.UsableBean> usableList = new ArrayList<>();
-    private List<SelectCouponBean.DataBean.DisableBean> uselessList = new ArrayList<>();
+    private List<SelectCouponBean.DataBean.ValidTicketsBean> usableList = new ArrayList<>();
+    private List<SelectCouponBean.DataBean.InvalidTicketsBean> uselessList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +91,7 @@ public class SelectCouponActivity extends BaseActivity {
         OkHttpUtils.get()
                 .url(Constant.SELECT_COUPON)
                 .addParams("token", SharedPreferencesUtils.getStr(this, "token"))
-                .addParams("car_ids", cartIds)
+                .addParams("cart_id_s", cartIds)
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -102,14 +103,14 @@ public class SelectCouponActivity extends BaseActivity {
                     public void onResponse(String response, int id) {
                         imgLoadError.setVisibility(View.GONE);
                         SelectCouponBean couponBean = GsonUtils.jsonToBean(response, SelectCouponBean.class);
-                        if (couponBean.getData().getUsable() != null && couponBean.getData()
-                                .getUsable().size() > 0) {
-                            usableList.addAll(couponBean.getData().getUsable());
+                        if (couponBean.getData().getValid_tickets() != null && couponBean.getData()
+                                .getValid_tickets().size() > 0) {
+                            usableList.addAll(couponBean.getData().getValid_tickets());
                         }
 
-                        if (couponBean.getData().getDisable() != null && couponBean.getData()
-                                .getDisable().size() > 0) {
-                            uselessList.addAll(couponBean.getData().getDisable());
+                        if (couponBean.getData().getInvalid_tickets() != null && couponBean.getData()
+                                .getInvalid_tickets().size() > 0) {
+                            uselessList.addAll(couponBean.getData().getInvalid_tickets());
                             tvDisableCoupon.setVisibility(View.VISIBLE);
                         }
                         couponNum = usableList.size();
@@ -150,21 +151,21 @@ public class SelectCouponActivity extends BaseActivity {
         MyLinearLayoutManager linearLayoutManager1 = new MyLinearLayoutManager(this);
         linearLayoutManager1.setScrollEnabled(false);
         rvAvailable.setLayoutManager(linearLayoutManager1);
-        final CommonAdapter<SelectCouponBean.DataBean.UsableBean> usableAdapter = new CommonAdapter
-                <SelectCouponBean.DataBean.UsableBean>(this, R.layout.listitem_coupon, usableList) {
+        final CommonAdapter<SelectCouponBean.DataBean.ValidTicketsBean> usableAdapter = new CommonAdapter
+                <SelectCouponBean.DataBean.ValidTicketsBean>(this, R.layout.listitem_coupon, usableList) {
             @Override
-            protected void convert(ViewHolder holder, SelectCouponBean.DataBean.UsableBean usableBean,
-                                   int position) {
+            protected void convert(ViewHolder holder, SelectCouponBean.DataBean.ValidTicketsBean validTicketsBean, int position) {
                 holder.getView(R.id.ll_coupon_bg).setBackgroundResource(R.mipmap.icon_coupon_available);
                 TextView tvMoney = holder.getView(R.id.tv_coupon_money);
                 tvMoney.setTypeface(DisplayUtils.setTextType(SelectCouponActivity.this));
-                tvMoney.setText("¥" + (int) Float.parseFloat(usableBean.getMoney()));
-                holder.setText(R.id.tv_coupon_range, usableBean.getTitle());
-                holder.setText(R.id.tv_coupon_discount, usableBean.getSub_title());
-                String term = getString(R.string.validity_term) + "：" + DateUtils.getDate("yyyy-MM-dd", usableBean.getS_time())
-                        + getString(R.string.to) + DateUtils.getDate("yyyy-MM-dd", usableBean.getE_time());
+                tvMoney.setText("¥" + (int) Float.parseFloat(validTicketsBean.getMoney()));
+                holder.setText(R.id.tv_coupon_range, validTicketsBean.getTitle());
+                holder.setText(R.id.tv_coupon_discount, validTicketsBean.getSub_title());
+                String term = getString(R.string.validity_term) + "：" + DateUtils.formatTime(
+                        "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd", validTicketsBean.getS_time())
+                        + getString(R.string.to) + DateUtils.formatTime("yyyy-MM-dd HH:mm:ss",
+                        "yyyy-MM-dd", validTicketsBean.getE_time());
                 holder.setText(R.id.tv_coupon_term, term);
-
             }
 
         };
@@ -181,8 +182,8 @@ public class SelectCouponActivity extends BaseActivity {
                 intent.putExtra("coupon_money", usableList.get(position).getMoney());
                 intent.putExtra("coupon_content", usableList.get(position).getTitle()
                         + "(" + usableList.get(position).getSub_title() + ")");
-                intent.putExtra("coupon_min_money", usableList.get(position).getMin_money());
-                intent.putExtra("goods_ids", usableList.get(position).getGoods_ids());
+                intent.putExtra("coupon_min_money", usableList.get(position).getFull_money());
+                intent.putExtra("goods_ids", usableList.get(position).getUse_scope());
                 //1:使用优惠券
                 setResult(3, intent);
                 finish();
@@ -198,22 +199,23 @@ public class SelectCouponActivity extends BaseActivity {
         MyLinearLayoutManager linearLayoutManager2 = new MyLinearLayoutManager(this);
         linearLayoutManager2.setScrollEnabled(false);
         rvUnavailable.setLayoutManager(linearLayoutManager2);
-        CommonAdapter<SelectCouponBean.DataBean.DisableBean> uselessAdapter = new CommonAdapter
-                <SelectCouponBean.DataBean.DisableBean>(this, R.layout.listitem_coupon, uselessList) {
+        CommonAdapter<SelectCouponBean.DataBean.InvalidTicketsBean> uselessAdapter = new CommonAdapter
+                <SelectCouponBean.DataBean.InvalidTicketsBean>(this, R.layout.listitem_coupon, uselessList) {
             @Override
-            protected void convert(ViewHolder holder,
-                                   SelectCouponBean.DataBean.DisableBean disableBean, int position) {
+            protected void convert(ViewHolder holder, SelectCouponBean.DataBean.InvalidTicketsBean invalidTicketsBean, int position) {
                 holder.getView(R.id.ll_coupon_bg).setBackgroundResource(R.mipmap.icon_coupon_available);
                 TextView tvMoney = holder.getView(R.id.tv_coupon_money);
                 tvMoney.setTypeface(DisplayUtils.setTextType(SelectCouponActivity.this));
-                tvMoney.setText("¥" + (int) Float.parseFloat(disableBean.getMoney()));
-                holder.setText(R.id.tv_coupon_range, disableBean.getTitle());
-                holder.setText(R.id.tv_coupon_discount, disableBean.getSub_title());
-                String term = getString(R.string.validity_term) + "：" + DateUtils.getDate("yyyy-MM-dd", disableBean.getS_time())
-                        + getString(R.string.to) + DateUtils.getDate("yyyy-MM-dd", disableBean.getE_time());
+                tvMoney.setText("¥" + (int) Float.parseFloat(invalidTicketsBean.getMoney()));
+                holder.setText(R.id.tv_coupon_range, invalidTicketsBean.getTitle());
+                holder.setText(R.id.tv_coupon_discount, invalidTicketsBean.getSub_title());
+                String term = getString(R.string.validity_term) + "：" + DateUtils.formatTime(
+                        "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd", invalidTicketsBean.getS_time())
+                        + getString(R.string.to) + DateUtils.formatTime("yyyy-MM-dd HH:mm:ss",
+                        "yyyy-MM-dd", invalidTicketsBean.getE_time());
                 holder.setText(R.id.tv_coupon_term, term);
-
             }
+
         };
 
         rvUnavailable.setAdapter(uselessAdapter);
@@ -264,36 +266,16 @@ public class SelectCouponActivity extends BaseActivity {
 
                     @Override
                     public void onResponse(String response, int id) {
-                        try {
-                            JSONObject jsonObject = new JSONObject(response);
-                            int code = jsonObject.getInt("code");
-                            String msg = jsonObject.getString("msg");
-                            if (code == 1) {
-                                usableList.clear();
-                                uselessList.clear();
-                                initData();
-                            }
-                            ToastUtils.showToast(SelectCouponActivity.this, msg);
-                            etCouponCode.setText("");
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                        ResponseBean responseBean = GsonUtils.jsonToBean(response, ResponseBean.class);
+                        if (responseBean.getCode() == 10000) {
+                            usableList.clear();
+                            uselessList.clear();
+                            initData();
                         }
+                        ToastUtils.showToast(SelectCouponActivity.this, responseBean.getMsg());
+                        etCouponCode.setText("");
                     }
                 });
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            //返回
-            Intent intent = new Intent();
-            intent.putExtra("coupon_num", couponNum);
-            setResult(1, intent);
-            finish();
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
     }
 
 }

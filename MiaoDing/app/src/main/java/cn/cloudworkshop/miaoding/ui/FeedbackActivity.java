@@ -32,7 +32,11 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,6 +49,7 @@ import cn.cloudworkshop.miaoding.R;
 import cn.cloudworkshop.miaoding.base.BaseActivity;
 import cn.cloudworkshop.miaoding.constant.Constant;
 import cn.cloudworkshop.miaoding.utils.ImageEncodeUtils;
+import cn.cloudworkshop.miaoding.utils.LogUtils;
 import cn.cloudworkshop.miaoding.utils.PermissionUtils;
 import cn.cloudworkshop.miaoding.utils.SharedPreferencesUtils;
 import cn.cloudworkshop.miaoding.utils.ToastUtils;
@@ -52,6 +57,13 @@ import me.iwf.photopicker.PhotoPicker;
 import me.iwf.photopicker.PhotoPreview;
 import me.iwf.photopicker.utils.AndroidLifecycleUtils;
 import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import pub.devrel.easypermissions.EasyPermissions;
 
 
@@ -88,7 +100,6 @@ public class FeedbackActivity extends BaseActivity implements EasyPermissions.Pe
 
     private CommonAdapter adapter;
     private ArrayList<String> photoList = new ArrayList<>();
-    private String imgEncode;
 
     static final String[] permissionStr = {Manifest.permission.CAMERA};
 
@@ -114,67 +125,115 @@ public class FeedbackActivity extends BaseActivity implements EasyPermissions.Pe
     }
 
 
-    Handler handler = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message msg) {
-
-            Map<String, String> map = new HashMap<>();
-            map.put("token", SharedPreferencesUtils.getStr(FeedbackActivity.this, "token"));
-            map.put("content", etFeedBack.getText().toString().trim());
-            if (!TextUtils.isEmpty(etFeedBackPhone.getText().toString().trim())) {
-                map.put("contact", etFeedBackPhone.getText().toString().trim());
-            }
-            if (msg.what == 1) {
-                map.put("img_list", imgEncode);
-            }
-
-            OkHttpUtils.post()
-                    .url(Constant.FEED_BACK)
-                    .params(map)
-                    .build()
-                    .execute(new StringCallback() {
-                        @Override
-                        public void onError(Call call, Exception e, int id) {
-
-                        }
-
-                        @Override
-                        public void onResponse(String response, int id) {
-                            //反馈事件监听
-                            MobclickAgent.onEvent(FeedbackActivity.this, "feedback");
-                            loadingView.smoothToHide();
-                            ToastUtils.showToast(FeedbackActivity.this, getString(R.string.feedback_success));
-                            finish();
-                        }
-                    });
-
-            return false;
-        }
-    });
 
     /**
-     * 提交反馈
+     * @param
+     */
+    private void uploadImg() {
+        MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
+        for (int i = 0; i < photoList.size(); i++) {
+            File file = new File(photoList.get(i));
+            builder.addFormDataPart("file[]", file.getName(),
+                    RequestBody.create(MediaType.parse("image/png"), file));
+        }
+        MultipartBody requestBody = builder.build();
+        //构建请求
+        Request request = new Request.Builder()
+                .url(Constant.UPLOAD_FILE)
+                .post(requestBody)
+                .build();
+        OkHttpClient client = new OkHttpClient();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                LogUtils.log(e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, final Response response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response.body().string());
+                    int code = jsonObject.getInt("code");
+                    if (code == 10000) {
+                        String imgUrl = jsonObject.getString("info");
+                        feedback(imgUrl);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+    }
+
+
+    /**
+     * 是否上传图片
      */
     private void submitData() {
         if (!TextUtils.isEmpty(etFeedBack.getText().toString().trim())) {
             loadingView.smoothToShow();
             tvSubmit.setEnabled(false);
 
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    if (photoList.size() != 0) {
-                        imgEncode = ImageEncodeUtils.encodeFile(photoList);
-                        handler.sendEmptyMessage(1);
-                    } else {
-                        handler.sendEmptyMessage(2);
-                    }
-                }
-            }).start();
+            if (photoList.size() != 0) {
+                uploadImg();
+            } else {
+                feedback(null);
+            }
+
         } else {
             ToastUtils.showToast(this, getString(R.string.please_input_suggestion));
         }
 
+    }
+
+    /**
+     * 提交反馈
+     */
+    private void feedback(String imgUrl) {
+        Map<String, String> map = new HashMap<>();
+        map.put("token", SharedPreferencesUtils.getStr(FeedbackActivity.this, "token"));
+        map.put("content", etFeedBack.getText().toString().trim());
+        if (!TextUtils.isEmpty(etFeedBackPhone.getText().toString().trim())) {
+            map.put("contact", etFeedBackPhone.getText().toString().trim());
+        }
+        if (photoList.size() > 0) {
+            map.put("img_list", imgUrl);
+        }
+
+        OkHttpUtils.post()
+                .url(Constant.FEED_BACK)
+                .params(map)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        loadingView.smoothToHide();
+                        tvSubmit.setEnabled(true);
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        loadingView.smoothToHide();
+                        tvSubmit.setEnabled(true);
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            int code = jsonObject.getInt("code");
+                            String msg = jsonObject.getString("msg");
+                            if (code == 10000){
+                                //反馈事件监听
+                                MobclickAgent.onEvent(FeedbackActivity.this, "feedback");
+                                finish();
+                            }
+                            ToastUtils.showToast(FeedbackActivity.this, msg);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                });
     }
 
 
@@ -318,17 +377,6 @@ public class FeedbackActivity extends BaseActivity implements EasyPermissions.Pe
         }
     }
 
-
-    /**
-     * 关闭线程
-     */
-    @Override
-    protected void onDestroy() {
-        handler.removeCallbacksAndMessages(null);
-        super.onDestroy();
-
-    }
-
     /**
      * 用户权限处理,
      * 如果全部获取, 则直接过.
@@ -346,7 +394,11 @@ public class FeedbackActivity extends BaseActivity implements EasyPermissions.Pe
 
     @Override
     public void onPermissionsGranted(int requestCode, List<String> perms) {
-
+        PhotoPicker.builder()
+                .setPhotoCount(4)
+                .setShowCamera(true)
+                .setSelected(photoList)
+                .start(this);
     }
 
     @Override

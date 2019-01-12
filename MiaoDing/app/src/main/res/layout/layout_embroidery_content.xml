@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@android:color/white"
+              android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="38dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="12dp"
+        android:text="@string/select_embroider_content"
+        android:textColor="@color/dark_gray_22"
+        android:textSize="13sp"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/et_embroidery"
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/bound_ed_ff"
+            android:hint="@string/input_embroider_content"
+            android:maxLength="12"
+            android:paddingLeft="10dp"
+            android:singleLine="true"
+            android:textColor="@color/dark_gray_22"
+            android:textColorHint="@color/light_gray_a6"
+            android:textSize="13sp"/>
+    </RelativeLayout>
+</LinearLayout>
