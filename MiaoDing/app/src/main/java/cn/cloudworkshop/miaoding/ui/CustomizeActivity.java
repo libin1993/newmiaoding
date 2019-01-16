@@ -177,7 +177,7 @@ public class CustomizeActivity extends BaseActivity {
                                     .getImg_urls().size() > 0) {
                                 imgGuide.setVisibility(View.VISIBLE);
                                 Glide.with(CustomizeActivity.this)
-                                        .load(Constant.IMG_HOST + guideBean.getData().getImg_urls().get(0))
+                                        .load(Constant.IMG_HOST + guideBean.getData().getImg_urls().get(0).getImg())
                                         .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                                         .into(imgGuide);
                             }
@@ -373,10 +373,10 @@ public class CustomizeActivity extends BaseActivity {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
                 //首次进入弹出引导图
-                if (isFirstEntry && guideBean.getData().getImg_urls().get(1) != null) {
+                if (isFirstEntry && guideBean.getData().getImg_urls().get(1).getImg() != null) {
                     imgGuide.setVisibility(View.VISIBLE);
                     Glide.with(CustomizeActivity.this)
-                            .load(Constant.IMG_HOST + guideBean.getData().getImg_urls().get(1))
+                            .load(Constant.IMG_HOST + guideBean.getData().getImg_urls().get(1).getImg())
                             .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                             .into(imgGuide);
                     isFirstEntry = false;
@@ -580,9 +580,13 @@ public class CustomizeActivity extends BaseActivity {
                 for (int j = 0; j < dataList.get(i).getSon().size(); j++) {
                     if (itemArray.valueAt(k) == dataList.get(i).getSon().get(j).getPart_id()) {
                         if (!TextUtils.isEmpty(dataList.get(i).getSon().get(j).getMutex_part())) {
-                            String[] split = dataList.get(i).getSon().get(j)
-                                    .getMutex_part().split(",");
-                            noMatchIds.addAll(Arrays.asList(split));
+                            if (dataList.get(i).getSon().get(j).getMutex_part().contains(",")) {
+                                String[] split = dataList.get(i).getSon().get(j)
+                                        .getMutex_part().split(",");
+                                noMatchIds.addAll(Arrays.asList(split));
+                            } else {
+                                noMatchIds.add(dataList.get(i).getSon().get(j).getMutex_part());
+                            }
                             break;
                         }
                     }

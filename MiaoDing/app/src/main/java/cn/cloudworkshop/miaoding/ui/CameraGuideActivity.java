@@ -96,7 +96,7 @@ public class CameraGuideActivity extends BaseActivity {
                         .inflate(R.layout.viewpager_item_camera, null);
                 ImageView imgGuide = (ImageView) view.findViewById(R.id.img_camera_guide);
                 Glide.with(CameraGuideActivity.this)
-                        .load(Constant.IMG_HOST + guideBean.getData().getImg_urls().get(position))
+                        .load(Constant.IMG_HOST + guideBean.getData().getImg_urls().get(position).getImg())
                         .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                         .into(imgGuide);
                 container.addView(view);

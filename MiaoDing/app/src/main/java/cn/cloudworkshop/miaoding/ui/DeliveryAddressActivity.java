@@ -87,6 +87,7 @@ public class DeliveryAddressActivity extends BaseActivity {
         EventBus.getDefault().register(this);
         getData();
         initData();
+        initView();
     }
 
     private void getData() {
@@ -131,10 +132,8 @@ public class DeliveryAddressActivity extends BaseActivity {
                             dataList.addAll(addressBean.getData());
                             if (isRefresh || isLoadMore) {
                                 recyclerView.refreshComplete(0);
-                                mLRecyclerViewAdapter.notifyDataSetChanged();
-                            } else {
-                                initView();
                             }
+                            mLRecyclerViewAdapter.notifyDataSetChanged();
                             isRefresh = false;
                             isLoadMore = false;
                             llNoAddress.setVisibility(View.GONE);

@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.flyco.tablayout.SlidingTabLayout;
+import com.wang.avi.AVLoadingIndicatorView;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -54,6 +55,8 @@ public class CustomizedGoodsFragment extends BaseFragment {
     ViewPager vpGoods;
     @BindView(R.id.img_load_error)
     ImageView imgLoadingError;
+    @BindView(R.id.view_loading)
+    AVLoadingIndicatorView viewLoading;
     private Unbinder unbinder;
 
     private GoodsTitleBean titleBean;
@@ -69,6 +72,7 @@ public class CustomizedGoodsFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_goods, container, false);
         unbinder = ButterKnife.bind(this, view);
+        viewLoading.smoothToShow();
         initTitle();
         return view;
     }
@@ -85,11 +89,13 @@ public class CustomizedGoodsFragment extends BaseFragment {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         imgLoadingError.setVisibility(View.VISIBLE);
+                        viewLoading.smoothToHide();
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
                         imgLoadingError.setVisibility(View.GONE);
+                        viewLoading.smoothToHide();
                         titleBean = GsonUtils.jsonToBean(response, GoodsTitleBean.class);
                         if (titleBean.getData() != null && titleBean.getData().size() > 0) {
                             initView();

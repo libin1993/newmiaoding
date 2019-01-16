@@ -9,80 +9,31 @@ import java.util.List;
  */
 public class LogisticsBean {
 
+
     /**
-     * message : ok
-     * nu : 211304078908
-     * ischeck : 0
-     * condition : B00
-     * com : huitongkuaidi
-     * status : 200
-     * state : 0
-     * data : [{"time":"2016-11-18 01:44:31","ftime":"2016-11-18 01:44:31","context":"杭州市|发件|杭州市【杭州转运中心】，正发往【上海嘉定转运中心】"},{"time":"2016-11-18 01:40:18","ftime":"2016-11-18 01:40:18","context":"杭州市|到件|到杭州市【杭州转运中心】"},{"time":"2016-11-16 23:00:04","ftime":"2016-11-16 23:00:04","context":"杭州市|到件|到杭州市【康桥分部】"},{"time":"2016-11-16 20:16:59","ftime":"2016-11-16 20:16:59","context":"杭州市|收件|杭州市【康桥分部五分部】，【G代永/18969148089】已揽收"}]
+     * code : 10000
+     * msg :
+     * data : [{"time":"2018-12-13 09:31:00","context":"[哈尔滨市] 已签收,感谢使用顺丰,期待再次为您服务"},{"time":"2018-12-13 07:48:00","context":"[哈尔滨市] 【哈尔滨市】哈尔滨市松北区万达城营业点派件员 顺丰速运 95338正在为您派件"},{"time":"2018-12-12 19:45:00","context":"[哈尔滨市] 快件到达 【哈尔滨市松北区万达城营业点】"},{"time":"2018-12-12 16:08:00","context":"[哈尔滨市] 快件在【哈尔滨哈平集散中心】已装车,准备发往下一站"},{"time":"2018-12-12 13:11:00","context":"[哈尔滨市] 快件到达 【哈尔滨哈平集散中心】"},{"time":"2018-12-12 02:47:00","context":"[杭州市] 快件在【杭州总集散中心】已装车,准备发往 【哈尔滨哈平集散中心】"},{"time":"2018-12-12 02:37:00","context":"[杭州市] 快件到达 【杭州总集散中心】"},{"time":"2018-12-11 22:44:00","context":"[武汉市] 快件在【武汉总集散中心】已装车,准备发往 【杭州总集散中心】"},{"time":"2018-12-11 21:32:00","context":"[武汉市] 快件到达 【武汉总集散中心】"},{"time":"2018-12-11 20:38:00","context":"[武汉市] 快件在【武汉吴家山集散中心】已装车,准备发往 【武汉总集散中心】"},{"time":"2018-12-11 20:29:00","context":"[武汉市] 快件到达 【武汉吴家山集散中心】"},{"time":"2018-12-11 18:52:00","context":"[武汉市] 快件在【武汉东湖高新技术开发区流芳营业点】已装车,准备发往 【武汉吴家山集散中心】"},{"time":"2018-12-11 12:48:00","context":"[武汉市] 顺丰速运 已收取快件"},{"time":"2018-12-11 12:28:59","context":"[武汉市] 包裹正在等待揽收"}]
      */
 
-    private String message;
-    private String nu;
-    private String ischeck;
-    private String condition;
-    private String com;
-    private String status;
-    private String state;
+    private int code;
+    private String msg;
     private List<DataBean> data;
 
-    public String getMessage() {
-        return message;
+    public int getCode() {
+        return code;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setCode(int code) {
+        this.code = code;
     }
 
-    public String getNu() {
-        return nu;
+    public String getMsg() {
+        return msg;
     }
 
-    public void setNu(String nu) {
-        this.nu = nu;
-    }
-
-    public String getIscheck() {
-        return ischeck;
-    }
-
-    public void setIscheck(String ischeck) {
-        this.ischeck = ischeck;
-    }
-
-    public String getCondition() {
-        return condition;
-    }
-
-    public void setCondition(String condition) {
-        this.condition = condition;
-    }
-
-    public String getCom() {
-        return com;
-    }
-
-    public void setCom(String com) {
-        this.com = com;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
+    public void setMsg(String msg) {
+        this.msg = msg;
     }
 
     public List<DataBean> getData() {
@@ -95,13 +46,11 @@ public class LogisticsBean {
 
     public static class DataBean {
         /**
-         * time : 2016-11-18 01:44:31
-         * ftime : 2016-11-18 01:44:31
-         * context : 杭州市|发件|杭州市【杭州转运中心】，正发往【上海嘉定转运中心】
+         * time : 2018-12-13 09:31:00
+         * context : [哈尔滨市] 已签收,感谢使用顺丰,期待再次为您服务
          */
 
         private String time;
-        private String ftime;
         private String context;
 
         public String getTime() {
@@ -110,14 +59,6 @@ public class LogisticsBean {
 
         public void setTime(String time) {
             this.time = time;
-        }
-
-        public String getFtime() {
-            return ftime;
-        }
-
-        public void setFtime(String ftime) {
-            this.ftime = ftime;
         }
 
         public String getContext() {

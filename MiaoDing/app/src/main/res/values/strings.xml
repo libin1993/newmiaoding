@@ -163,7 +163,7 @@
     <string name="about_app">关于妙定</string>
     <string name="logout">退出登录</string>
     <string name="select_all">全选</string>
-    <string name="confirm_order">下单</string>
+    <string name="place_order">下单</string>
     <string name="view_goods">去逛逛</string>
     <string name="recommend_goods">为您推荐</string>
     <string name="focus_store">关注店铺</string>
@@ -197,7 +197,7 @@
     <string name="actual_pay">实付：</string>
     <string name="view_detail">查看详情</string>
     <string name="add_gift_card">添加礼品卡</string>
-    <string name="input_pwd">请输入密码</string>
+    <string name="input_pwd">密钥</string>
     <string name="cancel">取消</string>
     <string name="confirm">确定</string>
     <string name="input_nickname">请输入昵称</string>
@@ -400,8 +400,23 @@
     <string name="permission">权限，请点击"设置" - "权限管理"，打开所需权限。</string>
     <string name="is_newest_version">已是最新版本！</string>
     <string name="pay_cancel">支付取消</string>
-    <string name="input_card_no">请输入卡号</string>
+    <string name="input_card_no">卡号</string>
     <string name="input_no_pwd">请输入卡号、密码</string>
     <string name="embroidery_content">绣花内容</string>
+    <string name="goods_part">配件</string>
+    <string name="confirm_order">下单</string>
+    <string name="other_discount">其他抵扣：</string>
+    <string name="coupon_discount">优惠券抵扣：</string>
+    <string name="giftcard_discount">礼品卡抵扣：</string>
+    <string name="shunfeng">顺丰快递</string>
+    <string name="use_giftcard">使用礼品卡余额抵扣</string>
+    <string name="exchange_giftcard">兑换礼品卡</string>
+    <string name="order_pay_type">支付方式</string>
+    <string name="input_card_number">请输入礼品卡号和兑换密钥</string>
+    <string name="more_order">更多订单</string>
+    <string name="homepage_tab">首页</string>
+    <string name="customize_tab">定制</string>
+    <string name="works_tab">腔调</string>
+    <string name="me">我</string>
 
 </resources>

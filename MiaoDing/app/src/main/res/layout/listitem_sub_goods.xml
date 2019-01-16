@@ -56,7 +56,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textColor="@color/light_gray_3d"
-                android:textSize="12sp"/>
+                android:textSize="12sp"
+                android:maxLength="8"
+                android:ellipsize="end"/>
 
             <TextView
                 android:id="@+id/tv_sub_price"

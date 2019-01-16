@@ -168,7 +168,7 @@ public class SetUpActivity extends BaseActivity implements EasyPermissions.Permi
         OkHttpUtils.get()
                 .url(Constant.USER_INFO)
                 .addParams("token", SharedPreferencesUtils.getStr(this, "token"))
-                .addParams("is_android", "1")
+                .addParams("is_android","2")
                 .build()
                 .execute(new StringCallback() {
                     @Override

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_order_item"
     android:layout_width="match_parent"
     android:layout_height="99dp">
 
@@ -16,8 +17,8 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
         android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical"
         android:layout_toRightOf="@id/img_order_info"
         android:orientation="vertical">
 
@@ -26,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
-            android:maxEms="10"
+            android:maxEms="12"
             android:singleLine="true"
             android:textColor="@color/dark_gray_22"
             android:textSize="14sp"/>
@@ -36,6 +37,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
+            android:layout_marginRight="15dp"
+            android:maxLines="2"
             android:textColor="@color/text_gray_6a"
             android:textSize="12sp"/>
 
@@ -53,8 +56,8 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_alignParentBottom="true"
         android:layout_marginLeft="12dp"
         android:layout_marginRight="12dp"
-        android:layout_alignParentBottom="true"
         android:background="@color/line_gray_e5"/>
 </RelativeLayout>

@@ -10,6 +10,8 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -27,6 +29,8 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -83,11 +87,16 @@ public class NewEmbroideryActivity extends BaseActivity {
     private int goodsId;
     private NewEmbroideryBean embroideryBean;
     private List<DelegateAdapter.Adapter> mAdapters;
+    private List<NewEmbroideryBean.DataBean.SpecialMarkPartBean> typeList;
+    private List<NewEmbroideryBean.DataBean.SpecialMarkPartBean> specialList;
     private String content;
     //是否长按
     private boolean isLongPress;
     //1:直接购买 2：加入购物袋
     private int type;
+    private BaseDelegateAdapter embroideryAdapter;
+    private BaseDelegateAdapter contentAdapter;
+    private DelegateAdapter delegateAdapter;
 
 
     @Override
@@ -95,6 +104,7 @@ public class NewEmbroideryActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_embroidery_new);
         ButterKnife.bind(this);
+        EventBus.getDefault().register(this);
         getData();
         initData();
     }
@@ -108,7 +118,7 @@ public class NewEmbroideryActivity extends BaseActivity {
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        imgLoadError.setBackgroundColor(Color.WHITE);
+                        imgLoadError.setBackgroundColor(0xffededed);
                         imgLoadError.setVisibility(View.VISIBLE);
                         viewLoading.smoothToHide();
                     }
@@ -125,9 +135,23 @@ public class NewEmbroideryActivity extends BaseActivity {
                 });
     }
 
+    /**
+     *
+     */
     private void initView() {
         tvPrice.setText("¥" + embroideryBean.getData().getSell_price());
         mAdapters = new LinkedList<>();
+
+        typeList = new ArrayList<>();
+        specialList = new ArrayList<>();
+        for (int i = 0; i < embroideryBean.getData().getSpecial_mark_part().size(); i++) {
+            if (embroideryBean.getData().getSpecial_mark_part().get(i).getSpecial_mark() == 1) {
+                typeList.add(embroideryBean.getData().getSpecial_mark_part().get(i));
+            } else {
+                specialList.add(embroideryBean.getData().getSpecial_mark_part().get(i));
+            }
+        }
+
         //初始化
         VirtualLayoutManager layoutManager = new VirtualLayoutManager(this);
         rvEmbroidery.setLayoutManager(layoutManager);
@@ -136,12 +160,83 @@ public class NewEmbroideryActivity extends BaseActivity {
         RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
         rvEmbroidery.setRecycledViewPool(viewPool);
         viewPool.setMaxRecycledViews(0, 10);
-        DelegateAdapter delegateAdapter = new DelegateAdapter(layoutManager, true);
+        delegateAdapter = new DelegateAdapter(layoutManager, true);
         rvEmbroidery.setAdapter(delegateAdapter);
 
+        //版型
+        if (typeList.size() > 0) {
+            BaseDelegateAdapter typeAdapter = new BaseDelegateAdapter(this, new LinearLayoutHelper(),
+                    R.layout.rv_embroidery_item, 1, 1) {
+
+                @Override
+                public void onBindViewHolder(ViewHolder holder, int position) {
+                    super.onBindViewHolder(holder, position);
+                    final int index = position;
+                    TextView tvTitle = holder.getView(R.id.tv_embroidery_title);
+                    tvTitle.setText(typeList.get(position).getType_name());
+
+                    final TextView tvContent = holder.getView(R.id.tv_embroidery_content);
+
+                    RecyclerView rvType = holder.getView(R.id.rv_embroidery_item);
+
+
+                    rvType.setLayoutManager(new LinearLayoutManager(NewEmbroideryActivity.this,
+                            LinearLayoutManager.HORIZONTAL, false));
+                    final CommonAdapter<NewEmbroideryBean.DataBean.SpecialMarkPartBean.SonBeanX> adapter = new CommonAdapter
+                            <NewEmbroideryBean.DataBean.SpecialMarkPartBean.SonBeanX>(NewEmbroideryActivity.this,
+                            R.layout.listitem_embroidery_fabric, typeList.get(position).getSon()) {
+                        @Override
+                        protected void convert(ViewHolder holder, NewEmbroideryBean.DataBean.SpecialMarkPartBean.SonBeanX sonBeanX, int position) {
+                            Glide.with(NewEmbroideryActivity.this)
+                                    .load(Constant.IMG_HOST + sonBeanX.getPart_img())
+                                    .placeholder(R.mipmap.place_holder_goods)
+                                    .dontAnimate()
+                                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                                    .into((ImageView) holder.getView(R.id.img_embroidery_fabric));
+                            if (sonBeanX.getIs_default() == 1) {
+                                holder.setVisible(R.id.img_current_fabric, true);
+                                tvContent.setText(sonBeanX.getPart_name());
+                            } else {
+                                holder.setVisible(R.id.img_current_fabric, false);
+                            }
+
+                            holder.setText(R.id.tv_current_fabric, sonBeanX.getPart_name());
+                        }
+                    };
+                    rvType.setAdapter(adapter);
+
+
+                    adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+                            //当前选择
+                            int currentParts = holder.getLayoutPosition();
+                            for (int i = 0; i < typeList.get(index).getSon().size(); i++) {
+                                if (i == currentParts) {
+                                    typeList.get(index).getSon().get(i).setIs_default(1);
+                                } else {
+                                    typeList.get(index).getSon().get(i).setIs_default(0);
+                                }
+                            }
+                            adapter.notifyDataSetChanged();
+                        }
+
+                        @Override
+                        public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
+                            return false;
+                        }
+                    });
+                }
+
+            };
+            mAdapters.add(typeAdapter);
+        }
+
+
+        //面料
         if (embroideryBean.getData().getFabric() != null) {
             BaseDelegateAdapter fabricAdapter = new BaseDelegateAdapter(this, new LinearLayoutHelper(),
-                    R.layout.rv_embroidery_item, 1, 1) {
+                    R.layout.rv_embroidery_item, 1, 2) {
                 @Override
                 public void onBindViewHolder(ViewHolder holder, int position) {
                     super.onBindViewHolder(holder, position);
@@ -247,16 +342,35 @@ public class NewEmbroideryActivity extends BaseActivity {
             mAdapters.add(fabricAdapter);
         }
 
-        if (embroideryBean.getData().getSpecial_mark_part() != null && embroideryBean.getData().getSpecial_mark_part().size() > 0) {
-            BaseDelegateAdapter embroideryAdapter = new BaseDelegateAdapter(this, new LinearLayoutHelper(),
-                    R.layout.rv_embroidery_item, embroideryBean.getData().getSpecial_mark_part().size(), 2) {
+
+        BaseDelegateAdapter selectAdapter = new BaseDelegateAdapter(this, new LinearLayoutHelper(),
+                R.layout.rv_select_embroidery, 1, 3) {
+            @Override
+            public void onBindViewHolder(ViewHolder holder, int position) {
+                super.onBindViewHolder(holder, position);
+                CheckBox checkBox = holder.getView(R.id.checkbox_select_embroidery);
+                //个性绣花布局收缩
+                checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        isEmbroidery(isChecked);
+                    }
+                });
+            }
+        };
+        mAdapters.add(selectAdapter);
+
+
+        if (specialList.size() > 0) {
+            embroideryAdapter = new BaseDelegateAdapter(this, new LinearLayoutHelper(),
+                    R.layout.rv_embroidery_item, specialList.size(), 4) {
 
                 @Override
                 public void onBindViewHolder(ViewHolder holder, int position) {
                     super.onBindViewHolder(holder, position);
                     final int index = position;
                     TextView tvTitle = holder.getView(R.id.tv_embroidery_title);
-                    tvTitle.setText(embroideryBean.getData().getSpecial_mark_part().get(position).getType_name());
+                    tvTitle.setText(specialList.get(position).getType_name());
 
                     final TextView tvContent = holder.getView(R.id.tv_embroidery_content);
 
@@ -268,7 +382,7 @@ public class NewEmbroideryActivity extends BaseActivity {
                             LinearLayoutManager.HORIZONTAL, false));
                     final CommonAdapter<NewEmbroideryBean.DataBean.SpecialMarkPartBean.SonBeanX> adapter = new CommonAdapter
                             <NewEmbroideryBean.DataBean.SpecialMarkPartBean.SonBeanX>(NewEmbroideryActivity.this,
-                            R.layout.listitem_embroidery_fabric, embroideryBean.getData().getSpecial_mark_part().get(position).getSon()) {
+                            R.layout.listitem_embroidery_fabric, specialList.get(position).getSon()) {
                         @Override
                         protected void convert(ViewHolder holder, NewEmbroideryBean.DataBean.SpecialMarkPartBean.SonBeanX sonBeanX, int position) {
                             Glide.with(NewEmbroideryActivity.this)
@@ -295,11 +409,11 @@ public class NewEmbroideryActivity extends BaseActivity {
                         public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
                             //当前选择
                             int currentParts = holder.getLayoutPosition();
-                            for (int i = 0; i < embroideryBean.getData().getSpecial_mark_part().get(index).getSon().size(); i++) {
+                            for (int i = 0; i < specialList.get(index).getSon().size(); i++) {
                                 if (i == currentParts) {
-                                    embroideryBean.getData().getSpecial_mark_part().get(index).getSon().get(i).setIs_default(1);
+                                    specialList.get(index).getSon().get(i).setIs_default(1);
                                 } else {
-                                    embroideryBean.getData().getSpecial_mark_part().get(index).getSon().get(i).setIs_default(0);
+                                    specialList.get(index).getSon().get(i).setIs_default(0);
                                 }
                             }
                             adapter.notifyDataSetChanged();
@@ -312,13 +426,11 @@ public class NewEmbroideryActivity extends BaseActivity {
                     });
                 }
             };
-
-            mAdapters.add(embroideryAdapter);
         }
 
 
-        BaseDelegateAdapter contentAdapter = new BaseDelegateAdapter(this, new LinearLayoutHelper(),
-                R.layout.layout_embroidery_content, 1, 3) {
+        contentAdapter = new BaseDelegateAdapter(this, new LinearLayoutHelper(),
+                R.layout.layout_embroidery_content, 1, 5) {
             @Override
             public void onBindViewHolder(ViewHolder holder, int position) {
                 super.onBindViewHolder(holder, position);
@@ -342,16 +454,30 @@ public class NewEmbroideryActivity extends BaseActivity {
                 });
             }
         };
-        mAdapters.add(contentAdapter);
-
 
         delegateAdapter.setAdapters(mAdapters);
     }
+
+    /**
+     * @param b 是否绣花
+     */
+    private void isEmbroidery(boolean b) {
+        if (b) {
+            mAdapters.add(embroideryAdapter);
+            mAdapters.add(contentAdapter);
+        } else {
+            mAdapters.remove(embroideryAdapter);
+            mAdapters.remove(contentAdapter);
+        }
+        delegateAdapter.setAdapters(mAdapters);
+    }
+
 
     private void getData() {
         Intent intent = getIntent();
         goodsId = intent.getIntExtra("goods_id", -1);
     }
+
 
     @OnClick({R.id.iv_embroidery_back, R.id.tv_personal_customize,
             R.id.tv_add_to_cart, R.id.tv_confirm_buy_goods, R.id.img_load_error})
@@ -361,20 +487,20 @@ public class NewEmbroideryActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.tv_personal_customize:
-                if (embroideryBean.getData() != null) {
+                if (embroideryBean != null) {
                     toCustomize();
                 }
 
                 break;
             case R.id.tv_add_to_cart:
-                if (embroideryBean.getData() != null) {
+                if (embroideryBean != null) {
                     type = 2;
                     addToCart();
                 }
 
                 break;
             case R.id.tv_confirm_buy_goods:
-                if (embroideryBean.getData() != null) {
+                if (embroideryBean != null) {
                     type = 1;
                     addToCart();
                 }
@@ -413,10 +539,30 @@ public class NewEmbroideryActivity extends BaseActivity {
         }
         partsBean.setFabricBean(fabric);
 
-        //绣花
+        //个性化配件
         String embroideryIds = "";
+
         List<CustomizePartsBean.EmbroideryBean> embroiderys = new ArrayList<>();
-        for (NewEmbroideryBean.DataBean.SpecialMarkPartBean specialMarkPartBean : embroideryBean.getData().getSpecial_mark_part()) {
+
+        //版型
+        for (NewEmbroideryBean.DataBean.SpecialMarkPartBean typeBean : typeList) {
+
+            for (NewEmbroideryBean.DataBean.SpecialMarkPartBean.SonBeanX sonBeanX : typeBean.getSon()) {
+                if (sonBeanX.getIs_default() == 1) {
+                    embroideryIds += sonBeanX.getPart_id() + ",";
+
+                    CustomizePartsBean.EmbroideryBean embroidery = new CustomizePartsBean.EmbroideryBean();
+                    embroidery.setTitle(typeBean.getType_name());
+                    embroidery.setName(sonBeanX.getPart_name());
+                    embroiderys.add(embroidery);
+                    break;
+                }
+            }
+        }
+
+
+        //绣花
+        for (NewEmbroideryBean.DataBean.SpecialMarkPartBean specialMarkPartBean : specialList) {
             for (NewEmbroideryBean.DataBean.SpecialMarkPartBean.SonBeanX sonBeanX : specialMarkPartBean.getSon()) {
                 if (sonBeanX.getIs_default() == 1) {
                     embroideryIds += sonBeanX.getPart_id() + ",";
@@ -429,9 +575,11 @@ public class NewEmbroideryActivity extends BaseActivity {
                 }
             }
         }
-        embroideryIds = embroideryIds.substring(0, embroideryIds.length() - 1);
-        partsBean.setSpecial_mark_part_ids(embroideryIds);
-        partsBean.setEmbroideryBeans(embroiderys);
+        if (!TextUtils.isEmpty(embroideryIds)) {
+            embroideryIds = embroideryIds.substring(0, embroideryIds.length() - 1);
+            partsBean.setSpecial_mark_part_ids(embroideryIds);
+            partsBean.setEmbroideryBeans(embroiderys);
+        }
 
 
         bundle.putSerializable("embroidery", partsBean);
@@ -463,7 +611,17 @@ public class NewEmbroideryActivity extends BaseActivity {
         }
 
         String embroideryIds = "";
-        for (NewEmbroideryBean.DataBean.SpecialMarkPartBean specialMarkPartBean : embroideryBean.getData().getSpecial_mark_part()) {
+
+        for (NewEmbroideryBean.DataBean.SpecialMarkPartBean typeBean : typeList) {
+            for (NewEmbroideryBean.DataBean.SpecialMarkPartBean.SonBeanX sonBeanX : typeBean.getSon()) {
+                if (sonBeanX.getIs_default() == 1) {
+                    embroideryIds += sonBeanX.getPart_id() + ",";
+                    break;
+                }
+            }
+        }
+
+        for (NewEmbroideryBean.DataBean.SpecialMarkPartBean specialMarkPartBean : specialList) {
             for (NewEmbroideryBean.DataBean.SpecialMarkPartBean.SonBeanX sonBeanX : specialMarkPartBean.getSon()) {
                 if (sonBeanX.getIs_default() == 1) {
                     embroideryIds += sonBeanX.getPart_id() + ",";
@@ -472,8 +630,11 @@ public class NewEmbroideryActivity extends BaseActivity {
             }
         }
 
-        embroideryIds = embroideryIds.substring(0, embroideryIds.length() - 1);
-        map.put("special_mark_part_ids", embroideryIds);
+        if (!TextUtils.isEmpty(embroideryIds)) {
+            embroideryIds = embroideryIds.substring(0, embroideryIds.length() - 1);
+            map.put("special_mark_part_ids", embroideryIds);
+        }
+
 
         String partIds = "";
         for (NewEmbroideryBean.DataBean.MustDisplayPartBean mustDisplayPartBean : embroideryBean.getData().getMust_display_part()) {
@@ -522,5 +683,21 @@ public class NewEmbroideryActivity extends BaseActivity {
                     }
                 });
 
+    }
+
+    /**
+     * @param msg 下单成功，结束当前页面
+     */
+    @Subscribe
+    public void orderSuccess(String msg) {
+        if ("order_success".equals(msg)) {
+            finish();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 }

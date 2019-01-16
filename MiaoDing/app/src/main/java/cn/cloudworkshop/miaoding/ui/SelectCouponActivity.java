@@ -160,7 +160,7 @@ public class SelectCouponActivity extends BaseActivity {
                 tvMoney.setTypeface(DisplayUtils.setTextType(SelectCouponActivity.this));
                 tvMoney.setText("¥" + (int) Float.parseFloat(validTicketsBean.getMoney()));
                 holder.setText(R.id.tv_coupon_range, validTicketsBean.getTitle());
-                holder.setText(R.id.tv_coupon_discount, validTicketsBean.getSub_title());
+                holder.setText(R.id.tv_coupon_discount, validTicketsBean.getRe_marks());
                 String term = getString(R.string.validity_term) + "：" + DateUtils.formatTime(
                         "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd", validTicketsBean.getS_time())
                         + getString(R.string.to) + DateUtils.formatTime("yyyy-MM-dd HH:mm:ss",
@@ -181,9 +181,9 @@ public class SelectCouponActivity extends BaseActivity {
                 intent.putExtra("coupon_id", usableList.get(position).getId() + "");
                 intent.putExtra("coupon_money", usableList.get(position).getMoney());
                 intent.putExtra("coupon_content", usableList.get(position).getTitle()
-                        + "(" + usableList.get(position).getSub_title() + ")");
+                        + "(" + usableList.get(position).getRe_marks() + ")");
                 intent.putExtra("coupon_min_money", usableList.get(position).getFull_money());
-                intent.putExtra("goods_ids", usableList.get(position).getUse_scope());
+                intent.putExtra("cart_ids", usableList.get(position).getCart_id_s());
                 //1:使用优惠券
                 setResult(3, intent);
                 finish();
@@ -208,7 +208,7 @@ public class SelectCouponActivity extends BaseActivity {
                 tvMoney.setTypeface(DisplayUtils.setTextType(SelectCouponActivity.this));
                 tvMoney.setText("¥" + (int) Float.parseFloat(invalidTicketsBean.getMoney()));
                 holder.setText(R.id.tv_coupon_range, invalidTicketsBean.getTitle());
-                holder.setText(R.id.tv_coupon_discount, invalidTicketsBean.getSub_title());
+                holder.setText(R.id.tv_coupon_discount, invalidTicketsBean.getRe_marks());
                 String term = getString(R.string.validity_term) + "：" + DateUtils.formatTime(
                         "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd", invalidTicketsBean.getS_time())
                         + getString(R.string.to) + DateUtils.formatTime("yyyy-MM-dd HH:mm:ss",

@@ -230,7 +230,15 @@ public class ConfirmOrderBean implements Serializable{
             private String sell_price;
             private String goods_name;
             private String img_info;
+            private List<PartBean> part;
 
+            public List<PartBean> getPart() {
+                return part;
+            }
+
+            public void setPart(List<PartBean> part) {
+                this.part = part;
+            }
 
             public int getCart_id() {
                 return cart_id;
@@ -278,6 +286,33 @@ public class ConfirmOrderBean implements Serializable{
 
             public void setImg_info(String img_info) {
                 this.img_info = img_info;
+            }
+
+
+            public static class PartBean {
+                /**
+                 * part_name : 面料
+                 * part_value : VBC 班长会团购款
+                 */
+
+                private String part_name;
+                private String part_value;
+
+                public String getPart_name() {
+                    return part_name;
+                }
+
+                public void setPart_name(String part_name) {
+                    this.part_name = part_name;
+                }
+
+                public String getPart_value() {
+                    return part_value;
+                }
+
+                public void setPart_value(String part_value) {
+                    this.part_value = part_value;
+                }
             }
         }
     }

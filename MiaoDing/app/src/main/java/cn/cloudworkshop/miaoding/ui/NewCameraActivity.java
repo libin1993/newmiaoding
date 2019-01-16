@@ -22,6 +22,8 @@ import android.widget.ImageView;
 
 import com.wang.avi.AVLoadingIndicatorView;
 import com.wang.avi.indicators.BallSpinFadeLoaderIndicator;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
@@ -43,16 +45,21 @@ import org.opencv.objdetect.HOGDescriptor;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.cloudworkshop.miaoding.R;
 import cn.cloudworkshop.miaoding.base.BaseActivity;
+import cn.cloudworkshop.miaoding.bean.ResponseBean;
 import cn.cloudworkshop.miaoding.camera.CustomCameraView;
 import cn.cloudworkshop.miaoding.constant.Constant;
 import cn.cloudworkshop.miaoding.utils.CameraDistance;
 import cn.cloudworkshop.miaoding.utils.DisplayUtils;
+import cn.cloudworkshop.miaoding.utils.GsonUtils;
 import cn.cloudworkshop.miaoding.utils.LogUtils;
 import cn.cloudworkshop.miaoding.utils.SharedPreferencesUtils;
 import cn.cloudworkshop.miaoding.utils.ToastUtils;
@@ -381,7 +388,7 @@ public class NewCameraActivity extends BaseActivity implements SensorEventListen
                     imgTakePhoto.setVisibility(View.GONE);
                     if (isClickable) {
                         isClickable = false;
-                        submitData();
+                        uploadImg();
                     }
                 }
                 break;
@@ -401,77 +408,102 @@ public class NewCameraActivity extends BaseActivity implements SensorEventListen
         }
     }
 
-    /**
-     * 上传照片
-     */
-    private void submitData() {
-        loadingView.smoothToShow();
-        MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
 
+    /**
+     * @param
+     */
+    private void uploadImg() {
+        MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
         for (int i = 0; i < photoArray.length; i++) {
             File file = new File(photoArray[i]);
-            builder.addFormDataPart("img" + i, file.getName(),
+            builder.addFormDataPart("file[]", file.getName(),
                     RequestBody.create(MediaType.parse("image/png"), file));
         }
-
-        builder.addFormDataPart("token", SharedPreferencesUtils.getStr(this, "token"));
-        builder.addFormDataPart("phone", SharedPreferencesUtils.getStr(this, "phone"));
-        builder.addFormDataPart("name", name);
-        builder.addFormDataPart("height", height);
-        builder.addFormDataPart("weight", weight);
-        builder.addFormDataPart("is_index", String.valueOf(isDefault));
-        builder.addFormDataPart("scale", "1,1,1,1");
-        if (!TextUtils.isEmpty(store)) {
-            builder.addFormDataPart("factory_id", store);
-        }
-        if (!TextUtils.isEmpty(bust)) {
-            builder.addFormDataPart("xw", bust);
-        }
-        if (!TextUtils.isEmpty(waist)) {
-            builder.addFormDataPart("yw", waist);
-        }
-        if (!TextUtils.isEmpty(hip)) {
-            builder.addFormDataPart("tw", hip);
-        }
-
         MultipartBody requestBody = builder.build();
         //构建请求
         Request request = new Request.Builder()
-                .url(Constant.TAKE_PHOTO)
+                .url(Constant.UPLOAD_FILE)
                 .post(requestBody)
                 .build();
         OkHttpClient client = new OkHttpClient();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                isClickable = true;
+                LogUtils.log(e.getMessage());
             }
 
             @Override
             public void onResponse(Call call, final Response response) {
-                isClickable = true;
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        loadingView.smoothToHide();
-                        try {
-                            JSONObject jsonObject = new JSONObject(response.body().string());
-                            int code = jsonObject.getInt("code");
-                            String msg = jsonObject.getString("msg");
-                            ToastUtils.showToast(NewCameraActivity.this, msg);
-                            if (code == 1) {
-                                EventBus.getDefault().post("take_success");
-                                finish();
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                try {
+                    JSONObject jsonObject = new JSONObject(response.body().string());
+                    int code = jsonObject.getInt("code");
+                    if (code == 10000) {
+                        String imgUrl = jsonObject.getString("info");
+                        submitData(imgUrl);
                     }
-                });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
+    }
+
+    /**
+     * 上传照片
+     *
+     * @param imgUrl
+     */
+    private void submitData(String imgUrl) {
+        Map<String, String> map = new HashMap<>();
+        map.put("token", SharedPreferencesUtils.getStr(this, "token"));
+        map.put("phone", SharedPreferencesUtils.getStr(this, "phone"));
+        map.put("name", name);
+        map.put("height", height);
+        map.put("weight", weight);
+        map.put("is_index", String.valueOf(isDefault));
+        map.put("scale", "1,1,1,1");
+        map.put("img_list", imgUrl);
+
+        if (!TextUtils.isEmpty(store)) {
+            map.put("factory_id", store);
+        }
+        if (!TextUtils.isEmpty(bust)) {
+            map.put("xw", bust);
+        }
+        if (!TextUtils.isEmpty(waist)) {
+            map.put("yw", waist);
+        }
+        if (!TextUtils.isEmpty(hip)) {
+            map.put("tw", hip);
+        }
+
+
+        OkHttpUtils.post()
+                .url(Constant.TAKE_PHOTO)
+                .params(map)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(final String response, int id) {
+                        isClickable = true;
+                        loadingView.smoothToHide();
+
+                        ResponseBean responseBean = GsonUtils.jsonToBean(response, ResponseBean.class);
+                        ToastUtils.showToast(NewCameraActivity.this, responseBean.getMsg());
+                        if (responseBean.getCode() == 10000) {
+                            EventBus.getDefault().post("take_success");
+                            finish();
+                        }
+
+                    }
+                });
 
     }
 

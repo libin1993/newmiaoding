@@ -327,7 +327,7 @@ public class NewCustomizeActivity extends BaseActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.img_header_back:
-                customGoodsLog();
+//                customGoodsLog();
                 finish();
                 break;
             case R.id.tv_header_next:
@@ -887,15 +887,6 @@ public class NewCustomizeActivity extends BaseActivity {
 
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            customGoodsLog();
-            finish();
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
 
 
     /**

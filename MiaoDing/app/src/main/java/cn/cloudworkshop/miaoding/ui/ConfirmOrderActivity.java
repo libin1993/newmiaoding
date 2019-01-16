@@ -1,15 +1,22 @@
 package cn.cloudworkshop.miaoding.ui;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -28,6 +35,7 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -37,6 +45,7 @@ import cn.cloudworkshop.miaoding.R;
 import cn.cloudworkshop.miaoding.base.BaseActivity;
 import cn.cloudworkshop.miaoding.bean.ConfirmOrderBean;
 import cn.cloudworkshop.miaoding.bean.ResponseBean;
+import cn.cloudworkshop.miaoding.bean.ShoppingCartBean;
 import cn.cloudworkshop.miaoding.constant.Constant;
 import cn.cloudworkshop.miaoding.utils.BigDecimalUtils;
 import cn.cloudworkshop.miaoding.utils.DateUtils;
@@ -44,6 +53,7 @@ import cn.cloudworkshop.miaoding.utils.DisplayUtils;
 import cn.cloudworkshop.miaoding.utils.GsonUtils;
 import cn.cloudworkshop.miaoding.utils.MyLinearLayoutManager;
 import cn.cloudworkshop.miaoding.utils.PayOrderUtils;
+import cn.cloudworkshop.miaoding.utils.RVItemDecoration;
 import cn.cloudworkshop.miaoding.utils.SharedPreferencesUtils;
 import cn.cloudworkshop.miaoding.utils.ToastUtils;
 import okhttp3.Call;
@@ -225,7 +235,7 @@ public class ConfirmOrderActivity extends BaseActivity {
         adapter = new CommonAdapter<ConfirmOrderBean.DataBean.CarListBean>(this,
                 R.layout.listitem_shopping_cart, confirmOrderBean.getData().getCar_list()) {
             @Override
-            protected void convert(final ViewHolder holder, ConfirmOrderBean.DataBean.CarListBean
+            protected void convert(final ViewHolder holder, final ConfirmOrderBean.DataBean.CarListBean
                     carListBean, final int position) {
                 holder.setVisible(R.id.checkbox_goods_select, false);
                 holder.setVisible(R.id.view_cart_divide, true);
@@ -239,18 +249,29 @@ public class ConfirmOrderActivity extends BaseActivity {
                 holder.setVisible(R.id.ll_cart_edit, false);
                 holder.setVisible(R.id.ll_cart_edit1, true);
                 holder.setText(R.id.tv_goods_name, carListBean.getGoods_name());
-//                switch (carListBean.getGoods_type()) {
-//                    case 2:
-//                        holder.setText(R.id.tv_goods_content, carListBean.getSize_content());
-//                        break;
-//                    default:
-//                        holder.setText(R.id.tv_goods_content, getString(R.string.customize_type));
-//                        break;
-//                }
+                TextView tvContent = holder.getView(R.id.tv_goods_content);
+                if (carListBean.getPart() != null) {
+                    String parts = "";
+                    for (ConfirmOrderBean.DataBean.CarListBean.PartBean partBean : carListBean.getPart()) {
+                        parts += partBean.getPart_name() + ":" + partBean.getPart_value() + ";";
+                    }
+                    parts = parts.substring(0, parts.length() - 1);
+                    tvContent.setText(parts);
+                }
+
+
                 holder.setText(R.id.tv_goods_price, "¥" + carListBean.getSell_price());
                 holder.setText(R.id.tv_cart_count1, carListBean.getGoods_num() + "");
                 holder.setVisible(R.id.view_cart, true);
 
+                tvContent.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (carListBean.getPart() != null) {
+                            goodsPart(carListBean.getPart());
+                        }
+                    }
+                });
                 //增加购物车数量
                 holder.getView(R.id.tv_cart_add1).setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -316,7 +337,6 @@ public class ConfirmOrderActivity extends BaseActivity {
      */
     private void initCoupon() {
         if (couponId == null) {
-
             tvCouponContent.setText(R.string.please_select_coupon);
             tvCouponContent.setTextColor(ContextCompat.getColor(ConfirmOrderActivity.this,
                     R.color.dark_gray_22));
@@ -357,8 +377,9 @@ public class ConfirmOrderActivity extends BaseActivity {
                                 if (!isCouponAvailable()) {
                                     couponId = null;
                                 }
-                                initCoupon();
                             }
+                            initCoupon();
+
                         } else {
                             ToastUtils.showToast(ConfirmOrderActivity.this, responseBean.getMsg());
                         }
@@ -375,16 +396,19 @@ public class ConfirmOrderActivity extends BaseActivity {
         double maxPrice = 0.00;
         int count = 0;
         //该商品是否包含在优惠券中
-        String[] split = goodsIds.split(",");
-        for (int i = 0; i < confirmOrderBean.getData().getCar_list().size(); i++) {
-            if (Arrays.asList(split).contains(confirmOrderBean.getData().getCar_list().get(i)
-                    .getGoods_id() + "")) {
-                double price = Double.parseDouble(confirmOrderBean.getData().getCar_list().get(i).getSell_price());
-                int num = confirmOrderBean.getData().getCar_list().get(i).getGoods_num();
-                maxPrice = BigDecimalUtils.add(maxPrice, BigDecimalUtils.mul(price, num));
-                count++;
+        if (!TextUtils.isEmpty(goodsIds)) {
+            String[] split = goodsIds.split(",");
+            for (int i = 0; i < confirmOrderBean.getData().getCar_list().size(); i++) {
+                if (Arrays.asList(split).contains(confirmOrderBean.getData().getCar_list().get(i)
+                        .getCart_id() + "")) {
+                    double price = Double.parseDouble(confirmOrderBean.getData().getCar_list().get(i).getSell_price());
+                    int num = confirmOrderBean.getData().getCar_list().get(i).getGoods_num();
+                    maxPrice = BigDecimalUtils.add(maxPrice, BigDecimalUtils.mul(price, num));
+                    count++;
+                }
             }
         }
+
         //可使用优惠券商品的总价格与优惠券最低消费金额
         if (maxPrice >= Double.parseDouble(couponMinMoney)) {
             if (Double.parseDouble(couponMoney) <= BigDecimalUtils.sub(maxPrice, BigDecimalUtils.mul(0.01, count))) {
@@ -421,12 +445,57 @@ public class ConfirmOrderActivity extends BaseActivity {
         return DisplayUtils.decimalFormat(totalPrice);
     }
 
+    /**
+     * @param part 配件
+     */
+    private void goodsPart(final List<ConfirmOrderBean.DataBean.CarListBean.PartBean> part) {
+        View popupView = getLayoutInflater().inflate(R.layout.ppw_goods_part, null);
+        final PopupWindow mPopupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        mPopupWindow.setTouchable(true);
+        mPopupWindow.setFocusable(true);
+        mPopupWindow.setOutsideTouchable(true);
+        mPopupWindow.setBackgroundDrawable(new BitmapDrawable(getResources(), (Bitmap) null));
+        mPopupWindow.showAtLocation(getWindow().getDecorView(), Gravity.CENTER, 0, 0);
+        DisplayUtils.setBackgroundAlpha(this, true);
+
+        RecyclerView rvPart = popupView.findViewById(R.id.rv_goods_part);
+        rvPart.setLayoutManager(new LinearLayoutManager(this));
+        rvPart.addItemDecoration(new RVItemDecoration((int) DisplayUtils.dp2px(this, 10)));
+        CommonAdapter<ConfirmOrderBean.DataBean.CarListBean.PartBean> adapter = new
+                CommonAdapter<ConfirmOrderBean.DataBean.CarListBean.PartBean>(this,
+                        R.layout.rv_goods_part_item, part) {
+                    @Override
+                    protected void convert(ViewHolder holder, ConfirmOrderBean.DataBean.CarListBean.PartBean partBean, int position) {
+                        holder.setText(R.id.tv_part_title, partBean.getPart_name());
+                        holder.setText(R.id.tv_part_name, partBean.getPart_value());
+                    }
+                };
+        rvPart.setAdapter(adapter);
+
+        TextView tvClose = popupView.findViewById(R.id.tv_close);
+
+        tvClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mPopupWindow.dismiss();
+            }
+        });
+
+        mPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                DisplayUtils.setBackgroundAlpha(ConfirmOrderActivity.this, false);
+            }
+        });
+    }
+
     @OnClick({R.id.img_header_back, R.id.rl_select_address, R.id.tv_confirm_order,
             R.id.ll_select_coupon, R.id.img_load_error, R.id.ll_measure})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.img_header_back:
-                customGoodsLog();
+//                customGoodsLog();
                 finish();
                 break;
             case R.id.rl_select_address:
@@ -482,15 +551,6 @@ public class ConfirmOrderActivity extends BaseActivity {
         Map<String, String> map = new HashMap<>();
         map.put("token", SharedPreferencesUtils.getStr(this, "token"));
         map.put("cart_id_s", cartIds);
-
-        String goodsNums = "";
-        for (ConfirmOrderBean.DataBean.CarListBean carListBean : confirmOrderBean.getData().getCar_list()) {
-            goodsNums += carListBean.getGoods_num() + ",";
-        }
-        goodsNums = goodsNums.substring(0,goodsNums.length()-1);
-//        map.put("buy_num_s", goodsNums);
-//        map.put("use_giftcard", "0");
-
         if (couponId != null) {
             map.put("ticket_record_id", couponId);
         }
@@ -499,7 +559,7 @@ public class ConfirmOrderActivity extends BaseActivity {
             map.put("volume_id", String.valueOf(measureBean.getId()));
         }
 
-        OkHttpUtils.get()
+        OkHttpUtils.post()
                 .url(Constant.CONFIRM_ORDER)
                 .params(map)
                 .build()
@@ -516,25 +576,20 @@ public class ConfirmOrderActivity extends BaseActivity {
                             JSONObject jsonObject = new JSONObject(response);
                             int code = jsonObject.getInt("code");
                             String msg = jsonObject.getString("msg");
-                            if (code == 10000) {
-                                JSONObject jsonObject1 = jsonObject.getJSONObject("data");
-                                String orderId = jsonObject1.getString("order_id");
-                                if (orderId != null) {
-                                    HashMap<String, String> map = new HashMap<String, String>();
-                                    map.put("id", cartIds);
-                                    //下单事件监听
-                                    MobclickAgent.onEvent(ConfirmOrderActivity.this, "place_order", map);
-                                    ToastUtils.showToast(ConfirmOrderActivity.this, msg);
 
+                            if (code == 10000) {
+                                String orderId = jsonObject.getString("order_sn");
+                                if (orderId != null) {
+                                    //下单事件监听
+                                    MobclickAgent.onEvent(ConfirmOrderActivity.this, "place_order");
                                     //下单成功，结束前面的页面
                                     EventBus.getDefault().post("order_success");
-
-                                    payOrderUtil = new PayOrderUtils(ConfirmOrderActivity.this,
-                                            getTotalPrice(), orderId);
-                                    payOrderUtil.payMoney();
-
+                                    Intent intent = new Intent(ConfirmOrderActivity.this, PayOrderActivity.class);
+                                    intent.putExtra("order_id", orderId);
+                                    startActivity(intent);
+                                    finish();
                                 }
-                            } else {
+                            }else {
                                 ToastUtils.showToast(ConfirmOrderActivity.this, msg);
                             }
 
@@ -569,7 +624,7 @@ public class ConfirmOrderActivity extends BaseActivity {
                         couponMoney = data.getStringExtra("coupon_money");
                         couponContent = data.getStringExtra("coupon_content");
                         couponMinMoney = data.getStringExtra("coupon_min_money");
-                        goodsIds = data.getStringExtra("goods_ids");
+                        goodsIds = data.getStringExtra("cart_ids");
                         isCouponAvailable();
                         initCoupon();
                         break;
@@ -657,16 +712,6 @@ public class ConfirmOrderActivity extends BaseActivity {
         initMeasureData();
     }
 
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            customGoodsLog();
-            finish();
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
 
     @Override
     protected void onDestroy() {

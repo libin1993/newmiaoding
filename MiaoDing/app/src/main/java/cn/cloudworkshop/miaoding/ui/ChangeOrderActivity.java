@@ -163,49 +163,49 @@ public class ChangeOrderActivity extends BaseActivity implements EasyPermissions
      * 加载视图
      */
     private void initView() {
-        isSelected = new boolean[orderBean.getData().getCar_list().size()];
-        for (int i = 0; i < orderBean.getData().getCar_list().size(); i++) {
-            isSelected[i] = false;
-        }
-        rvSelectGoods.setLayoutManager(new LinearLayoutManager(this));
-        CommonAdapter<OrderDetailsBean.DataBean.CarListBean> adapter = new CommonAdapter
-                <OrderDetailsBean.DataBean.CarListBean>(this, R.layout.listitem_shopping_cart,
-                orderBean.getData().getCar_list()) {
-            @Override
-            protected void convert(ViewHolder holder, OrderDetailsBean.DataBean.CarListBean carListBean,
-                                   final int position) {
-                holder.setChecked(R.id.checkbox_goods_select, false);
-                Glide.with(ChangeOrderActivity.this)
-                        .load(Constant.IMG_HOST + orderBean.getData().getCar_list().get(position).getGoods_thumb())
-                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                        .into((ImageView) holder.getView(R.id.img_item_goods));
-                holder.setText(R.id.tv_goods_name, orderBean.getData().getCar_list().get(position)
-                        .getGoods_name());
-                switch (orderBean.getData().getCar_list().get(position).getGoods_type()) {
-                    case 2:
-                        holder.setText(R.id.tv_goods_content, orderBean.getData().getCar_list()
-                                .get(position).getSize_content());
-                        break;
-                    default:
-                        holder.setText(R.id.tv_goods_content, getString(R.string.customize_type));
-                        break;
-                }
-                holder.setText(R.id.tv_goods_price, "¥" + orderBean.getData().getCar_list()
-                        .get(position).getPrice());
-                holder.setText(R.id.tv_goods_count, "x" + orderBean.getData().getCar_list()
-                        .get(position).getNum());
-                holder.setVisible(R.id.view_cart, true);
-
-                ((CheckBox) holder.getView(R.id.checkbox_goods_select)).
-                        setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                            @Override
-                            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                                isSelected[position] = b;
-                            }
-                        });
-            }
-        };
-        rvSelectGoods.setAdapter(adapter);
+//        isSelected = new boolean[orderBean.getData().getCar_list().size()];
+//        for (int i = 0; i < orderBean.getData().getCar_list().size(); i++) {
+//            isSelected[i] = false;
+//        }
+//        rvSelectGoods.setLayoutManager(new LinearLayoutManager(this));
+//        CommonAdapter<OrderDetailsBean.DataBean.CarListBean> adapter = new CommonAdapter
+//                <OrderDetailsBean.DataBean.CarListBean>(this, R.layout.listitem_shopping_cart,
+//                orderBean.getData().getCar_list()) {
+//            @Override
+//            protected void convert(ViewHolder holder, OrderDetailsBean.DataBean.CarListBean carListBean,
+//                                   final int position) {
+//                holder.setChecked(R.id.checkbox_goods_select, false);
+//                Glide.with(ChangeOrderActivity.this)
+//                        .load(Constant.IMG_HOST + orderBean.getData().getCar_list().get(position).getGoods_thumb())
+//                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+//                        .into((ImageView) holder.getView(R.id.img_item_goods));
+//                holder.setText(R.id.tv_goods_name, orderBean.getData().getCar_list().get(position)
+//                        .getGoods_name());
+//                switch (orderBean.getData().getCar_list().get(position).getGoods_type()) {
+//                    case 2:
+//                        holder.setText(R.id.tv_goods_content, orderBean.getData().getCar_list()
+//                                .get(position).getSize_content());
+//                        break;
+//                    default:
+//                        holder.setText(R.id.tv_goods_content, getString(R.string.customize_type));
+//                        break;
+//                }
+//                holder.setText(R.id.tv_goods_price, "¥" + orderBean.getData().getCar_list()
+//                        .get(position).getPrice());
+//                holder.setText(R.id.tv_goods_count, "x" + orderBean.getData().getCar_list()
+//                        .get(position).getNum());
+//                holder.setVisible(R.id.view_cart, true);
+//
+//                ((CheckBox) holder.getView(R.id.checkbox_goods_select)).
+//                        setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//                            @Override
+//                            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+//                                isSelected[position] = b;
+//                            }
+//                        });
+//            }
+//        };
+//        rvSelectGoods.setAdapter(adapter);
         tvFirstNext.setVisibility(View.VISIBLE);
 
 
@@ -285,22 +285,22 @@ public class ChangeOrderActivity extends BaseActivity implements EasyPermissions
             }
         };
 
-        rvSelectPhoto.setAdapter(adapter);
-
-        adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-                PhotoPreview.builder()
-                        .setPhotos(selectedPhotos)
-                        .setCurrentItem(position)
-                        .start(ChangeOrderActivity.this);
-            }
-
-            @Override
-            public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
-                return false;
-            }
-        });
+//        rvSelectPhoto.setAdapter(adapter);
+//
+//        adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+//                PhotoPreview.builder()
+//                        .setPhotos(selectedPhotos)
+//                        .setCurrentItem(position)
+//                        .start(ChangeOrderActivity.this);
+//            }
+//
+//            @Override
+//            public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
+//                return false;
+//            }
+//        });
 
         tvConsultPhone.setText(getString(R.string.service_hotline) + MyApplication.serverPhone);
     }
@@ -399,11 +399,11 @@ public class ChangeOrderActivity extends BaseActivity implements EasyPermissions
         for (int i = 0; i < isSelected.length; i++) {
             if (isSelected[i]) {
                 isChecked = true;
-                if (i == isSelected.length - 1) {
-                    sb.append(orderBean.getData().getCar_list().get(i).getId());
-                } else {
-                    sb.append(orderBean.getData().getCar_list().get(i).getId()).append(",");
-                }
+//                if (i == isSelected.length - 1) {
+//                    sb.append(orderBean.getData().getCar_list().get(i).getId());
+//                } else {
+//                    sb.append(orderBean.getData().getCar_list().get(i).getId()).append(",");
+//                }
             }
         }
         if (isChecked) {

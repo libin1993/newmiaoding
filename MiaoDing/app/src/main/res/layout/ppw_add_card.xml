@@ -4,59 +4,80 @@
                 android:layout_height="wrap_content">
 
     <LinearLayout
-        android:layout_width="300dp"
+        android:layout_width="282dp"
         android:layout_height="wrap_content"
         android:background="@drawable/text_white_4dp"
         android:orientation="vertical">
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="17dp"
+            android:layout_gravity="center_horizontal"
             android:gravity="center"
-            android:text="@string/add_gift_card"
-            android:textColor="@color/light_gray_3d"
-            android:textSize="16sp"/>
+            android:text="@string/app_name"
+            android:textColor="@color/dark_gray_22"
+            android:textSize="18sp"/>
 
-        <EditText
-            android:id="@+id/et_card_number"
-            android:layout_width="250dp"
-            android:layout_height="40dp"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:layout_gravity="center_horizontal"
-            android:background="@drawable/text_white_4dp"
-            android:gravity="center_vertical"
-            android:hint="@string/input_card_no"
-            android:maxLength="20"
-            android:paddingLeft="6dp"
-            android:singleLine="true"
+            android:text="@string/input_card_number"
             android:textColor="@color/light_gray_3d"
-            android:textColorHint="@color/hint_gray"
-            android:textSize="16sp"/>
+            android:textSize="14sp"/>
 
-        <EditText
-            android:id="@+id/et_card_pwd"
-            android:layout_width="250dp"
-            android:layout_height="40dp"
+        <LinearLayout
+            android:layout_width="242dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/rectangle_e8"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/text_white_4dp"
-            android:gravity="center_vertical"
-            android:hint="@string/input_pwd"
-            android:maxLength="20"
-            android:paddingLeft="6dp"
-            android:singleLine="true"
-            android:textColor="@color/light_gray_3d"
-            android:textColorHint="@color/hint_gray"
-            android:textSize="16sp"/>
+            android:layout_marginTop="11dp">
+
+            <EditText
+                android:id="@+id/et_card_number"
+                android:layout_width="match_parent"
+                android:layout_height="38dp"
+                android:gravity="center_vertical"
+                android:hint="@string/input_card_no"
+                android:maxLength="20"
+                android:paddingLeft="6dp"
+                android:singleLine="true"
+                android:textColor="@color/dark_gray_22"
+                android:textColorHint="@color/light_gray_99"
+                android:textSize="14sp"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/gray_e8"/>
+            <EditText
+                android:id="@+id/et_card_pwd"
+                android:layout_width="match_parent"
+                android:layout_height="38dp"
+                android:gravity="center_vertical"
+                android:hint="@string/input_pwd"
+                android:maxLength="20"
+                android:paddingLeft="6dp"
+                android:singleLine="true"
+                android:textColor="@color/dark_gray_22"
+                android:textColorHint="@color/light_gray_99"
+                android:textSize="14sp"/>
+
+        </LinearLayout>
+
+
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginTop="20dp"
-            android:background="@color/line_gray_e5"/>
+            android:layout_marginTop="16dp"
+            android:background="@color/gray_e8"/>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="46dp"
             android:orientation="horizontal">
 
             <TextView
@@ -66,13 +87,13 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/cancel"
-                android:textColor="@color/light_gray_3d"
+                android:textColor="@color/gray_66"
                 android:textSize="16sp"/>
 
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:background="@color/line_gray_e5"/>
+                android:background="@color/gray_e8"/>
 
             <TextView
                 android:id="@+id/tv_confirm_card"
@@ -81,7 +102,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/confirm"
-                android:textColor="@color/light_gray_3d"
+                android:textColor="@color/gray_20"
                 android:textSize="16sp"/>
         </LinearLayout>
     </LinearLayout>

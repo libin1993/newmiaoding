@@ -239,14 +239,14 @@ public class PayOrderUtils {
                             if (!api.isWXAppSupportAPI()) {
                                 ToastUtils.showToast(context, context.getString(R.string.not_support_wechat));
                             }
-                            MyApplication.payId = weChatPay.getPay_code();
+
                             PayReq req = new PayReq();
-                            req.appId = Constant.APP_ID;
+                            req.appId = weChatPay.getData().getAppid();
                             req.partnerId = weChatPay.getData().getPartnerid();
                             req.prepayId = weChatPay.getData().getPrepayid();
                             req.nonceStr = weChatPay.getData().getNoncestr();
                             req.timeStamp = weChatPay.getData().getTimestamp() + "";
-                            req.packageValue = "Sign=WXPay";
+                            req.packageValue = weChatPay.getData().getPackageX();
                             req.sign = weChatPay.getData().getSign();
                             api.sendReq(req);
                             ((Activity) context).finish();
@@ -284,7 +284,6 @@ public class PayOrderUtils {
                             int code = jsonObject.getInt("code");
                             if (code == 1) {
                                 final String orderInfo = jsonObject.getString("data");
-                                MyApplication.payId = jsonObject.getString("pay_code");
                                 Runnable payRunnable = new Runnable() {
                                     @Override
                                     public void run() {

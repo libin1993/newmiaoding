@@ -11,8 +11,8 @@ public class JoinUsBean {
 
 
     /**
-     * code : 1
-     * data : {"img_list":[{"img":"/uploads/img/2016102616520250555755.jpg","link":"设计师入住","title":"123","share_link":null}],"is_apply":0}
+     * code : 10000
+     * data : {"img_list":[{"img":"public/20190115/5815012dccd7955b99587fe317f4fe4caf76102e.png","link":"设计师入住","title":"设计师招募","share_link":"","type":3,"banner_type":1,"ratio":"0.424688"}],"is_apply":0}
      * msg : 成功
      */
 
@@ -46,7 +46,7 @@ public class JoinUsBean {
 
     public static class DataBean {
         /**
-         * img_list : [{"img":"/uploads/img/2016102616520250555755.jpg","link":"设计师入住","title":"123","share_link":null}]
+         * img_list : [{"img":"public/20190115/5815012dccd7955b99587fe317f4fe4caf76102e.png","link":"设计师入住","title":"设计师招募","share_link":"","type":3,"banner_type":1,"ratio":"0.424688"}]
          * is_apply : 0
          */
 
@@ -71,16 +71,22 @@ public class JoinUsBean {
 
         public static class ImgListBean {
             /**
-             * img : /uploads/img/2016102616520250555755.jpg
+             * img : public/20190115/5815012dccd7955b99587fe317f4fe4caf76102e.png
              * link : 设计师入住
-             * title : 123
-             * share_link : null
+             * title : 设计师招募
+             * share_link :
+             * type : 3
+             * banner_type : 1
+             * ratio : 0.424688
              */
 
             private String img;
             private String link;
             private String title;
-            private Object share_link;
+            private String share_link;
+            private int type;
+            private int banner_type;
+            private String ratio;
 
             public String getImg() {
                 return img;
@@ -106,12 +112,36 @@ public class JoinUsBean {
                 this.title = title;
             }
 
-            public Object getShare_link() {
+            public String getShare_link() {
                 return share_link;
             }
 
-            public void setShare_link(Object share_link) {
+            public void setShare_link(String share_link) {
                 this.share_link = share_link;
+            }
+
+            public int getType() {
+                return type;
+            }
+
+            public void setType(int type) {
+                this.type = type;
+            }
+
+            public int getBanner_type() {
+                return banner_type;
+            }
+
+            public void setBanner_type(int banner_type) {
+                this.banner_type = banner_type;
+            }
+
+            public String getRatio() {
+                return ratio;
+            }
+
+            public void setRatio(String ratio) {
+                this.ratio = ratio;
             }
         }
     }

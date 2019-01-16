@@ -143,12 +143,12 @@ public class LoginActivity extends BaseActivity {
      * 加载视图
      */
     private void initView() {
-        if (MyApplication.loginBg != null) {
-            Glide.with(this)
-                    .load(Constant.IMG_HOST + MyApplication.loginBg)
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                    .into(bgLogin);
-        }
+//        if (MyApplication.loginBg != null) {
+//            Glide.with(this)
+//                    .load(Constant.IMG_HOST + MyApplication.loginBg)
+//                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+//                    .into(bgLogin);
+//        }
 
         imgLogin.setEnabled(false);
         etUserName.addTextChangedListener(new TextWatcher() {
@@ -295,14 +295,14 @@ public class LoginActivity extends BaseActivity {
                             if (code == 10000) {
 
                                 JSONObject data = jsonObject.getJSONObject("data");
-                                String loginToken = data.getString("token");
+                                String token = data.getString("token");
                                 int uid = data.getInt("id");
                                 String name = data.getString("username");
-                                String avatar = data.getString("head_ico");
+                                String avatar = data.getString("avatar");
                                 String phone = data.getString("user_phone");
 
                                 SharedPreferencesUtils.saveStr(LoginActivity.this,
-                                        "token", loginToken);
+                                        "token", token);
                                 SharedPreferencesUtils.saveStr(LoginActivity.this,
                                         "uid", String.valueOf(uid));
                                 SharedPreferencesUtils.saveStr(LoginActivity.this,

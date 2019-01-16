@@ -45,14 +45,17 @@ public class MessageCenterActivity extends BaseActivity {
     RecyclerView rvMessage;
     @BindView(R.id.img_load_error)
     ImageView imgLoadError;
-    private List<MsgCenterBean.DataBean> msgList;
+    private List<MsgCenterBean.DataBean> msgList = new ArrayList<>();
+    private CommonAdapter<MsgCenterBean.DataBean> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message_center);
         ButterKnife.bind(this);
+        tvHeaderTitle.setText(R.string.msg_center);
         initData();
+        initView();
     }
 
     @Override
@@ -65,7 +68,7 @@ public class MessageCenterActivity extends BaseActivity {
      * 加载数据
      */
     private void initData() {
-        tvHeaderTitle.setText(R.string.msg_center);
+
         OkHttpUtils.get()
                 .url(Constant.MESSAGE_TYPE)
                 .addParams("token", SharedPreferencesUtils.getStr(this, "token"))
@@ -80,10 +83,11 @@ public class MessageCenterActivity extends BaseActivity {
                     public void onResponse(String response, int id) {
                         imgLoadError.setVisibility(View.GONE);
                         MsgCenterBean messageBean = GsonUtils.jsonToBean(response, MsgCenterBean.class);
-                        msgList = new ArrayList<>();
-                        if (messageBean.getData() != null && messageBean.getData().size() > 0) {
+                        msgList.clear();
+                        if (messageBean.getCode() == 10000 && messageBean.getData() != null &&
+                                messageBean.getData().size() > 0) {
                             msgList.addAll(messageBean.getData());
-                            initView();
+                            adapter.notifyDataSetChanged();
                         }
                     }
                 });
@@ -95,8 +99,7 @@ public class MessageCenterActivity extends BaseActivity {
      */
     private void initView() {
         rvMessage.setLayoutManager(new LinearLayoutManager(this));
-        CommonAdapter<MsgCenterBean.DataBean> adapter = new CommonAdapter<MsgCenterBean.DataBean>
-                (this, R.layout.listitem_message_center, msgList) {
+        adapter = new CommonAdapter<MsgCenterBean.DataBean>(this, R.layout.listitem_message_center, msgList) {
             @Override
             protected void convert(ViewHolder holder, MsgCenterBean.DataBean dataBean, int position) {
                 Glide.with(MessageCenterActivity.this)

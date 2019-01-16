@@ -9,10 +9,11 @@ import java.util.List;
  */
 public class GuideBean {
 
+
     /**
-     * code : 1
-     * data : {"name":"启动页","img_urls":["111","222"]}
-     * msg : 登录成功
+     * code : 10000
+     * data : {"name":"定制","img_urls":[{"img":"public/20190115/4b4d5e072b61c4fb90a743bb2f63105d12b59f4c.png","ratio":"0.562500"},{"img":"public/20190115/a68b49b944b0a60f3ddc864f26fa9944cc57dfe0.png","ratio":"0.580021"}]}
+     * msg : 成功
      */
 
     private int code;
@@ -45,12 +46,12 @@ public class GuideBean {
 
     public static class DataBean {
         /**
-         * name : 启动页
-         * img_urls : ["111","222"]
+         * name : 定制
+         * img_urls : [{"img":"public/20190115/4b4d5e072b61c4fb90a743bb2f63105d12b59f4c.png","ratio":"0.562500"},{"img":"public/20190115/a68b49b944b0a60f3ddc864f26fa9944cc57dfe0.png","ratio":"0.580021"}]
          */
 
         private String name;
-        private List<String> img_urls;
+        private List<ImgUrlsBean> img_urls;
 
         public String getName() {
             return name;
@@ -60,12 +61,38 @@ public class GuideBean {
             this.name = name;
         }
 
-        public List<String> getImg_urls() {
+        public List<ImgUrlsBean> getImg_urls() {
             return img_urls;
         }
 
-        public void setImg_urls(List<String> img_urls) {
+        public void setImg_urls(List<ImgUrlsBean> img_urls) {
             this.img_urls = img_urls;
+        }
+
+        public static class ImgUrlsBean {
+            /**
+             * img : public/20190115/4b4d5e072b61c4fb90a743bb2f63105d12b59f4c.png
+             * ratio : 0.562500
+             */
+
+            private String img;
+            private String ratio;
+
+            public String getImg() {
+                return img;
+            }
+
+            public void setImg(String img) {
+                this.img = img;
+            }
+
+            public String getRatio() {
+                return ratio;
+            }
+
+            public void setRatio(String ratio) {
+                this.ratio = ratio;
+            }
         }
     }
 }

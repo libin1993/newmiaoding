@@ -9,15 +9,14 @@ import java.util.List;
  */
 public class RecommendGoodsBean {
 
+
     /**
-     * code : 1
-     * data : {"total":3,"per_page":10,"current_page":1,"data":[{"id":1,"goods_id":43,"sort":1,"c_time":1486624258,"status":1,"name":"中国风","thumb":"/uploads/img/2016122812560351504852.png","classify_id":2,"content":1},{"id":2,"goods_id":47,"sort":1,"c_time":1486624264,"status":1,"name":"礼服系列","thumb":"/uploads/img/2016122814332048991024.png","classify_id":2,"content":1},{"id":3,"goods_id":40,"sort":1,"c_time":1486624278,"status":1,"name":"经典商务","thumb":"/uploads/img/2016122812095450995797.png","classify_id":1,"content":1}]}
-     * msg : 成功
+     * code : 10000
+     * data : [{"id":2,"name":"驼色棉羊绒混纺衬衫","ad_img":"public/20181224/4159897eca6e128208bf9e4ecd114f20fafd1d0a.png","car_img":"public/20181224/a53ec0400d6ec030bb2c82baf176e5b22a9cf13c.png","content":"驼色棉羊绒混纺衬衫","sell_price":"999.00","category_id":1},{"id":1,"name":"白色Easycare易打理衬衫","ad_img":"public/20181019/63dec0863a01e2398b7b892399776a66631668af.png","car_img":"public/20181019/3760d0add196a18a1b7ab9742494138da940fc3c.png","content":"白色Easycare易打理衬衫","sell_price":"399.00","category_id":1}]
      */
 
     private int code;
-    private DataBeanX data;
-    private String msg;
+    private List<DataBean> data;
 
     public int getCode() {
         return code;
@@ -27,179 +26,87 @@ public class RecommendGoodsBean {
         this.code = code;
     }
 
-    public DataBeanX getData() {
+    public List<DataBean> getData() {
         return data;
     }
 
-    public void setData(DataBeanX data) {
+    public void setData(List<DataBean> data) {
         this.data = data;
     }
 
-    public String getMsg() {
-        return msg;
-    }
-
-    public void setMsg(String msg) {
-        this.msg = msg;
-    }
-
-    public static class DataBeanX {
+    public static class DataBean {
         /**
-         * total : 3
-         * per_page : 10
-         * current_page : 1
-         * data : [{"id":1,"goods_id":43,"sort":1,"c_time":1486624258,"status":1,"name":"中国风","thumb":"/uploads/img/2016122812560351504852.png","classify_id":2,"content":1},{"id":2,"goods_id":47,"sort":1,"c_time":1486624264,"status":1,"name":"礼服系列","thumb":"/uploads/img/2016122814332048991024.png","classify_id":2,"content":1},{"id":3,"goods_id":40,"sort":1,"c_time":1486624278,"status":1,"name":"经典商务","thumb":"/uploads/img/2016122812095450995797.png","classify_id":1,"content":1}]
+         * id : 2
+         * name : 驼色棉羊绒混纺衬衫
+         * ad_img : public/20181224/4159897eca6e128208bf9e4ecd114f20fafd1d0a.png
+         * car_img : public/20181224/a53ec0400d6ec030bb2c82baf176e5b22a9cf13c.png
+         * content : 驼色棉羊绒混纺衬衫
+         * sell_price : 999.00
+         * category_id : 1
          */
 
-        private int total;
-        private int per_page;
-        private int current_page;
-        private List<DataBean> data;
+        private int id;
+        private String name;
+        private String ad_img;
+        private String car_img;
+        private String content;
+        private String sell_price;
+        private int category_id;
 
-        public int getTotal() {
-            return total;
+        public int getId() {
+            return id;
         }
 
-        public void setTotal(int total) {
-            this.total = total;
+        public void setId(int id) {
+            this.id = id;
         }
 
-        public int getPer_page() {
-            return per_page;
+        public String getName() {
+            return name;
         }
 
-        public void setPer_page(int per_page) {
-            this.per_page = per_page;
+        public void setName(String name) {
+            this.name = name;
         }
 
-        public int getCurrent_page() {
-            return current_page;
+        public String getAd_img() {
+            return ad_img;
         }
 
-        public void setCurrent_page(int current_page) {
-            this.current_page = current_page;
+        public void setAd_img(String ad_img) {
+            this.ad_img = ad_img;
         }
 
-        public List<DataBean> getData() {
-            return data;
+        public String getCar_img() {
+            return car_img;
         }
 
-        public void setData(List<DataBean> data) {
-            this.data = data;
+        public void setCar_img(String car_img) {
+            this.car_img = car_img;
         }
 
-        public static class DataBean {
-            /**
-             * id : 1
-             * goods_id : 43
-             * sort : 1
-             * c_time : 1486624258
-             * status : 1
-             * name : 中国风
-             * thumb : /uploads/img/2016122812560351504852.png
-             * classify_id : 2
-             * content : 1
-             */
+        public String getContent() {
+            return content;
+        }
 
-            private int id;
-            private int goods_id;
-            private int sort;
-            private int c_time;
-            private int status;
-            private String name;
-            private String thumb;
-            private int classify_id;
-            private int type;
-            private String sub_name;
-            private String price;
+        public void setContent(String content) {
+            this.content = content;
+        }
 
-            public String getPrice() {
-                return price;
-            }
+        public String getSell_price() {
+            return sell_price;
+        }
 
-            public void setPrice(String price) {
-                this.price = price;
-            }
+        public void setSell_price(String sell_price) {
+            this.sell_price = sell_price;
+        }
 
-            public String getSub_name() {
-                return sub_name;
-            }
+        public int getCategory_id() {
+            return category_id;
+        }
 
-            public void setSub_name(String sub_name) {
-                this.sub_name = sub_name;
-            }
-
-            public int getId() {
-                return id;
-            }
-
-            public void setId(int id) {
-                this.id = id;
-            }
-
-            public int getGoods_id() {
-                return goods_id;
-            }
-
-            public void setGoods_id(int goods_id) {
-                this.goods_id = goods_id;
-            }
-
-            public int getSort() {
-                return sort;
-            }
-
-            public void setSort(int sort) {
-                this.sort = sort;
-            }
-
-            public int getC_time() {
-                return c_time;
-            }
-
-            public void setC_time(int c_time) {
-                this.c_time = c_time;
-            }
-
-            public int getStatus() {
-                return status;
-            }
-
-            public void setStatus(int status) {
-                this.status = status;
-            }
-
-            public String getName() {
-                return name;
-            }
-
-            public void setName(String name) {
-                this.name = name;
-            }
-
-            public String getThumb() {
-                return thumb;
-            }
-
-            public void setThumb(String thumb) {
-                this.thumb = thumb;
-            }
-
-            public int getClassify_id() {
-                return classify_id;
-            }
-
-            public void setClassify_id(int classify_id) {
-                this.classify_id = classify_id;
-            }
-
-            public int getType() {
-                return type;
-            }
-
-            public void setType(int type) {
-                this.type = type;
-            }
+        public void setCategory_id(int category_id) {
+            this.category_id = category_id;
         }
     }
 }

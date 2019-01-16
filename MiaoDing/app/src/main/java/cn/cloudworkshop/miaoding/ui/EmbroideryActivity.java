@@ -168,7 +168,7 @@ public class EmbroideryActivity extends BaseActivity implements EasyPermissions.
 
         getData();
         initData();
-        selectMore();
+
     }
 
     /**
@@ -243,7 +243,7 @@ public class EmbroideryActivity extends BaseActivity implements EasyPermissions.
                                         "select_more", false);
                                 imgCustomGuide.setVisibility(View.VISIBLE);
                                 Glide.with(EmbroideryActivity.this)
-                                        .load(Constant.IMG_HOST + guideBean.getData().getImg_urls().get(0))
+                                        .load(Constant.IMG_HOST + guideBean.getData().getImg_urls().get(0).getImg())
                                         .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                                         .into(imgCustomGuide);
                             }

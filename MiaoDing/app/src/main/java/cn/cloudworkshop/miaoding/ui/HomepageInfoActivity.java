@@ -155,8 +155,8 @@ public class HomepageInfoActivity extends BaseActivity {
         if (webView.canGoBack()) {
             webView.goBack();// 返回前一个页面
         } else {
-            homepageLog();
-            MyApplication.homeEnterTime = DateUtils.getCurrentTime();
+//            homepageLog();
+//            MyApplication.homeEnterTime = DateUtils.getCurrentTime();
             finish();
         }
     }
@@ -168,8 +168,8 @@ public class HomepageInfoActivity extends BaseActivity {
                 if (webView.canGoBack()) {
                     webView.goBack();
                 } else {
-                    homepageLog();
-                    MyApplication.homeEnterTime = DateUtils.getCurrentTime();
+//                    homepageLog();
+//                    MyApplication.homeEnterTime = DateUtils.getCurrentTime();
                     finish();
                 }
                 break;

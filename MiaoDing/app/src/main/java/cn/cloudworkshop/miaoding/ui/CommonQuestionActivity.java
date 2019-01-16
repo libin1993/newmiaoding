@@ -47,6 +47,7 @@ public class CommonQuestionActivity extends BaseActivity {
     private String title;
 
     private List<QuestionClassifyBean.DataBean> dataList = new ArrayList<>();
+    private CommonAdapter<QuestionClassifyBean.DataBean> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +56,7 @@ public class CommonQuestionActivity extends BaseActivity {
         ButterKnife.bind(this);
         getData();
         initData();
-
+        initView();
     }
 
     /**
@@ -66,12 +67,12 @@ public class CommonQuestionActivity extends BaseActivity {
         OkHttpUtils.get()
                 .url(Constant.QUESTION_LIST)
                 .addParams("classify_id", id)
-                .addParams("token",SharedPreferencesUtils.getStr(this,"token"))
+                .addParams("token", SharedPreferencesUtils.getStr(this, "token"))
                 .build()
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                       imgLoadingError.setVisibility(View.VISIBLE);
+                        imgLoadingError.setVisibility(View.VISIBLE);
                     }
 
                     @Override
@@ -80,7 +81,7 @@ public class CommonQuestionActivity extends BaseActivity {
                         QuestionClassifyBean question = GsonUtils.jsonToBean(response, QuestionClassifyBean.class);
                         if (question.getData() != null) {
                             dataList.addAll(question.getData());
-                            initView();
+                            adapter.notifyDataSetChanged();
                         }
                     }
                 });
@@ -91,7 +92,7 @@ public class CommonQuestionActivity extends BaseActivity {
      */
     private void initView() {
         rvQuestion.setLayoutManager(new LinearLayoutManager(this));
-        CommonAdapter<QuestionClassifyBean.DataBean> adapter = new CommonAdapter<QuestionClassifyBean.DataBean>
+        adapter = new CommonAdapter<QuestionClassifyBean.DataBean>
                 (this, R.layout.listitem_common_question, dataList) {
             @Override
             protected void convert(ViewHolder holder, QuestionClassifyBean.DataBean dataBean, int position) {

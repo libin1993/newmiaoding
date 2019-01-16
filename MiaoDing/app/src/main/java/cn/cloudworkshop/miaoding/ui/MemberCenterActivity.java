@@ -44,6 +44,7 @@ import cn.cloudworkshop.miaoding.R;
 import cn.cloudworkshop.miaoding.base.BaseActivity;
 import cn.cloudworkshop.miaoding.bean.MemberBean;
 import cn.cloudworkshop.miaoding.bean.MemberTabBean;
+import cn.cloudworkshop.miaoding.bean.ResponseBean;
 import cn.cloudworkshop.miaoding.constant.Constant;
 import cn.cloudworkshop.miaoding.utils.DisplayUtils;
 import cn.cloudworkshop.miaoding.utils.GsonUtils;
@@ -139,7 +140,7 @@ public class MemberCenterActivity extends BaseActivity {
      */
     private void initView() {
         Glide.with(getApplicationContext())
-                .load(memberBean.getData().getUser_info().getHead_ico())
+                .load(Constant.IMG_HOST + memberBean.getData().getUser_info().getHead_ico())
                 .placeholder(R.mipmap.place_holder_goods)
                 .dontAnimate()
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
@@ -416,14 +417,9 @@ public class MemberCenterActivity extends BaseActivity {
 
                     @Override
                     public void onResponse(String response, int id) {
-                        try {
-                            JSONObject jsonObject = new JSONObject(response);
-                            String msg = jsonObject.getString("msg");
-                            ToastUtils.showToast(MemberCenterActivity.this, msg);
-                            mPopupWindow.dismiss();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        ResponseBean responseBean = GsonUtils.jsonToBean(response, ResponseBean.class);
+                        ToastUtils.showToast(MemberCenterActivity.this, responseBean.getMsg());
+                        mPopupWindow.dismiss();
                     }
                 });
     }
@@ -435,6 +431,4 @@ public class MemberCenterActivity extends BaseActivity {
             birthday = data.getStringExtra("birthday");
         }
     }
-
-
 }

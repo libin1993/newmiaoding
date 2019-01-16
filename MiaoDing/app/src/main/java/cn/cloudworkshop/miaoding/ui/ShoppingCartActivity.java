@@ -3,17 +3,22 @@ package cn.cloudworkshop.miaoding.ui;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -28,6 +33,7 @@ import com.github.jdsjlzx.recyclerview.LRecyclerView;
 import com.github.jdsjlzx.recyclerview.LRecyclerViewAdapter;
 import com.github.jdsjlzx.util.RecyclerViewStateUtils;
 import com.github.jdsjlzx.view.LoadingFooter;
+import com.wang.avi.AVLoadingIndicatorView;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -52,9 +58,9 @@ import cn.cloudworkshop.miaoding.bean.CustomItemBean;
 import cn.cloudworkshop.miaoding.bean.RecommendGoodsBean;
 import cn.cloudworkshop.miaoding.bean.ShoppingCartBean;
 import cn.cloudworkshop.miaoding.constant.Constant;
-import cn.cloudworkshop.miaoding.utils.AppManagerUtils;
 import cn.cloudworkshop.miaoding.utils.DisplayUtils;
 import cn.cloudworkshop.miaoding.utils.GsonUtils;
+import cn.cloudworkshop.miaoding.utils.RVItemDecoration;
 import cn.cloudworkshop.miaoding.utils.SharedPreferencesUtils;
 import cn.cloudworkshop.miaoding.utils.SpaceItemDecoration;
 import cn.cloudworkshop.miaoding.utils.ToastUtils;
@@ -95,6 +101,8 @@ public class ShoppingCartActivity extends BaseActivity {
     LRecyclerView rvGoodsCart;
     @BindView(R.id.img_load_error)
     ImageView imgLoadError;
+    @BindView(R.id.view_loading)
+    AVLoadingIndicatorView viewLoading;
 
     private List<ShoppingCartBean.DataBean> dataList = new ArrayList<>();
     //页数
@@ -117,8 +125,9 @@ public class ShoppingCartActivity extends BaseActivity {
         EventBus.getDefault().register(this);
         tvHeaderTitle.setText(R.string.cart);
         tvHeaderNext.setText(R.string.edit);
-
+        viewLoading.smoothToShow();
         initData();
+        initView();
     }
 
     @Override
@@ -157,12 +166,13 @@ public class ShoppingCartActivity extends BaseActivity {
                             dataList.addAll(cartBean.getData());
                             if (isLoadMore || isRefresh) {
                                 rvGoodsCart.refreshComplete(0);
-                                mLRecyclerViewAdapter.notifyDataSetChanged();
-                                getTotalCount();
-                                getTotalPrice();
                             } else {
-                                initView();
+                                viewLoading.smoothToHide();
                             }
+                            getTotalCount();
+                            getTotalPrice();
+                            mLRecyclerViewAdapter.notifyDataSetChanged();
+
                             isRefresh = false;
                             isLoadMore = false;
 
@@ -173,7 +183,9 @@ public class ShoppingCartActivity extends BaseActivity {
                             RecyclerViewStateUtils.setFooterViewState(ShoppingCartActivity.this,
                                     rvGoodsCart, 0, LoadingFooter.State.NoMore, null);
                             if (page == 1) {
-                                nullCart();
+                                if (!isRefresh) {
+                                    nullCart();
+                                }
                             }
                         }
                     }
@@ -189,6 +201,8 @@ public class ShoppingCartActivity extends BaseActivity {
         tvHeaderNext.setVisibility(View.GONE);
         OkHttpUtils.get()
                 .url(Constant.GOODS_RECOMMEND)
+                .addParams("token", SharedPreferencesUtils.getStr(this, "token"))
+                .addParams("num", "2")
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -200,8 +214,8 @@ public class ShoppingCartActivity extends BaseActivity {
                     public void onResponse(String response, int id) {
                         RecommendGoodsBean recommendBean = GsonUtils.jsonToBean(response,
                                 RecommendGoodsBean.class);
-                        if (recommendBean.getData().getData() != null) {
-                            recommendGoods(recommendBean.getData().getData());
+                        if (recommendBean.getCode() == 10000 && recommendBean.getData() != null) {
+                            recommendGoods(recommendBean.getData());
                         }
                     }
                 });
@@ -210,22 +224,22 @@ public class ShoppingCartActivity extends BaseActivity {
     /**
      * 推荐商品
      */
-    private void recommendGoods(final List<RecommendGoodsBean.DataBeanX.DataBean> recommendBean) {
+    private void recommendGoods(final List<RecommendGoodsBean.DataBean> recommendBean) {
         rvRecommend.setLayoutManager(new GridLayoutManager(ShoppingCartActivity.this, 2));
         rvRecommend.addItemDecoration(new SpaceItemDecoration((int) DisplayUtils.dp2px(this,
                 4.5f), false));
-        CommonAdapter<RecommendGoodsBean.DataBeanX.DataBean> adapter = new CommonAdapter<RecommendGoodsBean
-                .DataBeanX.DataBean>(
+        CommonAdapter<RecommendGoodsBean.DataBean> adapter = new CommonAdapter<RecommendGoodsBean
+                .DataBean>(
                 this, R.layout.listitem_sub_goods, recommendBean) {
             @Override
-            protected void convert(ViewHolder holder, RecommendGoodsBean.DataBeanX.DataBean dataBean,
+            protected void convert(ViewHolder holder, RecommendGoodsBean.DataBean dataBean,
                                    int position) {
 
                 SimpleDraweeView imgGoods = holder.getView(R.id.img_sub_goods);
-                imgGoods.setImageURI(Constant.IMG_HOST + dataBean.getThumb());
+                imgGoods.setImageURI(Constant.IMG_HOST + dataBean.getCar_img());
                 holder.setText(R.id.tv_sub_title, dataBean.getName());
-                holder.setText(R.id.tv_sub_price, dataBean.getPrice());
-                holder.setText(R.id.tv_sub_content, dataBean.getSub_name());
+                holder.setText(R.id.tv_sub_price, "¥" + dataBean.getSell_price());
+                holder.setText(R.id.tv_sub_content, dataBean.getContent());
             }
         };
         rvRecommend.setAdapter(adapter);
@@ -235,13 +249,13 @@ public class ShoppingCartActivity extends BaseActivity {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
                 Intent intent;
-                if (recommendBean.get(position).getType() == 1) {
+                if (recommendBean.get(position).getCategory_id() == 1) {
                     intent = new Intent(ShoppingCartActivity.this, NewCustomizedGoodsActivity.class);
                 } else {
                     intent = new Intent(ShoppingCartActivity.this, WorksDetailActivity.class);
                 }
 
-                intent.putExtra("id", String.valueOf(recommendBean.get(position).getGoods_id()));
+                intent.putExtra("id", String.valueOf(recommendBean.get(position).getId()));
                 startActivity(intent);
             }
 
@@ -258,8 +272,8 @@ public class ShoppingCartActivity extends BaseActivity {
      * 加载视图
      */
     private void initView() {
-        getTotalPrice();
-        getTotalCount();
+//        getTotalPrice();
+//        getTotalCount();
 
         checkboxAllSelect.setChecked(true);
         rvGoodsCart.setLayoutManager(new LinearLayoutManager(ShoppingCartActivity.this));
@@ -277,14 +291,17 @@ public class ShoppingCartActivity extends BaseActivity {
                 TextView tvGoodsName = holder.getView(R.id.tv_goods_name);
                 tvGoodsName.setTypeface(DisplayUtils.setTextType(mContext));
                 tvGoodsName.setText(dataBean.getGoods_name());
-//                switch (dataBean.getGoods_type()) {
-//                    case 2:
-//                        holder.setText(R.id.tv_goods_content, dataBean.getSize_content());
-//                        break;
-//                    default:
-//                        holder.setText(R.id.tv_goods_content, getString(R.string.customize_type));
-//                        break;
-//                }
+                TextView tvContent = holder.getView(R.id.tv_goods_content);
+
+                if (dataBean.getPart() != null) {
+                    String parts = "";
+                    for (ShoppingCartBean.DataBean.PartBean partBean : dataBean.getPart()) {
+                        parts += partBean.getPart_name() + ":" + partBean.getPart_value() + ";";
+                    }
+                    parts = parts.substring(0, parts.length() - 1);
+                    tvContent.setText(parts);
+                }
+
 
                 holder.setText(R.id.tv_goods_price, "¥" + DisplayUtils.decimalFormat(
                         Float.parseFloat(dataBean.getPrice())));
@@ -298,12 +315,22 @@ public class ShoppingCartActivity extends BaseActivity {
                 checkBox.setOnCheckedChangeListener(null);
                 holder.setChecked(R.id.checkbox_goods_select, dataBean.isSelect());
 
+                tvContent.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (dataBean.getPart() != null) {
+                            goodsPart(dataBean.getPart());
+                        }
+
+                    }
+                });
+
                 final TextView tvReduce = holder.getView(R.id.tv_cart_reduce);
                 tvReduce.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         if (dataBean.getGoods_num() > 1) {
-                            changeCartCount(position - 1, dataBean.getGoods_num()- 1);
+                            changeCartCount(position - 1, dataBean.getGoods_num() - 1);
                         }
                     }
                 });
@@ -372,18 +399,18 @@ public class ShoppingCartActivity extends BaseActivity {
             @Override
             public void onItemClick(View view, int position) {
                 if (!isEdited) {
-//                    switch (dataList.get(position).getGoods_type()) {
-//                        case 1:
-//                            cartToCustomResult(position);
-//                            break;
-//                        case 2:
-//                            Intent intent = new Intent(ShoppingCartActivity.this, WorksDetailActivity.class);
-//                            intent.putExtra("id", String.valueOf(dataList.get(position).getGoods_id()));
-//                            startActivity(intent);
-//                            break;
-//                        default:
-//                            break;
-//                    }
+                    switch (dataList.get(position).getCategory_id()) {
+                        case 1:
+                            Intent intent = new Intent(ShoppingCartActivity.this, NewCustomizedGoodsActivity.class);
+                            intent.putExtra("id", String.valueOf(dataList.get(position).getGoods_id()));
+                            startActivity(intent);
+                            break;
+                        case 2:
+                            Intent intent1 = new Intent(ShoppingCartActivity.this, WorksDetailActivity.class);
+                            intent1.putExtra("id", String.valueOf(dataList.get(position).getGoods_id()));
+                            startActivity(intent1);
+                            break;
+                    }
                 }
             }
         });
@@ -418,6 +445,50 @@ public class ShoppingCartActivity extends BaseActivity {
             }
         });
 
+    }
+
+    /**
+     * @param part 配件
+     */
+    private void goodsPart(final List<ShoppingCartBean.DataBean.PartBean> part) {
+        View popupView = getLayoutInflater().inflate(R.layout.ppw_goods_part, null);
+        final PopupWindow mPopupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        mPopupWindow.setTouchable(true);
+        mPopupWindow.setFocusable(true);
+        mPopupWindow.setOutsideTouchable(true);
+        mPopupWindow.setBackgroundDrawable(new BitmapDrawable(getResources(), (Bitmap) null));
+        mPopupWindow.showAtLocation(getWindow().getDecorView(), Gravity.CENTER, 0, 0);
+        DisplayUtils.setBackgroundAlpha(this, true);
+
+        RecyclerView rvPart = popupView.findViewById(R.id.rv_goods_part);
+        rvPart.setLayoutManager(new LinearLayoutManager(this));
+        rvPart.addItemDecoration(new RVItemDecoration((int) DisplayUtils.dp2px(this, 10)));
+        CommonAdapter<ShoppingCartBean.DataBean.PartBean> adapter = new CommonAdapter<ShoppingCartBean
+                .DataBean.PartBean>(this, R.layout.rv_goods_part_item, part) {
+            @Override
+            protected void convert(ViewHolder holder, ShoppingCartBean.DataBean.PartBean partBean, int position) {
+                holder.setText(R.id.tv_part_title, partBean.getPart_name());
+                holder.setText(R.id.tv_part_name, partBean.getPart_value());
+            }
+        };
+        rvPart.setAdapter(adapter);
+
+        TextView tvClose = popupView.findViewById(R.id.tv_close);
+
+        tvClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mPopupWindow.dismiss();
+            }
+        });
+
+        mPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                DisplayUtils.setBackgroundAlpha(ShoppingCartActivity.this, false);
+            }
+        });
     }
 
     /**
@@ -744,7 +815,7 @@ public class ShoppingCartActivity extends BaseActivity {
         if (isEdited) {
             tvGoodsBuy.setText(R.string.delete);
         } else {
-            tvGoodsBuy.setText(getString(R.string.confirm_order)+"(" + selectCount + ")");
+            tvGoodsBuy.setText(getString(R.string.confirm_order) + "(" + selectCount + ")");
         }
         return selectCount;
     }

@@ -35,6 +35,7 @@ import cn.cloudworkshop.miaoding.R;
 import cn.cloudworkshop.miaoding.base.BaseActivity;
 import cn.cloudworkshop.miaoding.bean.ConfirmOrderBean;
 import cn.cloudworkshop.miaoding.bean.MeasureDataBean;
+import cn.cloudworkshop.miaoding.bean.ResponseBean;
 import cn.cloudworkshop.miaoding.constant.Constant;
 import cn.cloudworkshop.miaoding.utils.GsonUtils;
 import cn.cloudworkshop.miaoding.utils.SharedPreferencesUtils;
@@ -79,6 +80,7 @@ public class MeasureDataActivity extends BaseActivity {
         EventBus.getDefault().register(this);
         getData();
         initData();
+        initView();
     }
 
     private void getData() {
@@ -116,10 +118,8 @@ public class MeasureDataActivity extends BaseActivity {
                             dataList.addAll(measureBean.getData());
                             if (isRefresh || isLoadMore) {
                                 rvMeasure.refreshComplete(0);
-                                mLRecyclerViewAdapter.notifyDataSetChanged();
-                            } else {
-                                initView();
                             }
+                            mLRecyclerViewAdapter.notifyDataSetChanged();
                             isRefresh = false;
                             isLoadMore = false;
                             imgNullMeasure.setVisibility(View.GONE);
@@ -233,15 +233,17 @@ public class MeasureDataActivity extends BaseActivity {
 
                     @Override
                     public void onResponse(String response, int id) {
-
-                        for (int i = 0; i < dataList.size(); i++) {
-                            if (i == position) {
-                                dataList.get(i).setIs_default(1);
-                            } else {
-                                dataList.get(i).setIs_default(0);
+                        ResponseBean responseBean = GsonUtils.jsonToBean(response, ResponseBean.class);
+                        if (responseBean.getCode() == 10000) {
+                            for (int i = 0; i < dataList.size(); i++) {
+                                if (i == position) {
+                                    dataList.get(i).setIs_default(1);
+                                } else {
+                                    dataList.get(i).setIs_default(0);
+                                }
                             }
+                            adapter.notifyDataSetChanged();
                         }
-                        adapter.notifyDataSetChanged();
                     }
                 });
 

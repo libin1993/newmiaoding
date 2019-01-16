@@ -78,7 +78,7 @@ public class CollectionFragment extends BaseFragment {
     ImageView imgLoadingError;
     private Unbinder unbinder;
 
-    private List<CollectionBean.DataBean> itemList = new ArrayList<>();
+    private List<CollectionBean.DataBean.CollectionsBean> itemList = new ArrayList<>();
     //页数
     private int page = 1;
     //刷新
@@ -89,7 +89,7 @@ public class CollectionFragment extends BaseFragment {
     //收藏类型 1:资讯 2：商品 3：店铺
 
     private int type;
-    private CommonAdapter<CollectionBean.DataBean> adapter;
+    private CommonAdapter<CollectionBean.DataBean.CollectionsBean> adapter;
 
     @Nullable
     @Override
@@ -98,6 +98,7 @@ public class CollectionFragment extends BaseFragment {
         unbinder = ButterKnife.bind(this, view);
         getData();
         initData();
+        initView();
         return view;
     }
 
@@ -123,18 +124,16 @@ public class CollectionFragment extends BaseFragment {
                     public void onResponse(String response, int id) {
                         imgLoadingError.setVisibility(View.GONE);
                         CollectionBean collectionBean = GsonUtils.jsonToBean(response, CollectionBean.class);
-                        if (collectionBean.getData() != null && collectionBean.getData().size() > 0) {
+                        if (collectionBean.getData().getCollections() != null && collectionBean.getData().getCollections().size() > 0) {
                             if (isRefresh) {
                                 itemList.clear();
                             }
-                            itemList.addAll(collectionBean.getData());
+                            itemList.addAll(collectionBean.getData().getCollections());
                             //刷新、加载更多
                             if (isLoadMore || isRefresh) {
                                 rvCollection.refreshComplete(0);
-                                mLRecyclerViewAdapter.notifyDataSetChanged();
-                            } else {
-                                initView();
                             }
+                            mLRecyclerViewAdapter.notifyDataSetChanged();
                             isRefresh = false;
                             isLoadMore = false;
                             llNullCollect.setVisibility(View.GONE);
@@ -161,17 +160,17 @@ public class CollectionFragment extends BaseFragment {
         switch (type) {
             case 1:
                 rvCollection.setLayoutManager(new LinearLayoutManager(getActivity()));
-                adapter = new CommonAdapter<CollectionBean.DataBean>(getActivity(),
+                adapter = new CommonAdapter<CollectionBean.DataBean.CollectionsBean>(getActivity(),
                         R.layout.listitem_homepage_news, itemList) {
                     @Override
-                    protected void convert(ViewHolder holder, CollectionBean.DataBean itemBean, int position) {
+                    protected void convert(ViewHolder holder, CollectionBean.DataBean.CollectionsBean collectionsBean, int position) {
                         SimpleDraweeView imgNews = holder.getView(R.id.img_homepage_news);
-                        if (!TextUtils.isEmpty(itemBean.getImg_info())) {
-                            imgNews.setAspectRatio(Float.parseFloat(itemBean.getImg_info()));
+                        if (!TextUtils.isEmpty(collectionsBean.getImg_info())) {
+                            imgNews.setAspectRatio(Float.parseFloat(collectionsBean.getImg_info()));
                         }
-                        imgNews.setImageURI(Constant.IMG_HOST + itemBean.getImg());
-                        holder.setText(R.id.tv_news_title, itemBean.getTitle());
-                        holder.setText(R.id.tv_news_content, itemBean.getSub_title());
+                        imgNews.setImageURI(Constant.IMG_HOST + collectionsBean.getImg());
+                        holder.setText(R.id.tv_news_title, collectionsBean.getTitle());
+                        holder.setText(R.id.tv_news_content, collectionsBean.getSub_title());
 
                         holder.setVisible(R.id.ll_home_news, false);
                         holder.setVisible(R.id.view_news_line, false);
@@ -183,27 +182,27 @@ public class CollectionFragment extends BaseFragment {
                 rvCollection.addItemDecoration(new SpaceItemDecoration((int) DisplayUtils.dp2px(
                         getActivity(), 4.5f), true));
 
-                adapter = new CommonAdapter<CollectionBean.DataBean>(getActivity(),
+                adapter = new CommonAdapter<CollectionBean.DataBean.CollectionsBean>(getActivity(),
                         R.layout.listitem_sub_goods, itemList) {
                     @Override
-                    protected void convert(ViewHolder holder, CollectionBean.DataBean itemBean, int position) {
+                    protected void convert(ViewHolder holder, CollectionBean.DataBean.CollectionsBean itemBean, int position) {
                         SimpleDraweeView imgGoods = holder.getView(R.id.img_sub_goods);
-                        imgGoods.setImageURI(Constant.IMG_HOST + itemBean.getThumb());
+                        imgGoods.setImageURI(Constant.IMG_HOST + itemBean.getImg());
 
                         holder.setText(R.id.tv_sub_title, itemBean.getName());
-                        holder.setText(R.id.tv_sub_price, itemBean.getPrice2());
+                        holder.setText(R.id.tv_sub_price, "¥" + itemBean.getPrice());
                         holder.setText(R.id.tv_sub_content, itemBean.getSub_name());
                     }
                 };
                 break;
             case 3:
                 rvCollection.setLayoutManager(new LinearLayoutManager(getActivity()));
-                adapter = new CommonAdapter<CollectionBean.DataBean>(getActivity(),
+                adapter = new CommonAdapter<CollectionBean.DataBean.CollectionsBean>(getActivity(),
                         R.layout.listitem_store, itemList) {
                     @Override
-                    protected void convert(ViewHolder holder, CollectionBean.DataBean itemBean, int position) {
+                    protected void convert(ViewHolder holder, CollectionBean.DataBean.CollectionsBean itemBean, int position) {
                         Glide.with(getActivity())
-                                .load(Constant.IMG_HOST + itemBean.getFactory_img())
+                                .load(Constant.IMG_HOST + itemBean.getImg())
                                 .placeholder(R.mipmap.place_holder_goods)
                                 .dontAnimate()
                                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
@@ -253,26 +252,34 @@ public class CollectionFragment extends BaseFragment {
                     case 1:
                         intent = new Intent(getActivity(), HomepageInfoActivity.class);
                         intent.putExtra("url", Constant.HOMEPAGE_INFO + "?content=1&id="
-                                + itemList.get(position).getCid());
+                                + itemList.get(position).getRid());
                         intent.putExtra("title", itemList.get(position).getTitle());
-                        intent.putExtra("content", itemList.get(position).getTags_name()
-                                + " · " + itemList.get(position).getSub_title());
+                        intent.putExtra("content", itemList.get(position).getSub_title());
                         intent.putExtra("img_url", itemList.get(position).getImg());
                         intent.putExtra("share_url", Constant.HOMEPAGE_SHARE +
-                                "?content=1&id=" + itemList.get(position).getCid());
+                                "?content=1&id=" + itemList.get(position).getRid());
                         break;
                     case 2:
-                        if (itemList.get(position).getGoods_type() == 1) {
-                            intent = new Intent(getActivity(), NewCustomizedGoodsActivity.class);
-                        } else {
-                            intent = new Intent(getActivity(), WorksDetailActivity.class);
+                        switch (itemList.get(position).getGoods_type()) {
+                            case 1:
+                                intent = new Intent(getActivity(), NewCustomizedGoodsActivity.class);
+                                intent.putExtra("id", String.valueOf(itemList.get(position).getRid()));
+                                break;
+                            case 2:
+                                intent = new Intent(getActivity(), WorksDetailActivity.class);
+                                intent.putExtra("id", String.valueOf(itemList.get(position).getRid()));
+                                break;
+                            default:
+                                intent = new Intent(getActivity(), MainActivity.class);
+                                intent.putExtra("page", type - 1);
+                                break;
+
                         }
 
-                        intent.putExtra("id", String.valueOf(itemList.get(position).getCid()));
                         break;
                     case 3:
                         intent = new Intent(getActivity(), StoreInfoActivity.class);
-                        intent.putExtra("shop_id", itemList.get(position).getCid());
+                        intent.putExtra("shop_id", itemList.get(position).getRid());
                         break;
                 }
                 startActivity(intent);
@@ -282,7 +289,7 @@ public class CollectionFragment extends BaseFragment {
         mLRecyclerViewAdapter.setOnItemLongClickListener(new OnItemLongClickListener() {
             @Override
             public void onItemLongClick(View view, int position) {
-                cancelCollection(itemList.get(position).getCid(), position);
+                cancelCollection(itemList.get(position).getRid(), position);
             }
         });
 
@@ -305,7 +312,7 @@ public class CollectionFragment extends BaseFragment {
                         .url(Constant.ADD_COLLECTION)
                         .addParams("token", SharedPreferencesUtils.getStr(getActivity(), "token"))
                         .addParams("type", String.valueOf(type))
-                        .addParams("cid", String.valueOf(cid))
+                        .addParams("rid", String.valueOf(cid))
                         .build()
                         .execute(new StringCallback() {
                             @Override
@@ -318,9 +325,9 @@ public class CollectionFragment extends BaseFragment {
                                 try {
                                     JSONObject jsonObject = new JSONObject(response);
                                     int code = jsonObject.getInt("code");
+                                    int status = jsonObject.getInt("status");
                                     String msg = jsonObject.getString("msg");
-                                    if (code == 2) {
-                                        ToastUtils.showToast(getActivity(), msg);
+                                    if (code == 10000 && status == 2) {
 
                                         itemList.remove(position);
                                         adapter.notifyItemRemoved(position);
@@ -333,6 +340,7 @@ public class CollectionFragment extends BaseFragment {
                                             llNullCollect.setVisibility(View.VISIBLE);
                                         }
                                     }
+                                    ToastUtils.showToast(getActivity(), msg);
 
                                 } catch (JSONException e) {
                                     e.printStackTrace();

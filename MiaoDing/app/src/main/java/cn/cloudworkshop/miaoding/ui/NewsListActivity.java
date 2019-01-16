@@ -74,6 +74,7 @@ public class NewsListActivity extends BaseActivity {
         ButterKnife.bind(this);
         tvHeaderTitle.setText(R.string.news);
         initData();
+        initView();
     }
 
     private void initData() {
@@ -102,10 +103,8 @@ public class NewsListActivity extends BaseActivity {
                             //刷新，加载完成
                             if (isLoadMore || isRefresh) {
                                 rvNewsList.refreshComplete(0);
-                                mLRecyclerViewAdapter.notifyDataSetChanged();
-                            } else {
-                                initView();
                             }
+                            mLRecyclerViewAdapter.notifyDataSetChanged();
                             isLoadMore = false;
                             isRefresh = false;
 

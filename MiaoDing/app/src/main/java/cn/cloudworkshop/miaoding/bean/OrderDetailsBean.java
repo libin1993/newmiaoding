@@ -11,14 +11,12 @@ public class OrderDetailsBean {
 
 
     /**
-     * code : 1
-     * data : {"order_no":"YGC2017061343632","c_time":"2017-06-13 17:42:21","p_time":"1970-01-01 08:00:00","s_time":"1970-01-01 08:00:00","q_time":"1970-01-01 08:00:00","name":"ffggg","phone":"13966666666","province":"北京市","city":"北京市","area":"朝阳区","address":"ghhhhj","money":"399.00","car_ids":"2907","pay_type":0,"ems_com_id":0,"ems_no":null,"status":4,"ticket_money":"0.00","ems_com_name":null,"ems_com":null,"car_list":[{"id":2907,"goods_id":49,"goods_name":"小二西服","goods_thumb":"/uploads/img/2017051609544856491001.jpg","price":"399.00","num":1,"goods_type":2,"size_content":"颜色:黑;尺码:X"}],"last_time":225,"order_comment":{"id":23,"uid":264,"content":"刚好斤斤计较","img_list":"/uploads/comment/20170613174413e406e407e25a6a381d5c802ae3c2b98b.jpg,/uploads/comment/20170613174413c52b32e25096783a78e36ef092f976f4.jpg,/uploads/comment/20170613174413957fe3ed5d58773c9937eb080e1c1afd.jpg,","order_id":1092,"c_time":"2017-06-13 17:44","status":1,"goods_id":49,"car_id":2907}}
-     * msg : 成功
+     * code : 10000
+     * data : {"order_sn":"YGC20190114134306749291","status":1,"order_amount":"999.00","giftcard_eq_money":"0.00","ticket_reduce_money":"100.00","payable_amount":"899.00","discount":"1.00","promotions":"0.00","province":"北京市","city":"北京市","area":"朝阳区","address":"1","accept_name":"1","address_phone":"1","mobile":null,"real_freight":"0.00","pay_type":"其他","pay_time":"","create_time":"2019-01-14 13:43:06","status_text":"待付款","pay_count_down_time":0,"childOrders":[{"detail_order_sn":"YGC20190114134306749291_1","sell_price":"999.00","goods_name":"驼色棉羊绒混纺衬衫","goods_num":6,"img_info":"public/20181224/77872e452130c54cb2b1b8738f4a448dcfa043b3.jpeg","re_marks":"","part":[{"part_name":"面料","part_value":"常规款衬衣"},{"part_name":"版型","part_value":"正常"},{"part_name":"领型宽","part_value":"6CM"},{"part_name":"下领高度","part_value":"3"},{"part_name":"领子相拼","part_value":"正常"},{"part_name":"领子样式","part_value":"方开领"},{"part_name":"领子硬度","part_value":"中"},{"part_name":"门襟","part_value":"里三褶门襟"},{"part_name":"口袋","part_value":"无袋"},{"part_name":"下摆","part_value":"圆摆"},{"part_name":"袖克夫","part_value":"中(6.5cm)"},{"part_name":"袖口样式","part_value":"圆头一粒扣"},{"part_name":"绣花位置","part_value":"无"},{"part_name":"绣花字体","part_value":"无"},{"part_name":"绣花颜色","part_value":"无"}]}]}
      */
 
     private int code;
     private DataBean data;
-    private String msg;
 
     public int getCode() {
         return code;
@@ -36,128 +34,126 @@ public class OrderDetailsBean {
         this.data = data;
     }
 
-    public String getMsg() {
-        return msg;
-    }
-
-    public void setMsg(String msg) {
-        this.msg = msg;
-    }
-
     public static class DataBean {
         /**
-         * order_no : YGC2017061343632
-         * c_time : 2017-06-13 17:42:21
-         * p_time : 1970-01-01 08:00:00
-         * s_time : 1970-01-01 08:00:00
-         * q_time : 1970-01-01 08:00:00
-         * name : ffggg
-         * phone : 13966666666
+         * order_sn : YGC20190114134306749291
+         * status : 1
+         * order_amount : 999.00
+         * giftcard_eq_money : 0.00
+         * ticket_reduce_money : 100.00
+         * payable_amount : 899.00
+         * discount : 1.00
+         * promotions : 0.00
          * province : 北京市
          * city : 北京市
          * area : 朝阳区
-         * address : ghhhhj
-         * money : 399.00
-         * car_ids : 2907
-         * pay_type : 0
-         * ems_com_id : 0
-         * ems_no : null
-         * status : 4
-         * ticket_money : 0.00
-         * ems_com_name : null
-         * ems_com : null
-         * car_list : [{"id":2907,"goods_id":49,"goods_name":"小二西服","goods_thumb":"/uploads/img/2017051609544856491001.jpg","price":"399.00","num":1,"goods_type":2,"size_content":"颜色:黑;尺码:X"}]
-         * last_time : 225
-         * order_comment : {"id":23,"uid":264,"content":"刚好斤斤计较","img_list":"/uploads/comment/20170613174413e406e407e25a6a381d5c802ae3c2b98b.jpg,/uploads/comment/20170613174413c52b32e25096783a78e36ef092f976f4.jpg,/uploads/comment/20170613174413957fe3ed5d58773c9937eb080e1c1afd.jpg,","order_id":1092,"c_time":"2017-06-13 17:44","status":1,"goods_id":49,"car_id":2907}
+         * address : 1
+         * accept_name : 1
+         * address_phone : 1
+         * mobile : null
+         * real_freight : 0.00
+         * pay_type : 其他
+         * pay_time :
+         * create_time : 2019-01-14 13:43:06
+         * status_text : 待付款
+         * pay_count_down_time : 0
+         * childOrders : [{"detail_order_sn":"YGC20190114134306749291_1","sell_price":"999.00","goods_name":"驼色棉羊绒混纺衬衫","goods_num":6,"img_info":"public/20181224/77872e452130c54cb2b1b8738f4a448dcfa043b3.jpeg","re_marks":"","part":[{"part_name":"面料","part_value":"常规款衬衣"},{"part_name":"版型","part_value":"正常"},{"part_name":"领型宽","part_value":"6CM"},{"part_name":"下领高度","part_value":"3"},{"part_name":"领子相拼","part_value":"正常"},{"part_name":"领子样式","part_value":"方开领"},{"part_name":"领子硬度","part_value":"中"},{"part_name":"门襟","part_value":"里三褶门襟"},{"part_name":"口袋","part_value":"无袋"},{"part_name":"下摆","part_value":"圆摆"},{"part_name":"袖克夫","part_value":"中(6.5cm)"},{"part_name":"袖口样式","part_value":"圆头一粒扣"},{"part_name":"绣花位置","part_value":"无"},{"part_name":"绣花字体","part_value":"无"},{"part_name":"绣花颜色","part_value":"无"}]}]
          */
 
-        private String order_no;
-        private String c_time;
-        private String p_time;
-        private String s_time;
-        private String q_time;
-        private String name;
-        private String phone;
+        private String order_sn;
+        private int status;
+        private String order_amount;
+        private String giftcard_eq_money;
+        private String ticket_reduce_money;
+        private String payable_amount;
+        private String discount;
+        private String promotions;
         private String province;
         private String city;
         private String area;
         private String address;
-        private String money;
-        private String car_ids;
-        private int pay_type;
-        private int ems_com_id;
-        private String ems_no;
-        private int status;
-        private String ticket_money;
-        private String ems_com_name;
-        private String ems_com;
-        private int last_time;
-        private OrderCommentBean order_comment;
-        private List<CarListBean> car_list;
-        private int quick_type;
+        private String accept_name;
+        private String address_phone;
+        private Object mobile;
+        private String real_freight;
+        private String pay_type;
+        private String pay_time;
+        private String create_time;
+        private String status_text;
+        private int pay_count_down_time;
+        private List<ChildOrdersBean> childOrders;
+        private String express_no;
 
-        public int getQuick_type() {
-            return quick_type;
+        public String getExpress_no() {
+            return express_no;
         }
 
-        public void setQuick_type(int quick_type) {
-            this.quick_type = quick_type;
+        public void setExpress_no(String express_no) {
+            this.express_no = express_no;
         }
 
-        public String getOrder_no() {
-            return order_no;
+        public String getOrder_sn() {
+            return order_sn;
         }
 
-        public void setOrder_no(String order_no) {
-            this.order_no = order_no;
+        public void setOrder_sn(String order_sn) {
+            this.order_sn = order_sn;
         }
 
-        public String getC_time() {
-            return c_time;
+        public int getStatus() {
+            return status;
         }
 
-        public void setC_time(String c_time) {
-            this.c_time = c_time;
+        public void setStatus(int status) {
+            this.status = status;
         }
 
-        public String getP_time() {
-            return p_time;
+        public String getOrder_amount() {
+            return order_amount;
         }
 
-        public void setP_time(String p_time) {
-            this.p_time = p_time;
+        public void setOrder_amount(String order_amount) {
+            this.order_amount = order_amount;
         }
 
-        public String getS_time() {
-            return s_time;
+        public String getGiftcard_eq_money() {
+            return giftcard_eq_money;
         }
 
-        public void setS_time(String s_time) {
-            this.s_time = s_time;
+        public void setGiftcard_eq_money(String giftcard_eq_money) {
+            this.giftcard_eq_money = giftcard_eq_money;
         }
 
-        public String getQ_time() {
-            return q_time;
+        public String getTicket_reduce_money() {
+            return ticket_reduce_money;
         }
 
-        public void setQ_time(String q_time) {
-            this.q_time = q_time;
+        public void setTicket_reduce_money(String ticket_reduce_money) {
+            this.ticket_reduce_money = ticket_reduce_money;
         }
 
-        public String getName() {
-            return name;
+        public String getPayable_amount() {
+            return payable_amount;
         }
 
-        public void setName(String name) {
-            this.name = name;
+        public void setPayable_amount(String payable_amount) {
+            this.payable_amount = payable_amount;
         }
 
-        public String getPhone() {
-            return phone;
+        public String getDiscount() {
+            return discount;
         }
 
-        public void setPhone(String phone) {
-            this.phone = phone;
+        public void setDiscount(String discount) {
+            this.discount = discount;
+        }
+
+        public String getPromotions() {
+            return promotions;
+        }
+
+        public void setPromotions(String promotions) {
+            this.promotions = promotions;
         }
 
         public String getProvince() {
@@ -192,251 +188,119 @@ public class OrderDetailsBean {
             this.address = address;
         }
 
-        public String getMoney() {
-            return money;
+        public String getAccept_name() {
+            return accept_name;
         }
 
-        public void setMoney(String money) {
-            this.money = money;
+        public void setAccept_name(String accept_name) {
+            this.accept_name = accept_name;
         }
 
-        public String getCar_ids() {
-            return car_ids;
+        public String getAddress_phone() {
+            return address_phone;
         }
 
-        public void setCar_ids(String car_ids) {
-            this.car_ids = car_ids;
+        public void setAddress_phone(String address_phone) {
+            this.address_phone = address_phone;
         }
 
-        public int getPay_type() {
+        public Object getMobile() {
+            return mobile;
+        }
+
+        public void setMobile(Object mobile) {
+            this.mobile = mobile;
+        }
+
+        public String getReal_freight() {
+            return real_freight;
+        }
+
+        public void setReal_freight(String real_freight) {
+            this.real_freight = real_freight;
+        }
+
+        public String getPay_type() {
             return pay_type;
         }
 
-        public void setPay_type(int pay_type) {
+        public void setPay_type(String pay_type) {
             this.pay_type = pay_type;
         }
 
-        public int getEms_com_id() {
-            return ems_com_id;
+        public String getPay_time() {
+            return pay_time;
         }
 
-        public void setEms_com_id(int ems_com_id) {
-            this.ems_com_id = ems_com_id;
+        public void setPay_time(String pay_time) {
+            this.pay_time = pay_time;
         }
 
-        public String getEms_no() {
-            return ems_no;
+        public String getCreate_time() {
+            return create_time;
         }
 
-        public void setEms_no(String ems_no) {
-            this.ems_no = ems_no;
+        public void setCreate_time(String create_time) {
+            this.create_time = create_time;
         }
 
-        public int getStatus() {
-            return status;
+        public String getStatus_text() {
+            return status_text;
         }
 
-        public void setStatus(int status) {
-            this.status = status;
+        public void setStatus_text(String status_text) {
+            this.status_text = status_text;
         }
 
-        public String getTicket_money() {
-            return ticket_money;
+        public int getPay_count_down_time() {
+            return pay_count_down_time;
         }
 
-        public void setTicket_money(String ticket_money) {
-            this.ticket_money = ticket_money;
+        public void setPay_count_down_time(int pay_count_down_time) {
+            this.pay_count_down_time = pay_count_down_time;
         }
 
-        public String getEms_com_name() {
-            return ems_com_name;
+        public List<ChildOrdersBean> getChildOrders() {
+            return childOrders;
         }
 
-        public void setEms_com_name(String ems_com_name) {
-            this.ems_com_name = ems_com_name;
+        public void setChildOrders(List<ChildOrdersBean> childOrders) {
+            this.childOrders = childOrders;
         }
 
-        public String getEms_com() {
-            return ems_com;
-        }
-
-        public void setEms_com(String ems_com) {
-            this.ems_com = ems_com;
-        }
-
-        public int getLast_time() {
-            return last_time;
-        }
-
-        public void setLast_time(int last_time) {
-            this.last_time = last_time;
-        }
-
-        public OrderCommentBean getOrder_comment() {
-            return order_comment;
-        }
-
-        public void setOrder_comment(OrderCommentBean order_comment) {
-            this.order_comment = order_comment;
-        }
-
-        public List<CarListBean> getCar_list() {
-            return car_list;
-        }
-
-        public void setCar_list(List<CarListBean> car_list) {
-            this.car_list = car_list;
-        }
-
-        public static class OrderCommentBean {
+        public static class ChildOrdersBean {
             /**
-             * id : 23
-             * uid : 264
-             * content : 刚好斤斤计较
-             * img_list : /uploads/comment/20170613174413e406e407e25a6a381d5c802ae3c2b98b.jpg,/uploads/comment/20170613174413c52b32e25096783a78e36ef092f976f4.jpg,/uploads/comment/20170613174413957fe3ed5d58773c9937eb080e1c1afd.jpg,
-             * order_id : 1092
-             * c_time : 2017-06-13 17:44
-             * status : 1
-             * goods_id : 49
-             * car_id : 2907
+             * detail_order_sn : YGC20190114134306749291_1
+             * sell_price : 999.00
+             * goods_name : 驼色棉羊绒混纺衬衫
+             * goods_num : 6
+             * img_info : public/20181224/77872e452130c54cb2b1b8738f4a448dcfa043b3.jpeg
+             * re_marks :
+             * part : [{"part_name":"面料","part_value":"常规款衬衣"},{"part_name":"版型","part_value":"正常"},{"part_name":"领型宽","part_value":"6CM"},{"part_name":"下领高度","part_value":"3"},{"part_name":"领子相拼","part_value":"正常"},{"part_name":"领子样式","part_value":"方开领"},{"part_name":"领子硬度","part_value":"中"},{"part_name":"门襟","part_value":"里三褶门襟"},{"part_name":"口袋","part_value":"无袋"},{"part_name":"下摆","part_value":"圆摆"},{"part_name":"袖克夫","part_value":"中(6.5cm)"},{"part_name":"袖口样式","part_value":"圆头一粒扣"},{"part_name":"绣花位置","part_value":"无"},{"part_name":"绣花字体","part_value":"无"},{"part_name":"绣花颜色","part_value":"无"}]
              */
 
-            private int id;
-            private int uid;
-            private String content;
-            private String img_list;
-            private int order_id;
-            private String c_time;
-            private int status;
-            private int goods_id;
-            private int car_id;
-
-            public int getId() {
-                return id;
-            }
-
-            public void setId(int id) {
-                this.id = id;
-            }
-
-            public int getUid() {
-                return uid;
-            }
-
-            public void setUid(int uid) {
-                this.uid = uid;
-            }
-
-            public String getContent() {
-                return content;
-            }
-
-            public void setContent(String content) {
-                this.content = content;
-            }
-
-            public String getImg_list() {
-                return img_list;
-            }
-
-            public void setImg_list(String img_list) {
-                this.img_list = img_list;
-            }
-
-            public int getOrder_id() {
-                return order_id;
-            }
-
-            public void setOrder_id(int order_id) {
-                this.order_id = order_id;
-            }
-
-            public String getC_time() {
-                return c_time;
-            }
-
-            public void setC_time(String c_time) {
-                this.c_time = c_time;
-            }
-
-            public int getStatus() {
-                return status;
-            }
-
-            public void setStatus(int status) {
-                this.status = status;
-            }
-
-            public int getGoods_id() {
-                return goods_id;
-            }
-
-            public void setGoods_id(int goods_id) {
-                this.goods_id = goods_id;
-            }
-
-            public int getCar_id() {
-                return car_id;
-            }
-
-            public void setCar_id(int car_id) {
-                this.car_id = car_id;
-            }
-        }
-
-        public static class CarListBean {
-            /**
-             * id : 2907
-             * goods_id : 49
-             * goods_name : 小二西服
-             * goods_thumb : /uploads/img/2017051609544856491001.jpg
-             * price : 399.00
-             * num : 1
-             * goods_type : 2
-             * size_content : 颜色:黑;尺码:X
-             */
-
-            private int id;
-            private int goods_id;
+            private String detail_order_sn;
+            private String sell_price;
             private String goods_name;
-            private String goods_thumb;
-            private String price;
-            private int num;
-            private int goods_type;
-            private String size_content;
-            private String spec_content;
-            private String diy_content;
+            private int goods_num;
+            private String img_info;
+            private String re_marks;
+            private List<PartBean> part;
 
-            public String getSpec_content() {
-                return spec_content;
+            public String getDetail_order_sn() {
+                return detail_order_sn;
             }
 
-            public void setSpec_content(String spec_content) {
-                this.spec_content = spec_content;
+            public void setDetail_order_sn(String detail_order_sn) {
+                this.detail_order_sn = detail_order_sn;
             }
 
-            public String getDiy_content() {
-                return diy_content;
+            public String getSell_price() {
+                return sell_price;
             }
 
-            public void setDiy_content(String diy_content) {
-                this.diy_content = diy_content;
-            }
-
-            public int getId() {
-                return id;
-            }
-
-            public void setId(int id) {
-                this.id = id;
-            }
-
-            public int getGoods_id() {
-                return goods_id;
-            }
-
-            public void setGoods_id(int goods_id) {
-                this.goods_id = goods_id;
+            public void setSell_price(String sell_price) {
+                this.sell_price = sell_price;
             }
 
             public String getGoods_name() {
@@ -447,44 +311,62 @@ public class OrderDetailsBean {
                 this.goods_name = goods_name;
             }
 
-            public String getGoods_thumb() {
-                return goods_thumb;
+            public int getGoods_num() {
+                return goods_num;
             }
 
-            public void setGoods_thumb(String goods_thumb) {
-                this.goods_thumb = goods_thumb;
+            public void setGoods_num(int goods_num) {
+                this.goods_num = goods_num;
             }
 
-            public String getPrice() {
-                return price;
+            public String getImg_info() {
+                return img_info;
             }
 
-            public void setPrice(String price) {
-                this.price = price;
+            public void setImg_info(String img_info) {
+                this.img_info = img_info;
             }
 
-            public int getNum() {
-                return num;
+            public String getRe_marks() {
+                return re_marks;
             }
 
-            public void setNum(int num) {
-                this.num = num;
+            public void setRe_marks(String re_marks) {
+                this.re_marks = re_marks;
             }
 
-            public int getGoods_type() {
-                return goods_type;
+            public List<PartBean> getPart() {
+                return part;
             }
 
-            public void setGoods_type(int goods_type) {
-                this.goods_type = goods_type;
+            public void setPart(List<PartBean> part) {
+                this.part = part;
             }
 
-            public String getSize_content() {
-                return size_content;
-            }
+            public static class PartBean {
+                /**
+                 * part_name : 面料
+                 * part_value : 常规款衬衣
+                 */
 
-            public void setSize_content(String size_content) {
-                this.size_content = size_content;
+                private String part_name;
+                private String part_value;
+
+                public String getPart_name() {
+                    return part_name;
+                }
+
+                public void setPart_name(String part_name) {
+                    this.part_name = part_name;
+                }
+
+                public String getPart_value() {
+                    return part_value;
+                }
+
+                public void setPart_value(String part_value) {
+                    this.part_value = part_value;
+                }
             }
         }
     }

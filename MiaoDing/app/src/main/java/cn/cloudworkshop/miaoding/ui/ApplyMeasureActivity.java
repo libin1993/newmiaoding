@@ -2,12 +2,9 @@ package cn.cloudworkshop.miaoding.ui;
 
 import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -54,7 +51,9 @@ import butterknife.OnClick;
 import cn.cloudworkshop.miaoding.R;
 import cn.cloudworkshop.miaoding.base.BaseActivity;
 import cn.cloudworkshop.miaoding.bean.LocationBean;
+import cn.cloudworkshop.miaoding.bean.ResponseBean;
 import cn.cloudworkshop.miaoding.constant.Constant;
+import cn.cloudworkshop.miaoding.utils.GsonUtils;
 import cn.cloudworkshop.miaoding.utils.PermissionUtils;
 import cn.cloudworkshop.miaoding.utils.SharedPreferencesUtils;
 import cn.cloudworkshop.miaoding.utils.ToastUtils;
@@ -300,7 +299,7 @@ public class ApplyMeasureActivity extends BaseActivity implements LocationSource
     private void submitAddress() {
         tvSubmit.setEnabled(false);
         OkHttpUtils.post()
-                .url(Constant.APPOINTMENT_ORDER)
+                .url(Constant.APPLY_MEASURE)
                 .addParams("token", SharedPreferencesUtils.getStr(this, "token"))
                 .addParams("address", etCurrentAddress.getText().toString())
                 .build()
@@ -314,11 +313,15 @@ public class ApplyMeasureActivity extends BaseActivity implements LocationSource
                     public void onResponse(String response, final int id) {
                         MobclickAgent.onEvent(ApplyMeasureActivity.this, "measure");
                         tvSubmit.setEnabled(true);
-                        Intent intent = new Intent(ApplyMeasureActivity.this, AppointmentActivity.class);
-                        intent.putExtra("type", "appoint_measure");
-                        startActivity(intent);
-                        finish();
-
+                        ResponseBean responseBean = GsonUtils.jsonToBean(response, ResponseBean.class);
+                        if (responseBean.getCode() == 10000) {
+                            Intent intent = new Intent(ApplyMeasureActivity.this, AppointmentActivity.class);
+                            intent.putExtra("type", "appoint_measure");
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            ToastUtils.showToast(ApplyMeasureActivity.this, responseBean.getMsg());
+                        }
                     }
                 });
 

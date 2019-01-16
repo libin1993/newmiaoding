@@ -44,4 +44,6 @@
 
     <include
         layout="@layout/loading_error"/>
+    <include
+        layout="@layout/loading_view"/>
 </RelativeLayout>

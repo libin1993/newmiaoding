@@ -6,28 +6,48 @@
                 android:background="@android:color/white"
                 android:fitsSystemWindows="true">
 
-    <android.support.design.widget.TabLayout
-        android:id="@+id/tab_main"
+    <RadioGroup
+        android:id="@+id/rgs_main_tab"
         android:layout_width="match_parent"
         android:layout_height="49dp"
         android:layout_alignParentBottom="true"
-        app:tabGravity="fill"
-        app:tabIndicatorHeight="0dp"
-        app:tabMode="fixed">
-    </android.support.design.widget.TabLayout>
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <RadioButton
+            style="@style/RadioButton"
+            android:drawableTop="@drawable/selector_homepage_tab"
+            android:text="@string/homepage_tab"/>
+
+        <RadioButton
+            style="@style/RadioButton"
+            android:drawableTop="@drawable/selector_customize_tab"
+            android:text="@string/customize_tab"/>
+
+        <RadioButton
+            style="@style/RadioButton"
+            android:drawableTop="@drawable/selector_works_tab"
+            android:text="@string/works_tab"/>
+
+        <RadioButton
+            style="@style/RadioButton"
+            android:drawableTop="@drawable/selector_me_tab"
+            android:text="@string/me"/>
+    </RadioGroup>
+
     <View
         android:id="@+id/view_main_line"
         android:layout_width="match_parent"
         android:layout_height="1px"
-        android:background="@color/light_gray_ed"
-        android:layout_above="@id/tab_main"/>
+        android:layout_above="@id/rgs_main_tab"
+        android:background="@color/light_gray_ed"/>
 
     <FrameLayout
         android:id="@+id/frame_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/white"
-        android:layout_above="@id/view_main_line"/>
+        android:layout_above="@id/view_main_line"
+        android:background="@android:color/white"/>
 
     <include
         layout="@layout/loading_error"/>

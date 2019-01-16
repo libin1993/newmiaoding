@@ -71,8 +71,6 @@ public class JoinUsActivity extends BaseActivity {
         OkHttpUtils.get()
                 .url(Constant.JOIN_US)
                 .addParams("token", SharedPreferencesUtils.getStr(this, "token"))
-                .addParams("type", "3")
-                .addParams("phone", SharedPreferencesUtils.getStr(this, "phone"))
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -84,7 +82,7 @@ public class JoinUsActivity extends BaseActivity {
                     public void onResponse(String response, int id) {
                         imgLoadError.setVisibility(View.GONE);
                         joinUsBean = GsonUtils.jsonToBean(response, JoinUsBean.class);
-                        if (joinUsBean.getData() != null) {
+                        if (joinUsBean.getCode() == 10000 && joinUsBean.getData() != null) {
                             initView();
                         }
                     }
@@ -110,7 +108,7 @@ public class JoinUsActivity extends BaseActivity {
                 break;
             case R.id.tv_apply_join:
                 if (!TextUtils.isEmpty(SharedPreferencesUtils.getStr(this, "token"))) {
-                    if (joinUsBean.getData() != null) {
+                    if (joinUsBean != null && joinUsBean.getData() != null) {
                         if (isApply == 0) {
                             startActivity(new Intent(this, ApplyJoinActivity.class));
                         } else {

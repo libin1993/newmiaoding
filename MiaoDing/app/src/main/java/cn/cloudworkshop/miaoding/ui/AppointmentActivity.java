@@ -28,6 +28,7 @@ import cn.cloudworkshop.miaoding.application.MyApplication;
 import cn.cloudworkshop.miaoding.base.BaseActivity;
 import cn.cloudworkshop.miaoding.bean.GuideBean;
 import cn.cloudworkshop.miaoding.constant.Constant;
+import cn.cloudworkshop.miaoding.fragment.OrderFragment;
 import cn.cloudworkshop.miaoding.utils.DateUtils;
 import cn.cloudworkshop.miaoding.utils.GsonUtils;
 import cn.cloudworkshop.miaoding.utils.ShareUtils;
@@ -110,7 +111,8 @@ public class AppointmentActivity extends BaseActivity {
                                                 break;
                                             case 3:
                                             case 4:
-                                                tvAppointResult.setText(getString(R.string.state_measure_time) + DateUtils.getDate("yyyy.MM.dd HH:mm", time));
+                                                tvAppointResult.setText(getString(R.string.state_measure_time)
+                                                        + DateUtils.getDate("yyyy.MM.dd HH:mm", time));
                                                 break;
                                             case -1:
                                                 tvAppointResult.setText(R.string.state_cancel);
@@ -138,7 +140,7 @@ public class AppointmentActivity extends BaseActivity {
                 tvCheckOrder.setVisibility(View.VISIBLE);
                 tvGoBack.setTextColor(ContextCompat.getColor(this, R.color.dark_gray_22));
                 tvGoBack.setBackgroundResource(R.drawable.text_white_2dp);
-                shareCoupon();
+//                shareCoupon();
                 break;
             case "pay_fail":
                 tvHeaderTitle.setText(R.string.pay_fail);
@@ -190,14 +192,14 @@ public class AppointmentActivity extends BaseActivity {
                             ImageView imgCoupon = (ImageView) popupView.findViewById(R.id.img_coupon);
 
                             Glide.with(AppointmentActivity.this)
-                                    .load(Constant.IMG_HOST + guideBean.getData().getImg_urls().get(0))
+                                    .load(Constant.IMG_HOST + guideBean.getData().getImg_urls().get(0).getImg())
                                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                                     .into(imgCoupon);
                             viewShare.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
                                     ShareUtils.showShare(AppointmentActivity.this,
-                                            Constant.IMG_HOST + guideBean.getData().getImg_urls().get(0),
+                                            Constant.IMG_HOST + guideBean.getData().getImg_urls().get(0).getImg(),
                                             getString(R.string.order_share_title),
                                             getString(R.string.order_share_content),
                                             Constant.SHARE_COUPON + "?pay_ids=" + MyApplication.payId
@@ -241,9 +243,9 @@ public class AppointmentActivity extends BaseActivity {
 
                 break;
             case R.id.tv_check_order:
-                Intent intent1 = new Intent(this, OrderDetailActivity.class);
-                intent1.putExtra("id", getIntent().getStringExtra("order_id"));
-                startActivity(intent1);
+                Intent intent = new Intent(this, OrderActivity.class);
+                intent.putExtra("page", 0);
+                startActivity(intent);
                 finish();
                 break;
         }

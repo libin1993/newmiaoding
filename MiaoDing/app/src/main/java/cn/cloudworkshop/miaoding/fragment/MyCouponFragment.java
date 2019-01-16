@@ -58,7 +58,9 @@ public class MyCouponFragment extends BaseFragment {
 
     //优惠券状态
     private int couponStatus;
-    private List<CouponBean.TicketsBean> couponList;
+    private List<CouponBean.TicketsBean> couponList = new ArrayList<>();
+    ;
+    private CommonAdapter<CouponBean.TicketsBean> adapter;
 
     @Nullable
     @Override
@@ -68,6 +70,7 @@ public class MyCouponFragment extends BaseFragment {
 
         getData();
         initData();
+        initView();
         return view;
     }
 
@@ -89,12 +92,11 @@ public class MyCouponFragment extends BaseFragment {
                     @Override
                     public void onResponse(String response, int id) {
 
-                        couponList = new ArrayList<>();
                         CouponBean couponBean = GsonUtils.jsonToBean(response, CouponBean.class);
                         if (couponBean.getTickets() != null && couponBean.getTickets().size() > 0) {
                             imgNullCoupon.setVisibility(View.GONE);
                             couponList.addAll(couponBean.getTickets());
-                            initView();
+                            adapter.notifyDataSetChanged();
                         } else {
                             imgNullCoupon.setVisibility(View.VISIBLE);
                         }
@@ -107,7 +109,7 @@ public class MyCouponFragment extends BaseFragment {
      */
     private void initView() {
         rvCoupon.setLayoutManager(new LinearLayoutManager(getActivity()));
-        CommonAdapter<CouponBean.TicketsBean> adapter = new CommonAdapter<CouponBean.TicketsBean>(
+        adapter = new CommonAdapter<CouponBean.TicketsBean>(
                 getActivity(), R.layout.listitem_coupon, couponList) {
             @Override
             protected void convert(ViewHolder holder, CouponBean.TicketsBean dataBean, int position) {
@@ -125,9 +127,9 @@ public class MyCouponFragment extends BaseFragment {
                 tvMoney.setTypeface(DisplayUtils.setTextType(getActivity()));
                 tvMoney.setText("¥" + (int) Float.parseFloat(dataBean.getMoney()));
                 holder.setText(R.id.tv_coupon_range, dataBean.getTitle());
-                holder.setText(R.id.tv_coupon_discount, dataBean.getSub_title());
+                holder.setText(R.id.tv_coupon_discount, dataBean.getRe_marks());
                 StringBuilder sb = new StringBuilder();
-                sb.append(getString(R.string.validity_term)+"：")
+                sb.append(getString(R.string.validity_term) + "：")
                         .append(DateUtils.formatTime("yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd", dataBean.getS_time()))
                         .append(getString(R.string.to))
                         .append(DateUtils.formatTime("yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd", dataBean.getE_time()));
@@ -155,7 +157,6 @@ public class MyCouponFragment extends BaseFragment {
         fragment.setArguments(args);
         return fragment;
     }
-
 
 
     @Override

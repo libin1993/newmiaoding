@@ -69,6 +69,7 @@ public class SubGoodsFragment extends BaseFragment {
         unbinder = ButterKnife.bind(this, view);
         getData();
         initData();
+        initView();
         return view;
     }
 
@@ -100,10 +101,9 @@ public class SubGoodsFragment extends BaseFragment {
                             dataList.addAll(listBean.getGoodsid());
                             if (isRefresh || isLoadMore) {
                                 rvGoods.refreshComplete(0);
-                                mLRecyclerViewAdapter.notifyDataSetChanged();
-                            } else {
-                                initView();
+
                             }
+                            mLRecyclerViewAdapter.notifyDataSetChanged();
                             isRefresh = false;
                             isLoadMore = false;
                         } else {
@@ -130,7 +130,7 @@ public class SubGoodsFragment extends BaseFragment {
                 imgGoods.setImageURI(Constant.IMG_HOST + goodsidBean.getAd_img());
 
                 holder.setText(R.id.tv_sub_title, goodsidBean.getName());
-                holder.setText(R.id.tv_sub_price, goodsidBean.getSell_price());
+                holder.setText(R.id.tv_sub_price, "¥" + goodsidBean.getSell_price());
                 holder.setText(R.id.tv_sub_content, goodsidBean.getContent());
             }
 

@@ -24,6 +24,7 @@ import com.amap.api.maps2d.model.BitmapDescriptorFactory;
 import com.amap.api.maps2d.model.LatLng;
 import com.amap.api.maps2d.model.MarkerOptions;
 import com.amap.api.maps2d.model.MyLocationStyle;
+
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -85,15 +86,15 @@ public class StoreAddressActivity extends BaseActivity implements LocationSource
      * 定制店marker
      */
     private void addMarker() {
-        LatLng latLng = new LatLng(Double.parseDouble(latitude),Double.parseDouble(longitude));
+        LatLng latLng = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
         //自定义点标记
-        MarkerOptions markerOptions=new MarkerOptions();
+        MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng).title(storeName).snippet(storeAddress);
         markerOptions.icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory
-                .decodeResource(getResources(),R.mipmap.icon_current_address)));//设置图标
+                .decodeResource(getResources(), R.mipmap.icon_current_address)));//设置图标
         aMap.addMarker(markerOptions);
         //将地图移动到指定位置
-        aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,13));
+        aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13));
     }
 
 

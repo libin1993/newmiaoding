@@ -102,8 +102,27 @@ public class OrderInfoBean {
         private int status;
         private String status_text;
         private List<ChildOrdersBean> childOrders;
+        private String express_no;
+        private String payable_amount;
+
+        public String getPayable_amount() {
+            return payable_amount;
+        }
+
+        public void setPayable_amount(String payable_amount) {
+            this.payable_amount = payable_amount;
+        }
+
+        public String getExpress_no() {
+            return express_no;
+        }
+
+        public void setExpress_no(String express_no) {
+            this.express_no = express_no;
+        }
 
         public String getOrder_sn() {
+
             return order_sn;
         }
 
@@ -147,6 +166,26 @@ public class OrderInfoBean {
             private String sell_price;
             private int goods_num;
             private String img_info;
+            private String goods_name;
+
+            public String getGoods_name() {
+                return goods_name;
+            }
+
+            public void setGoods_name(String goods_name) {
+                this.goods_name = goods_name;
+            }
+
+            private List<PartBean> part;
+
+            public List<PartBean> getPart() {
+                return part;
+            }
+
+            public void setPart(List<PartBean> part) {
+                this.part = part;
+            }
+
 
             public String getDetail_order_sn() {
                 return detail_order_sn;
@@ -178,6 +217,33 @@ public class OrderInfoBean {
 
             public void setImg_info(String img_info) {
                 this.img_info = img_info;
+            }
+
+
+            public static class PartBean {
+                /**
+                 * part_name : 面料
+                 * part_value : VBC 班长会团购款
+                 */
+
+                private String part_name;
+                private String part_value;
+
+                public String getPart_name() {
+                    return part_name;
+                }
+
+                public void setPart_name(String part_name) {
+                    this.part_name = part_name;
+                }
+
+                public String getPart_value() {
+                    return part_value;
+                }
+
+                public void setPart_value(String part_value) {
+                    this.part_value = part_value;
+                }
             }
         }
     }

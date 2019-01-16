@@ -73,6 +73,7 @@ public class UserHelpActivity extends BaseActivity implements EasyPermissions.Pe
     static final String[] permissionStr = {Manifest.permission.CALL_PHONE};
     //客服电话
     private String phone;
+    private CommonAdapter<QuestionClassifyBean.DataBean> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +81,7 @@ public class UserHelpActivity extends BaseActivity implements EasyPermissions.Pe
         setContentView(R.layout.activity_user_help);
         ButterKnife.bind(this);
         initData();
+        initView();
         initTel();
     }
 
@@ -106,7 +108,7 @@ public class UserHelpActivity extends BaseActivity implements EasyPermissions.Pe
                                 QuestionClassifyBean.class);
                         if (question.getData() != null) {
                             dataList.addAll(question.getData());
-                            initView();
+                            adapter.notifyDataSetChanged();
                         }
                     }
                 });
@@ -148,7 +150,7 @@ public class UserHelpActivity extends BaseActivity implements EasyPermissions.Pe
      */
     private void initView() {
         rvQuestion.setLayoutManager(new LinearLayoutManager(this));
-        CommonAdapter<QuestionClassifyBean.DataBean> adapter = new CommonAdapter
+        adapter = new CommonAdapter
                 <QuestionClassifyBean.DataBean>(this, R.layout.listitem_common_question, dataList) {
             @Override
             protected void convert(ViewHolder holder, QuestionClassifyBean.DataBean dataBean, int position) {

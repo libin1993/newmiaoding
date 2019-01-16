@@ -63,12 +63,13 @@
             android:layout_marginRight="15dp"
             android:layout_marginTop="5dp"
             android:textColor="@color/text_gray_6a"
-            android:textSize="10sp"/>
+            android:textSize="10sp"
+            android:maxLines="2"
+            android:layout_marginBottom="10dp"/>
 
         <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/tv_goods_price"

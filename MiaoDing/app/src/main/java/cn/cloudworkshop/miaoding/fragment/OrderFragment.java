@@ -1,16 +1,24 @@
 package cn.cloudworkshop.miaoding.fragment;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -18,8 +26,15 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
+import com.umeng.analytics.MobclickAgent;
+import com.wang.avi.AVLoadingIndicatorView;
+import com.zhy.adapter.recyclerview.CommonAdapter;
+import com.zhy.adapter.recyclerview.base.ViewHolder;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,10 +47,19 @@ import cn.cloudworkshop.miaoding.R;
 import cn.cloudworkshop.miaoding.adapter.SectionedRecyclerViewAdapter;
 import cn.cloudworkshop.miaoding.base.BaseFragment;
 import cn.cloudworkshop.miaoding.bean.OrderInfoBean;
+import cn.cloudworkshop.miaoding.bean.ResponseBean;
 import cn.cloudworkshop.miaoding.constant.Constant;
+import cn.cloudworkshop.miaoding.ui.AfterSalesActivity;
+import cn.cloudworkshop.miaoding.ui.ConfirmOrderActivity;
+import cn.cloudworkshop.miaoding.ui.LogisticsActivity;
+import cn.cloudworkshop.miaoding.ui.OrderDetailActivity;
+import cn.cloudworkshop.miaoding.ui.PayOrderActivity;
 import cn.cloudworkshop.miaoding.utils.DisplayUtils;
 import cn.cloudworkshop.miaoding.utils.GsonUtils;
+import cn.cloudworkshop.miaoding.utils.LogUtils;
+import cn.cloudworkshop.miaoding.utils.RVItemDecoration;
 import cn.cloudworkshop.miaoding.utils.SharedPreferencesUtils;
+import cn.cloudworkshop.miaoding.utils.ToastUtils;
 import okhttp3.Call;
 
 /**
@@ -54,6 +78,8 @@ public class OrderFragment extends BaseFragment {
     LinearLayout llNoOrder;
     @BindView(R.id.img_load_error)
     ImageView imgLoadError;
+    @BindView(R.id.view_loading)
+    AVLoadingIndicatorView viewLoading;
     private Unbinder unbinder;
     private SectionedRecyclerViewAdapter adapter;
     private List<OrderInfoBean.DataBean> dataList = new ArrayList<>();
@@ -76,6 +102,7 @@ public class OrderFragment extends BaseFragment {
         unbinder = ButterKnife.bind(this, view);
         getData();
         initView();
+        viewLoading.smoothToShow();
         initData();
         return view;
     }
@@ -121,20 +148,162 @@ public class OrderFragment extends BaseFragment {
             }
 
             @Override
-            protected void onBindSectionHeaderViewHolder(HeaderViewHolder holder, int section) {
+            protected void onBindSectionHeaderViewHolder(HeaderViewHolder holder, final int section) {
+                LinearLayout llOrder = (LinearLayout) holder.getView(R.id.ll_order_header);
                 TextView tvNo = (TextView) holder.getView(R.id.tv_order_number_header);
                 TextView tvStatus = (TextView) holder.getView(R.id.tv_order_status_header);
                 tvNo.setText(dataList.get(section).getOrder_sn());
                 tvStatus.setText(dataList.get(section).getStatus_text());
+                llOrder.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        orderDetail(dataList.get(section).getOrder_sn());
+                    }
+                });
             }
 
             @Override
-            protected void onBindSectionFooterViewHolder(FooterViewHolder holder, int section) {
+            protected void onBindSectionFooterViewHolder(FooterViewHolder holder, final int section) {
+                LinearLayout llOrder = (LinearLayout) holder.getView(R.id.ll_order_footer);
+                TextView tvMoney = (TextView) holder.getView(R.id.tv_order_price_footer);
+                TextView tvAfter = (TextView) holder.getView(R.id.tv_after_sale_footer);
+                TextView tvControl = (TextView) holder.getView(R.id.tv_order_control_footer);
+                TextView tvPay = (TextView) holder.getView(R.id.tv_order_pay_footer);
+                tvMoney.setText("¥" + dataList.get(section).getPayable_amount());
 
+                switch (dataList.get(section).getStatus()) {
+                    case 1:
+                        tvAfter.setVisibility(View.GONE);
+                        tvControl.setVisibility(View.VISIBLE);
+                        tvPay.setVisibility(View.VISIBLE);
+
+                        tvControl.setText(R.string.cancel_order);
+                        tvPay.setText(R.string.pay);
+                        break;
+                    case 2:
+                        tvAfter.setVisibility(View.GONE);
+                        tvControl.setVisibility(View.VISIBLE);
+                        tvPay.setVisibility(View.GONE);
+                        tvControl.setText(R.string.notice_send_goods);
+                        break;
+                    case 3:
+                        tvAfter.setVisibility(View.GONE);
+                        tvControl.setVisibility(View.VISIBLE);
+                        tvPay.setVisibility(View.VISIBLE);
+
+                        tvAfter.setText(R.string.after_sale);
+                        tvControl.setText(R.string.view_logistics);
+                        tvPay.setText(R.string.confirm_receive);
+                        break;
+                    case 4:
+                        tvAfter.setVisibility(View.GONE);
+                        tvControl.setVisibility(View.VISIBLE);
+                        tvPay.setVisibility(View.GONE);
+
+                        tvAfter.setText(R.string.after_sale);
+                        tvControl.setText(R.string.buy_again);
+                        //订单未评价
+//                        if (dataBean.getComment_id() == 0) {
+//                            holder.setVisible(R.id.tv_order_pay, true);
+//                            holder.setText(R.id.tv_order_pay, getString(R.string.evaluate));
+//                        } else {
+//                            holder.setVisible(R.id.tv_order_pay, false);
+//                        }
+                        break;
+                    case 5:
+                        tvAfter.setVisibility(View.GONE);
+                        tvControl.setVisibility(View.VISIBLE);
+                        tvPay.setVisibility(View.GONE);
+
+                        tvControl.setText(R.string.delete_order);
+                        break;
+                }
+
+
+                tvAfter.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent1 = new Intent(getActivity(), AfterSalesActivity.class);
+                        intent1.putExtra("order_id", dataList.get(section).getOrder_sn());
+                        startActivity(intent1);
+                    }
+                });
+
+                tvControl.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        switch (dataList.get(section).getStatus()) {
+                            case 1:
+                                cancelOrder(dataList.get(section).getOrder_sn());
+                                break;
+                            case 2:
+                                ToastUtils.showToast(getActivity(), getString(R.string.has_notice));
+                                break;
+                            case 3:
+                                Intent intent = new Intent(getActivity(), LogisticsActivity.class);
+                                intent.putExtra("order_id", dataList.get(section).getOrder_sn());
+                                intent.putExtra("number", dataList.get(section).getExpress_no());
+                                intent.putExtra("img_url", dataList.get(section).getChildOrders().get(0).getImg_info());
+                                startActivity(intent);
+                                break;
+                            case 4:
+                                buyAgain(dataList.get(section).getOrder_sn());
+                                break;
+                            case 5:
+                                deleteOrder(dataList.get(section).getOrder_sn(), section);
+                                break;
+                        }
+                    }
+                });
+
+                tvPay.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        switch (dataList.get(section).getStatus()) {
+                            case 1:
+                                Intent intent = new Intent(getActivity(), PayOrderActivity.class);
+                                intent.putExtra("order_id", dataList.get(section).getOrder_sn());
+                                startActivity(intent);
+                                break;
+                            case 3:
+                                confirmReceive(dataList.get(section).getOrder_sn());
+                                break;
+                            case 4:
+                                //订单评价
+//                Intent intent = new Intent(this, EvaluateActivity.class);
+//                intent.putExtra("order_id", orderId);
+//                intent.putExtra("cart_id", orderBean.getData().getCar_list().get(0).getId() + "");
+//                intent.putExtra("goods_id", orderBean.getData().getCar_list().get(0).getGoods_id() + "");
+//                intent.putExtra("goods_img", orderBean.getData().getCar_list().get(0).getGoods_thumb());
+//                intent.putExtra("goods_name", orderBean.getData().getCar_list().get(0).getGoods_name());
+//
+//                switch (orderBean.getData().getCar_list().get(0).getGoods_type()) {
+//                    case 2:
+//                        intent.putExtra("goods_type", orderBean.getData().getCar_list().get(0).getSize_content());
+//                        break;
+//                    default:
+//                        intent.putExtra("goods_type", getString(R.string.customize_type));
+//                        break;
+//                }
+//
+//                startActivity(intent);
+                                break;
+                        }
+                    }
+                });
+
+
+                llOrder.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        orderDetail(dataList.get(section).getOrder_sn());
+                    }
+                });
             }
 
             @Override
-            protected void onBindItemViewHolder(ItemViewHolder holder, int section, int position) {
+            protected void onBindItemViewHolder(ItemViewHolder holder, final int section, final int position) {
+                RelativeLayout rlOrder = (RelativeLayout) holder.getView(R.id.rl_order_item);
                 Glide.with(getActivity())
                         .load(Constant.IMG_HOST + dataList.get(section).getChildOrders().get(position).getImg_info())
                         .placeholder(R.mipmap.place_holder_news)
@@ -142,12 +311,39 @@ public class OrderFragment extends BaseFragment {
                         .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                         .into((ImageView) holder.getView(R.id.img_order_info));
                 TextView tvGoodsName = (TextView) holder.getView(R.id.tv_order_name);
-                tvGoodsName.setText(dataList.get(section).getChildOrders().get(position).getImg_info());
+                TextView tvContent = (TextView) holder.getView(R.id.tv_order_content);
+                tvGoodsName.setText(dataList.get(section).getChildOrders().get(position).getGoods_name());
                 tvGoodsName.setTypeface(DisplayUtils.setTextType(getActivity()));
+
+                if (dataList.get(section).getChildOrders().get(position).getPart() != null) {
+                    String parts = "";
+                    for (OrderInfoBean.DataBean.ChildOrdersBean.PartBean partBean : dataList.get(section)
+                            .getChildOrders().get(position).getPart()) {
+                        parts += partBean.getPart_name() + ":" + partBean.getPart_value() + ";";
+                    }
+                    parts = parts.substring(0, parts.length() - 1);
+                    tvContent.setText(parts);
+                }
 
                 TextView tvNum = (TextView) holder.getView(R.id.tv_order_count);
                 tvNum.setText(getString(R.string.together) + dataList.get(section).getChildOrders()
                         .get(position).getGoods_num() + getString(R.string.piece_goods));
+
+                rlOrder.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        orderDetail(dataList.get(section).getOrder_sn());
+                    }
+                });
+                tvContent.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (dataList.get(section).getChildOrders().get(position).getPart() != null) {
+                            goodsPart(dataList.get(section).getChildOrders().get(position).getPart());
+                        }
+
+                    }
+                });
 
             }
         };
@@ -174,6 +370,227 @@ public class OrderFragment extends BaseFragment {
                 initData();
             }
         });
+
+    }
+
+    /**
+     * 再次购买
+     */
+    private void buyAgain(String orderId) {
+        OkHttpUtils.post()
+                .url(Constant.BUY_AGAIN)
+                .addParams("token", SharedPreferencesUtils.getStr(getActivity(), "token"))
+                .addParams("order_sn", orderId)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            int code = jsonObject.getInt("code");
+                            String msg = jsonObject.getString("msg");
+                            if (code == 10000) {
+                                String cartId = jsonObject.getString("cart_id_s");
+                                Intent intent = new Intent(getActivity(), ConfirmOrderActivity.class);
+                                Bundle bundle = new Bundle();
+                                bundle.putString("cart_id", cartId);
+                                intent.putExtras(bundle);
+                                startActivity(intent);
+                            } else {
+                                ToastUtils.showToast(getActivity(), msg);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                });
+    }
+
+
+    /**
+     * 确认收货
+     */
+    private void confirmReceive(String orderId) {
+        OkHttpUtils.post()
+                .url(Constant.CONFIRM_RECEIVE)
+                .addParams("token", SharedPreferencesUtils.getStr(getActivity(), "token"))
+                .addParams("order_sn", orderId)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        ResponseBean responseBean = GsonUtils.jsonToBean(response, ResponseBean.class);
+                        ToastUtils.showToast(getActivity(), responseBean.getMsg());
+                        if (responseBean.getCode() == 10000) {
+                            MobclickAgent.onEvent(getActivity(), "trade_success");
+                            onStateChangeListener.onStateChange(0);
+                        }
+                    }
+                });
+    }
+
+
+    /**
+     * 删除订单
+     */
+    private void deleteOrder(final String orderId, final int position) {
+        LogUtils.log(position + "");
+        AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity(),
+                R.style.Theme_AppCompat_DayNight_Dialog_Alert);
+        dialog.setTitle(R.string.delete_order);
+        dialog.setMessage(R.string.is_delete_order);
+        //为“确定”按钮注册监听事件
+        dialog.setPositiveButton(getString(R.string.confirm), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                OkHttpUtils.post()
+                        .url(Constant.DELETE_ORDER)
+                        .addParams("token", SharedPreferencesUtils.getStr(getActivity(), "token"))
+                        .addParams("order_sn", orderId)
+                        .build()
+                        .execute(new StringCallback() {
+                            @Override
+                            public void onError(Call call, Exception e, int id) {
+
+                            }
+
+                            @Override
+                            public void onResponse(String response, int id) {
+                                ResponseBean responseBean = GsonUtils.jsonToBean(response, ResponseBean.class);
+                                ToastUtils.showToast(getActivity(), responseBean.getMsg());
+                                if (responseBean.getCode() == 10000) {
+                                    dataList.remove(position);
+                                    adapter.notifyDataSetChanged();
+                                    if (dataList.size() == 0 && orderStatus == 0) {
+                                        llNoOrder.setVisibility(View.VISIBLE);
+                                    }
+                                }
+                            }
+                        });
+            }
+        });
+        //为“取消”按钮注册监听事件
+        dialog.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        dialog.create();
+        dialog.show();
+    }
+
+
+    /**
+     * 取消订单
+     */
+    private void cancelOrder(final String orderId) {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity(),
+                R.style.Theme_AppCompat_DayNight_Dialog_Alert);
+        dialog.setTitle(getString(R.string.cancel_order));
+        dialog.setMessage(R.string.is_cancel_order);
+        //为“确定”按钮注册监听事件
+        dialog.setPositiveButton(getString(R.string.confirm), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                OkHttpUtils.get()
+                        .url(Constant.CANCEL_ORDER)
+                        .addParams("token", SharedPreferencesUtils.getStr(getActivity(), "token"))
+                        .addParams("order_sn", orderId)
+                        .build()
+                        .execute(new StringCallback() {
+                            @Override
+                            public void onError(Call call, Exception e, int id) {
+
+                            }
+
+                            @Override
+                            public void onResponse(String response, int id) {
+                                ResponseBean responseBean = GsonUtils.jsonToBean(response, ResponseBean.class);
+                                ToastUtils.showToast(getActivity(), responseBean.getMsg());
+                                if (responseBean.getCode() == 10000) {
+                                    MobclickAgent.onEvent(getActivity(), "cancel_order");
+                                    onStateChangeListener.onStateChange(0);
+                                }
+                            }
+                        });
+            }
+        });
+        //为“取消”按钮注册监听事件
+        dialog.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        dialog.create();
+        dialog.show();
+    }
+
+    /**
+     * @param orderId 订单详情
+     */
+    private void orderDetail(String orderId) {
+        Intent intent = new Intent(getActivity(), OrderDetailActivity.class);
+        intent.putExtra("id", orderId);
+        startActivity(intent);
+    }
+
+    /**
+     * @param part 配件
+     */
+    private void goodsPart(List<OrderInfoBean.DataBean.ChildOrdersBean.PartBean> part) {
+        View popupView = getActivity().getLayoutInflater().inflate(R.layout.ppw_goods_part, null);
+        final PopupWindow mPopupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        mPopupWindow.setTouchable(true);
+        mPopupWindow.setFocusable(true);
+        mPopupWindow.setOutsideTouchable(true);
+        mPopupWindow.setBackgroundDrawable(new BitmapDrawable(getResources(), (Bitmap) null));
+        mPopupWindow.showAtLocation(getActivity().getWindow().getDecorView(), Gravity.CENTER, 0, 0);
+        DisplayUtils.setBackgroundAlpha(getActivity(), true);
+
+        RecyclerView rvPart = popupView.findViewById(R.id.rv_goods_part);
+        rvPart.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rvPart.addItemDecoration(new RVItemDecoration((int) DisplayUtils.dp2px(getActivity(), 10)));
+        CommonAdapter<OrderInfoBean.DataBean.ChildOrdersBean.PartBean> adapter = new
+                CommonAdapter<OrderInfoBean.DataBean.ChildOrdersBean.PartBean>(getActivity(),
+                        R.layout.rv_goods_part_item, part) {
+                    @Override
+                    protected void convert(ViewHolder holder, OrderInfoBean.DataBean.ChildOrdersBean.PartBean partBean, int position) {
+                        holder.setText(R.id.tv_part_title, partBean.getPart_name());
+                        holder.setText(R.id.tv_part_name, partBean.getPart_value());
+                    }
+                };
+        rvPart.setAdapter(adapter);
+
+        TextView tvClose = popupView.findViewById(R.id.tv_close);
+
+        tvClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mPopupWindow.dismiss();
+            }
+        });
+
+        mPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                DisplayUtils.setBackgroundAlpha(getActivity(), false);
+            }
+        });
     }
 
     /**
@@ -191,6 +608,7 @@ public class OrderFragment extends BaseFragment {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         imgLoadError.setVisibility(View.VISIBLE);
+                        viewLoading.smoothToHide();
                     }
 
                     @Override
@@ -210,6 +628,7 @@ public class OrderFragment extends BaseFragment {
                             refreshLayout.finishLoadMore();
                         } else {
                             dataList.clear();
+                            viewLoading.smoothToHide();
                         }
                         if (orderInfoBean.getCode() == 10000 && orderInfoBean.getData().size() > 0) {
                             dataList.addAll(orderInfoBean.getData());

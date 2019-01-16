@@ -144,7 +144,7 @@ public class MyCenterFragment extends BaseFragment {
         OkHttpUtils.get()
                 .url(Constant.USER_INFO)
                 .addParams("token", SharedPreferencesUtils.getStr(getActivity(), "token"))
-                .addParams("is_android", "1")
+                .addParams("is_android", "2")
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -161,6 +161,8 @@ public class MyCenterFragment extends BaseFragment {
                                 && userInfoBean.getData().getIcon_list() != null
                                 && userInfoBean.getData().getIcon_list().size() > 0) {
                             initView();
+                        } else if (userInfoBean.getCode() == 10001) {
+                            SharedPreferencesUtils.deleteStr(getActivity(), "token");
                         }
                     }
                 });
@@ -178,11 +180,11 @@ public class MyCenterFragment extends BaseFragment {
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .into(imgIcon);
         tvCenterName.setText(userInfoBean.getData().getUser_info().getUsername());
-//
-//        Glide.with(getActivity())
-//                .load(Constant.IMG_HOST + userInfoBean.getData().getUser_grade().getImg())
-//                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-//                .into(imgGradeCenter);
+
+        Glide.with(getActivity())
+                .load(Constant.IMG_HOST + userInfoBean.getData().getUser_info().getUser_grade().getImg())
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .into(imgGradeCenter);
 
         if (userInfoBean.getData().getUser_info().getUnread_message_num() > 0) {
             badgeView.setVisibility(View.VISIBLE);

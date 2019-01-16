@@ -52,13 +52,11 @@ public class LogisticsActivity extends BaseActivity {
 
     //快递单号
     private String number;
-    //公司
-    private String company;
-    //公司名称
-    private String companyName;
     //商品图片
     private String imgUrl;
     private List<LogisticsBean.DataBean> dataList = new ArrayList<>();
+    //订单号
+    private String orderId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,8 +71,7 @@ public class LogisticsActivity extends BaseActivity {
     private void getData() {
         Intent intent = getIntent();
         number = intent.getStringExtra("number");
-        company = intent.getStringExtra("company");
-        companyName = intent.getStringExtra("company_name");
+        orderId = intent.getStringExtra("order_id");
         imgUrl = intent.getStringExtra("img_url");
     }
 
@@ -85,7 +82,7 @@ public class LogisticsActivity extends BaseActivity {
     private void initData() {
         tvHeaderTitle.setText(R.string.logistics);
         tvNumber.setText(number);
-        tvCompany.setText(companyName);
+        tvCompany.setText(getString(R.string.shunfeng));
         Glide.with(getApplicationContext())
                 .load(Constant.IMG_HOST + imgUrl)
                 .placeholder(R.mipmap.place_holder_goods)
@@ -94,8 +91,7 @@ public class LogisticsActivity extends BaseActivity {
                 .into(imgGoods);
         OkHttpUtils.get()
                 .url(Constant.LOGISTICS_TRACK)
-                .addParams("ems_no", number)
-                .addParams("ems_com", company)
+                .addParams("order_sn", orderId)
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -107,7 +103,7 @@ public class LogisticsActivity extends BaseActivity {
                     public void onResponse(String response, int id) {
                         imgLoadError.setVisibility(View.GONE);
                         LogisticsBean entity = GsonUtils.jsonToBean(response, LogisticsBean.class);
-                        if (entity.getData() != null && entity.getData().size() > 0) {
+                        if (entity.getCode() == 10000 && entity.getData() != null && entity.getData().size() > 0) {
                             dataList.addAll(entity.getData());
                             initView();
                         }

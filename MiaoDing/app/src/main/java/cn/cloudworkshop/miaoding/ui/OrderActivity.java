@@ -46,8 +46,6 @@ public class OrderActivity extends BaseActivity implements OrderFragment.OnState
     private List<String> titleList;
     private List<Fragment> fragmentList;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

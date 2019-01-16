@@ -7,9 +7,9 @@ package cn.cloudworkshop.miaoding.constant;
  */
 
 public class Constant {
-    public static final String HOST = "https://www.cloudworkshop.cn";
-        public static final String NEW_HOST = "http://192.168.1.120/index.php";
-//    public static final String NEW_HOST = "http://api.cloudworkshop.cn";
+    public static final String HOST = "http://www.cloudworkshop.cn";
+    //    public static final String NEW_HOST = "http://192.168.1.120/index.php";
+    public static final String NEW_HOST = "http://api.cloudworkshop.cn";
     public static final String WEB_HOST = "https://h5.morder.cn";
 
     //oss图片
@@ -46,7 +46,7 @@ public class Constant {
     //退出登录
     public static final String LOGOUT = NEW_HOST + "/md/logout";
     //收藏
-    public static final String COLLECTION = HOST_INDEX + "my_collect";
+    public static final String COLLECTION = NEW_HOST + "/user/collects/my_collect";
     //穿衣测试
     public static final String DRESSING_TEST = HOST_INDEX + "add_user_data";
     //意见反馈
@@ -64,7 +64,7 @@ public class Constant {
     //个性绣花
     public static final String EMBROIDERY_CUSTOMIZE = HOST_INDEX + "new_goods_gxh";
     //设计师入驻
-    public static final String JOIN_US = HOST_INDEX + "get_img";
+    public static final String JOIN_US = NEW_HOST + "/user/index/get_img";
     //申请入驻
     public static final String APPLY_JOIN = NEW_HOST + "/user/center/apply_in";
     //用户信息
@@ -86,19 +86,19 @@ public class Constant {
     //我的订单
     public static final String GOODS_ORDER = NEW_HOST + "/order/list";
     //订单详情
-    public static final String ORDER_DETAIL = HOST_INDEX + "new_order_detail_v5_2";
+    public static final String ORDER_DETAIL = NEW_HOST + "/order/detail";
     //取消订单
-    public static final String CANCEL_ORDER = HOST_INDEX + "cancel_order";
+    public static final String CANCEL_ORDER = NEW_HOST + "/order/cancel";
     //删除订单
-    public static final String DELETE_ORDER = HOST_INDEX + "delete_order";
+    public static final String DELETE_ORDER = NEW_HOST + "/order/delete";
     //确认收货
-    public static final String CONFIRM_RECEIVE = HOST_INDEX + "confirm_order";
+    public static final String CONFIRM_RECEIVE = NEW_HOST + "/order/confirm";
     //添加收藏
     public static final String ADD_COLLECTION = NEW_HOST + "/user/collects/add_user_collect";
     //购物车跳转定制详情
     public static final String CART_TO_CUSTOM = HOST_INDEX + "dz_car_data";
     //预约量体
-    public static final String APPOINTMENT_ORDER = HOST_INDEX + "add_order_list";
+    public static final String APPLY_MEASURE = NEW_HOST + "/user/volume/prepare_volume";
     //常见问题
     public static final String QUESTION_CLASSIFY = NEW_HOST + "/user_center/help_classify";
     public static final String QUESTION_LIST = NEW_HOST + "/user_center/help_list";
@@ -106,17 +106,17 @@ public class Constant {
     //系统配置
     public static final String APP_INDEX = HOST + "/index.php/index/sys/index";
     //支付宝付款
-    public static final String ALI_PAY = HOST_INDEX + "mk_pay_order_v4";
+    public static final String ALI_PAY = NEW_HOST + "/alipay/order_pay_info";
     //物流信息
-    public static final String LOGISTICS_TRACK = HOST_INDEX + "kdcx";
+    public static final String LOGISTICS_TRACK = NEW_HOST + "/order/sf_express";
     //微信付款
-    public static final String WE_CHAT_PAY = HOST + "/index.php/index/wxpay/mk_pay_order_v4";
+    public static final String WE_CHAT_PAY = NEW_HOST + "/wxpay/order_pay_info";
     //优惠券
     public static final String MY_COUPON = NEW_HOST + "/ticket/list";
     //兑换优惠券
     public static final String EXCHANGE_COUPON = NEW_HOST + "/ticket/add";
     //选择优惠券
-    public static final String SELECT_COUPON = NEW_HOST + "/ticket/goods_assoc";
+    public static final String SELECT_COUPON = NEW_HOST + "/ticket/cart_assoc";
     //检查登录
     public static final String CHECK_LOGIN = NEW_HOST + "/token/is_valid";
     //消息中心
@@ -130,9 +130,9 @@ public class Constant {
     //预约状态
     public static final String APPOINTMENT_STATUS = HOST_INDEX + "get_yuyue_status";
     //引导图
-    public static final String GUIDE_IMG = HOST_INDEX + "get_guide_img";
-    //订单评价
-    public static final String GOODS_RECOMMEND = HOST_INDEX + "goods_recommend";
+    public static final String GUIDE_IMG = NEW_HOST + "/user/extra/get_guide_img";
+    //购物车商品推荐
+    public static final String GOODS_RECOMMEND = NEW_HOST + "/shopping_cart/recommend_goods";
     //会员等级
     public static final String MEMBER_GRADE = NEW_HOST + "/user/user/user_privilege";
     //会员规则
@@ -140,9 +140,9 @@ public class Constant {
     //会员成长
     public static final String MEMBER_GROWTH = NEW_HOST + "/user/user/user_credit_record";
     //升级礼包
-    public static final String UPGRADE_GIFT = HOST + "/index.php/index/user/user_upgrade_gift";
+    public static final String UPGRADE_GIFT = NEW_HOST + "/user/user/user_upgrade_gift";
     //生日礼包
-    public static final String BIRTHDAY_GIFT = HOST + "/index.php/index/user/get_birthday_gift";
+    public static final String BIRTHDAY_GIFT = NEW_HOST + "/user/user/get_birthday_gift";
     //拍照上传
     public static final String TAKE_PHOTO = HOST + "/index.php/web/cc/cameraAndroidUpload_new";
     //设计师列表
@@ -182,15 +182,19 @@ public class Constant {
     //三方登录
     public static final String QUICK_LOGIN = HOST + "/index.php/index/login/partLogin";
     //再次购买
-    public static final String BUY_AGAIN = HOST_INDEX + "cloumorder";
+    public static final String BUY_AGAIN = NEW_HOST + "/order/buy_again";
     //量体数据
     public static final String MEASURE_DATA = NEW_HOST + "/volume/list";
     //设置默认量体数据
-    public static final String DEFAULT_MEASURE_DATA = HOST_INDEX + "is_lt";
+    public static final String DEFAULT_MEASURE_DATA = NEW_HOST + "/user/volume/is_lt";
     //量体数据详情
     public static final String MEASURE_DETAIL = NEW_HOST + "/volume/detail";
     //客服电话
     public static final String SERVICE_PHONE = NEW_HOST + "/user/sysset/get_tel";
+    //确认支付
+    public static final String CONFIRM_PAY = NEW_HOST + "/order/order_confirm";
+    //确认支付
+    public static final String GIFT_CARD_PAY = NEW_HOST + "/alipay/gift_card_buy";
 
     //WebView
     //咨讯详情

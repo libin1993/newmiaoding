@@ -12,14 +12,14 @@ public class CollectionBean {
 
 
     /**
-     * code : 1
-     * data : [{"id":15,"uid":264,"type":1,"cid":15,"c_time":1500449104,"status":1,"img":"/uploads/img/2017060112393454999899.jpg","link":"","title":"知道你会选表，但是会搭配吗？","sub_title":"","tags_name":"首页"},{"id":24,"uid":264,"type":1,"cid":24,"c_time":1499923283,"status":1,"img":"/uploads/img/2017071313194751489754.jpg","link":"","title":"大叔，修炼多年的皇冠","sub_title":"这个杀手不太冷","tags_name":"时尚"},{"id":14,"uid":264,"type":1,"cid":14,"c_time":1499910083,"status":1,"img":"/uploads/img/2017053120083753975199.png","link":"","title":"这样简单，地球男人都想和你撞衫！","sub_title":"","tags_name":"首页"},{"id":16,"uid":264,"type":1,"cid":16,"c_time":1498541849,"status":1,"img":"/uploads/img/2017060116300157995748.jpg","link":"","title":"这个特工很时尚","sub_title":"","tags_name":"首页"},{"id":13,"uid":264,"type":1,"cid":13,"c_time":1495903483,"status":1,"img":"/uploads/img/2017051614155598102505.jpg","link":"","title":"就是这么帅","sub_title":"","tags_name":"首页"}]
+     * code : 10000
      * msg : 成功
+     * data : {"collections":[{"id":3,"type":1,"rid":3,"tags_name":"首页","img_info":"1.610091","img":"public/20181229/17a97cbbff1bac2cf15214fab7bbba0d6203def7.png","title":"#新品上市","sub_title":"1/4新定价系列，仅售奢侈品同款产品1/4价格","link":""},{"id":1,"type":1,"rid":1,"tags_name":"首页","img_info":"1.610091","img":"public/20181229/3556da9db6fe77e8a4e539af92eeccdd26868ea7.png","title":"#新品上市3","sub_title":"1/4新定价系列，仅售奢侈品同款产品1/4价格","link":"17,1"}],"page":{"totalnum":2,"everypage":10,"totalpage":1,"page":1}}
      */
 
     private int code;
     private String msg;
-    private List<DataBean> data;
+    private DataBean data;
 
     public int getCode() {
         return code;
@@ -37,199 +37,225 @@ public class CollectionBean {
         this.msg = msg;
     }
 
-    public List<DataBean> getData() {
+    public DataBean getData() {
         return data;
     }
 
-    public void setData(List<DataBean> data) {
+    public void setData(DataBean data) {
         this.data = data;
     }
 
     public static class DataBean {
         /**
-         * id : 15
-         * uid : 264
-         * type : 1
-         * cid : 15
-         * c_time : 1500449104
-         * status : 1
-         * img : /uploads/img/2017060112393454999899.jpg
-         * link :
-         * title : 知道你会选表，但是会搭配吗？
-         * sub_title :
-         * tags_name : 首页
+         * collections : [{"id":3,"type":1,"rid":3,"tags_name":"首页","img_info":"1.610091","img":"public/20181229/17a97cbbff1bac2cf15214fab7bbba0d6203def7.png","title":"#新品上市","sub_title":"1/4新定价系列，仅售奢侈品同款产品1/4价格","link":""},{"id":1,"type":1,"rid":1,"tags_name":"首页","img_info":"1.610091","img":"public/20181229/3556da9db6fe77e8a4e539af92eeccdd26868ea7.png","title":"#新品上市3","sub_title":"1/4新定价系列，仅售奢侈品同款产品1/4价格","link":"17,1"}]
+         * page : {"totalnum":2,"everypage":10,"totalpage":1,"page":1}
          */
 
-        private int id;
-        private int uid;
-        private int type;
-        private int cid;
-        private String img;
-        private String link;
-        private String title;
-        private String sub_title;
-        private String tags_name;
-        private String name;
-        private String sub_name;
-        private String thumb;
-        private int goods_type;
-        private String price2;
-        private String factory_name;
-        private String factory_img;
-        private String address;
-        private int lovenum;
-        private String img_info;
+        private PageBean page;
+        private List<CollectionsBean> collections;
 
-        public String getImg_info() {
-            return img_info;
+        public PageBean getPage() {
+            return page;
         }
 
-        public void setImg_info(String img_info) {
-            this.img_info = img_info;
+        public void setPage(PageBean page) {
+            this.page = page;
         }
 
-        public String getFactory_name() {
-            return factory_name;
+        public List<CollectionsBean> getCollections() {
+            return collections;
         }
 
-        public void setFactory_name(String factory_name) {
-            this.factory_name = factory_name;
+        public void setCollections(List<CollectionsBean> collections) {
+            this.collections = collections;
         }
 
-        public String getFactory_img() {
-            return factory_img;
+        public static class PageBean {
+            /**
+             * totalnum : 2
+             * everypage : 10
+             * totalpage : 1
+             * page : 1
+             */
+
+            private int totalnum;
+            private int everypage;
+            private int totalpage;
+            private int page;
+
+            public int getTotalnum() {
+                return totalnum;
+            }
+
+            public void setTotalnum(int totalnum) {
+                this.totalnum = totalnum;
+            }
+
+            public int getEverypage() {
+                return everypage;
+            }
+
+            public void setEverypage(int everypage) {
+                this.everypage = everypage;
+            }
+
+            public int getTotalpage() {
+                return totalpage;
+            }
+
+            public void setTotalpage(int totalpage) {
+                this.totalpage = totalpage;
+            }
+
+            public int getPage() {
+                return page;
+            }
+
+            public void setPage(int page) {
+                this.page = page;
+            }
         }
 
-        public void setFactory_img(String factory_img) {
-            this.factory_img = factory_img;
-        }
+        public static class CollectionsBean {
+            /**
+             * id : 3
+             * type : 1
+             * rid : 3
+             * tags_name : 首页
+             * img_info : 1.610091
+             * img : public/20181229/17a97cbbff1bac2cf15214fab7bbba0d6203def7.png
+             * title : #新品上市
+             * sub_title : 1/4新定价系列，仅售奢侈品同款产品1/4价格
+             * link :
+             */
 
-        public String getAddress() {
-            return address;
-        }
+            private int id;
+            private int type;
+            private int rid;
+            private String img;
+            private String title;
+            private String sub_title;
+            private String name;
+            private String sub_name;
+            private String price;
+            private int goods_type;
+            private String factory_name;
+            private String address;
+            private int lovenum;
+            private String img_info;
 
-        public void setAddress(String address) {
-            this.address = address;
-        }
+            public String getImg_info() {
+                return img_info;
+            }
 
-        public int getLovenum() {
-            return lovenum;
-        }
+            public void setImg_info(String img_info) {
+                this.img_info = img_info;
+            }
 
-        public void setLovenum(int lovenum) {
-            this.lovenum = lovenum;
-        }
+            public String getName() {
+                return name;
+            }
 
-        public String getPrice2() {
-            return price2;
-        }
+            public void setName(String name) {
+                this.name = name;
+            }
 
-        public void setPrice2(String price2) {
-            this.price2 = price2;
-        }
+            public String getSub_name() {
+                return sub_name;
+            }
 
-        public String getName() {
-            return name;
-        }
+            public void setSub_name(String sub_name) {
+                this.sub_name = sub_name;
+            }
 
-        public void setName(String name) {
-            this.name = name;
-        }
+            public String getPrice() {
+                return price;
+            }
 
-        public String getSub_name() {
-            return sub_name;
-        }
+            public void setPrice(String price) {
+                this.price = price;
+            }
 
-        public void setSub_name(String sub_name) {
-            this.sub_name = sub_name;
-        }
+            public int getGoods_type() {
+                return goods_type;
+            }
 
-        public String getThumb() {
-            return thumb;
-        }
+            public void setGoods_type(int goods_type) {
+                this.goods_type = goods_type;
+            }
 
-        public void setThumb(String thumb) {
-            this.thumb = thumb;
-        }
+            public String getFactory_name() {
+                return factory_name;
+            }
 
-        public int getGoods_type() {
-            return goods_type;
-        }
+            public void setFactory_name(String factory_name) {
+                this.factory_name = factory_name;
+            }
 
-        public void setGoods_type(int goods_type) {
-            this.goods_type = goods_type;
-        }
+            public String getAddress() {
+                return address;
+            }
 
-        public int getId() {
-            return id;
-        }
+            public void setAddress(String address) {
+                this.address = address;
+            }
 
-        public void setId(int id) {
-            this.id = id;
-        }
+            public int getLovenum() {
+                return lovenum;
+            }
 
-        public int getUid() {
-            return uid;
-        }
+            public void setLovenum(int lovenum) {
+                this.lovenum = lovenum;
+            }
 
-        public void setUid(int uid) {
-            this.uid = uid;
-        }
+            public int getId() {
+                return id;
+            }
 
-        public int getType() {
-            return type;
-        }
+            public void setId(int id) {
+                this.id = id;
+            }
 
-        public void setType(int type) {
-            this.type = type;
-        }
+            public int getType() {
+                return type;
+            }
 
-        public int getCid() {
-            return cid;
-        }
+            public void setType(int type) {
+                this.type = type;
+            }
 
-        public void setCid(int cid) {
-            this.cid = cid;
-        }
+            public int getRid() {
+                return rid;
+            }
 
-        public String getImg() {
-            return img;
-        }
+            public void setRid(int rid) {
+                this.rid = rid;
+            }
 
-        public void setImg(String img) {
-            this.img = img;
-        }
 
-        public String getLink() {
-            return link;
-        }
+            public String getImg() {
+                return img;
+            }
 
-        public void setLink(String link) {
-            this.link = link;
-        }
+            public void setImg(String img) {
+                this.img = img;
+            }
 
-        public String getTitle() {
-            return title;
-        }
+            public String getTitle() {
+                return title;
+            }
 
-        public void setTitle(String title) {
-            this.title = title;
-        }
+            public void setTitle(String title) {
+                this.title = title;
+            }
 
-        public String getSub_title() {
-            return sub_title;
-        }
+            public String getSub_title() {
+                return sub_title;
+            }
 
-        public void setSub_title(String sub_title) {
-            this.sub_title = sub_title;
-        }
-
-        public String getTags_name() {
-            return tags_name;
-        }
-
-        public void setTags_name(String tags_name) {
-            this.tags_name = tags_name;
+            public void setSub_title(String sub_title) {
+                this.sub_title = sub_title;
+            }
         }
     }
 }

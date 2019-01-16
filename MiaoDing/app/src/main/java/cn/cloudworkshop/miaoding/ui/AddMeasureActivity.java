@@ -33,8 +33,10 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.cloudworkshop.miaoding.R;
 import cn.cloudworkshop.miaoding.base.BaseActivity;
+import cn.cloudworkshop.miaoding.bean.ResponseBean;
 import cn.cloudworkshop.miaoding.constant.Constant;
 import cn.cloudworkshop.miaoding.utils.DisplayUtils;
+import cn.cloudworkshop.miaoding.utils.GsonUtils;
 import cn.cloudworkshop.miaoding.utils.LogUtils;
 import cn.cloudworkshop.miaoding.utils.PermissionUtils;
 import cn.cloudworkshop.miaoding.utils.SharedPreferencesUtils;
@@ -181,19 +183,12 @@ public class AddMeasureActivity extends BaseActivity implements EasyPermissions.
 
                     @Override
                     public void onResponse(String response, int id) {
-                        try {
-                            JSONObject jsonObject = new JSONObject(response);
-                            int code = jsonObject.getInt("code");
-                            String msg = jsonObject.getString("msg");
-                            ToastUtils.showToast(AddMeasureActivity.this, msg);
-                            if (code == 1) {
-                                EventBus.getDefault().post("add_success");
-                                finish();
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                        ResponseBean responseBean = GsonUtils.jsonToBean(response, ResponseBean.class);
+                        ToastUtils.showToast(AddMeasureActivity.this, responseBean.getMsg());
+                        if (responseBean.getCode() == 10000) {
+                            EventBus.getDefault().post("add_success");
+                            finish();
                         }
-
                     }
                 });
     }

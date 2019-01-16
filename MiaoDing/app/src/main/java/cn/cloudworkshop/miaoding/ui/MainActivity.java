@@ -17,7 +17,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -26,6 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
+import android.widget.RadioGroup;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -36,7 +36,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,11 +43,9 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import cn.cloudworkshop.miaoding.R;
 import cn.cloudworkshop.miaoding.application.MyApplication;
 import cn.cloudworkshop.miaoding.base.BaseActivity;
-import cn.cloudworkshop.miaoding.bean.AppIconBean;
 import cn.cloudworkshop.miaoding.bean.AppIndexBean;
 import cn.cloudworkshop.miaoding.bean.GuideBean;
 import cn.cloudworkshop.miaoding.constant.Constant;
@@ -57,20 +54,12 @@ import cn.cloudworkshop.miaoding.fragment.CustomizedGoodsFragment;
 import cn.cloudworkshop.miaoding.fragment.HomepageFragment;
 import cn.cloudworkshop.miaoding.fragment.MyCenterFragment;
 import cn.cloudworkshop.miaoding.service.DownloadService;
-import cn.cloudworkshop.miaoding.utils.FragmentTabUtils;
 import cn.cloudworkshop.miaoding.utils.GsonUtils;
-import cn.cloudworkshop.miaoding.utils.LogUtils;
+import cn.cloudworkshop.miaoding.utils.FragmentTabUtils;
 import cn.cloudworkshop.miaoding.utils.PermissionUtils;
 import cn.cloudworkshop.miaoding.utils.SharedPreferencesUtils;
 import cn.cloudworkshop.miaoding.utils.ToastUtils;
 import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 import pub.devrel.easypermissions.EasyPermissions;
 
 /**
@@ -79,10 +68,11 @@ import pub.devrel.easypermissions.EasyPermissions;
  * Describe：首页
  */
 public class MainActivity extends BaseActivity implements EasyPermissions.PermissionCallbacks {
-    @BindView(R.id.tab_main)
-    TabLayout tabMain;
+
     @BindView(R.id.img_load_error)
     ImageView imgLoadingError;
+    @BindView(R.id.rgs_main_tab)
+    RadioGroup rgsMainTab;
 
     //fragment
     private List<Fragment> fragmentList = new ArrayList<>();
@@ -95,7 +85,6 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
     private boolean isCheckUpdate = true;
     //读写权限
     String[] permissionStr = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
-    private AppIconBean iconBean;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,7 +93,7 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
         ButterKnife.bind(this);
 
         storagePermission();
-        initIcon();
+        initView();
         checkUpdate();
         isLogin();
         submitClientId();
@@ -120,29 +109,29 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
         }
     }
 
-    /**
-     * 加载底部栏icon
-     */
-    private void initIcon() {
-        OkHttpUtils.get()
-                .url(Constant.APP_ICON)
-                .build()
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        imgLoadingError.setVisibility(View.VISIBLE);
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-                        imgLoadingError.setVisibility(View.GONE);
-                        iconBean = GsonUtils.jsonToBean(response, AppIconBean.class);
-                        if (iconBean.getTab() != null && iconBean.getTab().size() > 0) {
-                            initView();
-                        }
-                    }
-                });
-    }
+//    /**
+//     * 加载底部栏icon
+//     */
+//    private void initIcon() {
+//        OkHttpUtils.get()
+//                .url(Constant.APP_ICON)
+//                .build()
+//                .execute(new StringCallback() {
+//                    @Override
+//                    public void onError(Call call, Exception e, int id) {
+//                        imgLoadingError.setVisibility(View.VISIBLE);
+//                    }
+//
+//                    @Override
+//                    public void onResponse(String response, int id) {
+//                        imgLoadingError.setVisibility(View.GONE);
+//                        iconBean = GsonUtils.jsonToBean(response, AppIconBean.class);
+//                        if (iconBean.getTab() != null && iconBean.getTab().size() > 0) {
+//                            initView();
+//                        }
+//                    }
+//                });
+//    }
 
 
     /**
@@ -337,9 +326,10 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
         fragmentList.add(AccentFragment.newInstance());
         fragmentList.add(MyCenterFragment.newInstance());
         fragmentUtils = new FragmentTabUtils(this, getSupportFragmentManager(), fragmentList,
-                R.id.frame_container, tabMain, iconBean.getTab());
+                R.id.frame_container, rgsMainTab);
 
     }
+
 
     /**
      * 首次进入，推荐注册
@@ -381,7 +371,7 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
                                 ImageView imgRegister = (ImageView) popupView.findViewById(R.id.img_register);
 
                                 Glide.with(MainActivity.this)
-                                        .load(Constant.IMG_HOST + guideBean.getData().getImg_urls().get(0))
+                                        .load(Constant.IMG_HOST + guideBean.getData().getImg_urls().get(0).getImg())
                                         .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                                         .into(imgRegister);
                                 viewRegister.setOnClickListener(new View.OnClickListener() {
@@ -468,10 +458,6 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
         super.onDestroy();
     }
 
-    @OnClick(R.id.img_load_error)
-    public void onViewClicked() {
-        initIcon();
-    }
 }
 
 

@@ -26,6 +26,7 @@ import com.github.jdsjlzx.recyclerview.LRecyclerViewAdapter;
 import com.github.jdsjlzx.util.RecyclerViewStateUtils;
 import com.github.jdsjlzx.view.LoadingFooter;
 import com.umeng.analytics.MobclickAgent;
+import com.wang.avi.AVLoadingIndicatorView;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -47,7 +48,6 @@ import cn.cloudworkshop.miaoding.application.MyApplication;
 import cn.cloudworkshop.miaoding.base.BaseFragment;
 import cn.cloudworkshop.miaoding.bean.HomepageNewsBean;
 import cn.cloudworkshop.miaoding.constant.Constant;
-import cn.cloudworkshop.miaoding.ui.CustomizedGoodsActivity;
 import cn.cloudworkshop.miaoding.ui.DesignerDetailActivity;
 import cn.cloudworkshop.miaoding.ui.DressingResultActivity;
 import cn.cloudworkshop.miaoding.ui.HomepageInfoActivity;
@@ -75,6 +75,8 @@ public class HomepageFragment extends BaseFragment {
     LRecyclerView rvNews;
     @BindView(R.id.img_load_error)
     ImageView imgLoadError;
+    @BindView(R.id.view_loading)
+    AVLoadingIndicatorView viewLoading;
     private Unbinder unbinder;
     private LRecyclerViewAdapter mLRecyclerViewAdapter = null;
     private List<HomepageNewsBean.DataBean.ArticleBean> dataList = new ArrayList<>();
@@ -92,6 +94,7 @@ public class HomepageFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_homepage_news, container, false);
         unbinder = ButterKnife.bind(this, view);
+        viewLoading.smoothToShow();
         initData();
         return view;
     }
@@ -110,6 +113,7 @@ public class HomepageFragment extends BaseFragment {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         imgLoadError.setVisibility(View.VISIBLE);
+                        viewLoading.smoothToHide();
                     }
 
                     @Override
@@ -131,6 +135,7 @@ public class HomepageFragment extends BaseFragment {
                                 rvNews.refreshComplete(0);
                                 mLRecyclerViewAdapter.notifyDataSetChanged();
                             } else {
+                                viewLoading.smoothToHide();
                                 initView();
                             }
                             isLoadMore = false;
@@ -380,7 +385,7 @@ public class HomepageFragment extends BaseFragment {
                 .url(Constant.ADD_LOVE)
                 .addParams("token", SharedPreferencesUtils.getStr(getActivity(), "token"))
                 .addParams("rid", String.valueOf(dataBean.getId()))
-                .addParams("type","1")
+                .addParams("type", "1")
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -469,7 +474,7 @@ public class HomepageFragment extends BaseFragment {
             banner.setOnItemClickListener(new OnItemClickListener() {
                 @Override
                 public void onItemClick(int position) {
-                    homepageLog("banner");
+//                    homepageLog("banner");
                     //banner点击事件统计
                     MobclickAgent.onEvent(getActivity(), "banner");
                     switch (homepageBean.getData().getBanner().get(position).getType()) {
@@ -605,24 +610,24 @@ public class HomepageFragment extends BaseFragment {
      * 首页跟踪
      */
     private void homepageLog(String module_name) {
-        long time = DateUtils.getCurrentTime() - MyApplication.homeEnterTime;
-        OkHttpUtils.post()
-                .url(Constant.HOMEPAGE_LOG)
-                .addParams("token", SharedPreferencesUtils.getStr(getActivity(), "token"))
-                .addParams("time", String.valueOf(time))
-                .addParams("p_module_name", "首页")
-                .addParams("module_name", module_name)
-                .build()
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-                    }
-                });
+//        long time = DateUtils.getCurrentTime() - MyApplication.homeEnterTime;
+//        OkHttpUtils.post()
+//                .url(Constant.HOMEPAGE_LOG)
+//                .addParams("token", SharedPreferencesUtils.getStr(getActivity(), "token"))
+//                .addParams("time", String.valueOf(time))
+//                .addParams("p_module_name", "首页")
+//                .addParams("module_name", module_name)
+//                .build()
+//                .execute(new StringCallback() {
+//                    @Override
+//                    public void onError(Call call, Exception e, int id) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onResponse(String response, int id) {
+//                    }
+//                });
 
     }
 

@@ -69,8 +69,10 @@ public class UsableCouponActivity extends BaseActivity {
     @BindView(R.id.img_header_share)
     ImageView imgHeaderShare;
 
-    private List<CouponBean.TicketsBean> couponList;
+    private List<CouponBean.TicketsBean> couponList = new ArrayList<>();
+    ;
     private String couponRule;
+    private CommonAdapter<CouponBean.TicketsBean> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +83,7 @@ public class UsableCouponActivity extends BaseActivity {
         imgHeaderShare.setVisibility(View.VISIBLE);
         imgHeaderShare.setImageResource(R.mipmap.icon_member_rule);
         initData();
+        initView();
     }
 
     /**
@@ -125,13 +128,11 @@ public class UsableCouponActivity extends BaseActivity {
 
                     @Override
                     public void onResponse(String response, int id) {
-
-                        couponList = new ArrayList<>();
                         CouponBean couponBean = GsonUtils.jsonToBean(response, CouponBean.class);
                         if (couponBean.getTickets() != null && couponBean.getTickets().size() > 0) {
                             imgNullCoupon.setVisibility(View.GONE);
                             couponList.addAll(couponBean.getTickets());
-                            initView();
+                            adapter.notifyDataSetChanged();
                         } else {
                             imgNullCoupon.setVisibility(View.VISIBLE);
                         }
@@ -170,7 +171,7 @@ public class UsableCouponActivity extends BaseActivity {
         MyLinearLayoutManager linearLayoutManager = new MyLinearLayoutManager(this);
         linearLayoutManager.setScrollEnabled(false);
         rvCoupon.setLayoutManager(linearLayoutManager);
-        CommonAdapter<CouponBean.TicketsBean> adapter = new CommonAdapter<CouponBean.TicketsBean>
+        adapter = new CommonAdapter<CouponBean.TicketsBean>
                 (this, R.layout.listitem_coupon, couponList) {
             @Override
             protected void convert(ViewHolder holder, CouponBean.TicketsBean dataBean, int position) {
@@ -180,9 +181,9 @@ public class UsableCouponActivity extends BaseActivity {
                 tvMoney.setTypeface(DisplayUtils.setTextType(UsableCouponActivity.this));
                 tvMoney.setText("¥" + (int) Float.parseFloat(dataBean.getMoney()));
                 holder.setText(R.id.tv_coupon_range, dataBean.getTitle());
-                holder.setText(R.id.tv_coupon_discount, dataBean.getSub_title());
+                holder.setText(R.id.tv_coupon_discount, dataBean.getRe_marks());
                 StringBuilder sb = new StringBuilder();
-                sb.append(getString(R.string.validity_term)+"：")
+                sb.append(getString(R.string.validity_term) + "：")
                         .append(DateUtils.formatTime("yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd", dataBean.getS_time()))
                         .append(getString(R.string.to))
                         .append(DateUtils.formatTime("yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd", dataBean.getE_time()));
@@ -211,7 +212,7 @@ public class UsableCouponActivity extends BaseActivity {
     }
 
     @OnClick({R.id.img_header_back, R.id.tv_coupon_exchange, R.id.tv_more_coupon, R.id.img_load_error
-    ,R.id.img_header_share})
+            , R.id.img_header_share})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.img_header_back:
