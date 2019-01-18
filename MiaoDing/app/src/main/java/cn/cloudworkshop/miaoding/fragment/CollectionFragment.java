@@ -27,6 +27,7 @@ import com.github.jdsjlzx.recyclerview.LRecyclerView;
 import com.github.jdsjlzx.recyclerview.LRecyclerViewAdapter;
 import com.github.jdsjlzx.util.RecyclerViewStateUtils;
 import com.github.jdsjlzx.view.LoadingFooter;
+import com.wang.avi.AVLoadingIndicatorView;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -46,7 +47,6 @@ import cn.cloudworkshop.miaoding.R;
 import cn.cloudworkshop.miaoding.base.BaseFragment;
 import cn.cloudworkshop.miaoding.bean.CollectionBean;
 import cn.cloudworkshop.miaoding.constant.Constant;
-import cn.cloudworkshop.miaoding.ui.CustomizedGoodsActivity;
 import cn.cloudworkshop.miaoding.ui.HomepageInfoActivity;
 import cn.cloudworkshop.miaoding.ui.MainActivity;
 import cn.cloudworkshop.miaoding.ui.NewCustomizedGoodsActivity;
@@ -54,7 +54,6 @@ import cn.cloudworkshop.miaoding.ui.StoreInfoActivity;
 import cn.cloudworkshop.miaoding.ui.WorksDetailActivity;
 import cn.cloudworkshop.miaoding.utils.DisplayUtils;
 import cn.cloudworkshop.miaoding.utils.GsonUtils;
-import cn.cloudworkshop.miaoding.utils.LogUtils;
 import cn.cloudworkshop.miaoding.utils.SharedPreferencesUtils;
 import cn.cloudworkshop.miaoding.utils.SpaceItemDecoration;
 import cn.cloudworkshop.miaoding.utils.ToastUtils;
@@ -76,6 +75,8 @@ public class CollectionFragment extends BaseFragment {
     LinearLayout llNullCollect;
     @BindView(R.id.img_load_error)
     ImageView imgLoadingError;
+    @BindView(R.id.view_loading)
+    AVLoadingIndicatorView viewLoading;
     private Unbinder unbinder;
 
     private List<CollectionBean.DataBean.CollectionsBean> itemList = new ArrayList<>();
@@ -105,6 +106,7 @@ public class CollectionFragment extends BaseFragment {
     private void getData() {
         Bundle bundle = getArguments();
         type = bundle.getInt("type");
+        viewLoading.smoothToShow();
     }
 
     private void initData() {
@@ -118,11 +120,17 @@ public class CollectionFragment extends BaseFragment {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         imgLoadingError.setVisibility(View.VISIBLE);
+                        if (viewLoading != null && viewLoading.isShown()) {
+                            viewLoading.smoothToHide();
+                        }
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
                         imgLoadingError.setVisibility(View.GONE);
+                        if (viewLoading != null && viewLoading.isShown()) {
+                            viewLoading.smoothToHide();
+                        }
                         CollectionBean collectionBean = GsonUtils.jsonToBean(response, CollectionBean.class);
                         if (collectionBean.getData().getCollections() != null && collectionBean.getData().getCollections().size() > 0) {
                             if (isRefresh) {

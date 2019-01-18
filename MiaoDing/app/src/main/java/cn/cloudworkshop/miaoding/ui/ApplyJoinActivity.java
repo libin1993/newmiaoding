@@ -244,7 +244,6 @@ public class ApplyJoinActivity extends BaseActivity implements EasyPermissions.P
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                LogUtils.log(e.getMessage());
             }
 
             @Override

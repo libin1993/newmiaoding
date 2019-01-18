@@ -46,14 +46,17 @@ import butterknife.Unbinder;
 import cn.cloudworkshop.miaoding.R;
 import cn.cloudworkshop.miaoding.adapter.SectionedRecyclerViewAdapter;
 import cn.cloudworkshop.miaoding.base.BaseFragment;
+import cn.cloudworkshop.miaoding.bean.ConfirmOrderBean;
 import cn.cloudworkshop.miaoding.bean.OrderInfoBean;
 import cn.cloudworkshop.miaoding.bean.ResponseBean;
 import cn.cloudworkshop.miaoding.constant.Constant;
 import cn.cloudworkshop.miaoding.ui.AfterSalesActivity;
 import cn.cloudworkshop.miaoding.ui.ConfirmOrderActivity;
 import cn.cloudworkshop.miaoding.ui.LogisticsActivity;
+import cn.cloudworkshop.miaoding.ui.MainActivity;
 import cn.cloudworkshop.miaoding.ui.OrderDetailActivity;
 import cn.cloudworkshop.miaoding.ui.PayOrderActivity;
+import cn.cloudworkshop.miaoding.utils.BigDecimalUtils;
 import cn.cloudworkshop.miaoding.utils.DisplayUtils;
 import cn.cloudworkshop.miaoding.utils.GsonUtils;
 import cn.cloudworkshop.miaoding.utils.LogUtils;
@@ -169,7 +172,8 @@ public class OrderFragment extends BaseFragment {
                 TextView tvAfter = (TextView) holder.getView(R.id.tv_after_sale_footer);
                 TextView tvControl = (TextView) holder.getView(R.id.tv_order_control_footer);
                 TextView tvPay = (TextView) holder.getView(R.id.tv_order_pay_footer);
-                tvMoney.setText("¥" + dataList.get(section).getPayable_amount());
+                tvMoney.setText("¥" + BigDecimalUtils.sub(dataList.get(section).getPayable_amount()
+                        , dataList.get(section).getGiftcard_eq_money()));
 
                 switch (dataList.get(section).getStatus()) {
                     case 1:
@@ -315,15 +319,25 @@ public class OrderFragment extends BaseFragment {
                 tvGoodsName.setText(dataList.get(section).getChildOrders().get(position).getGoods_name());
                 tvGoodsName.setTypeface(DisplayUtils.setTextType(getActivity()));
 
-                if (dataList.get(section).getChildOrders().get(position).getPart() != null) {
-                    String parts = "";
-                    for (OrderInfoBean.DataBean.ChildOrdersBean.PartBean partBean : dataList.get(section)
-                            .getChildOrders().get(position).getPart()) {
-                        parts += partBean.getPart_name() + ":" + partBean.getPart_value() + ";";
-                    }
-                    parts = parts.substring(0, parts.length() - 1);
-                    tvContent.setText(parts);
+                String parts = "";
+                switch (dataList.get(section).getChildOrders().get(position).getCategory_id()) {
+                    case 1:
+                        for (OrderInfoBean.DataBean.ChildOrdersBean.PartBean partBean : dataList.get(section)
+                                .getChildOrders().get(position).getPart()) {
+                            parts += partBean.getPart_name() + ":" + partBean.getPart_value() + ";";
+                        }
+                        parts = parts.substring(0, parts.length() - 1);
+                        break;
+                    case 2:
+                        for (OrderInfoBean.DataBean.ChildOrdersBean.SkuBean skuBean : dataList.get(section)
+                                .getChildOrders().get(position).getSku()) {
+                            parts += skuBean.getType() + ":" + skuBean.getValue() + ";";
+                        }
+                        parts = parts.substring(0, parts.length() - 1);
+                        break;
                 }
+                tvContent.setText(parts);
+
 
                 TextView tvNum = (TextView) holder.getView(R.id.tv_order_count);
                 tvNum.setText(getString(R.string.together) + dataList.get(section).getChildOrders()
@@ -338,7 +352,8 @@ public class OrderFragment extends BaseFragment {
                 tvContent.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (dataList.get(section).getChildOrders().get(position).getPart() != null) {
+                        if (dataList.get(section).getChildOrders().get(position).getCategory_id() == 1
+                                && dataList.get(section).getChildOrders().get(position).getPart() != null) {
                             goodsPart(dataList.get(section).getChildOrders().get(position).getPart());
                         }
 
@@ -407,7 +422,6 @@ public class OrderFragment extends BaseFragment {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-
                     }
                 });
     }
@@ -446,7 +460,6 @@ public class OrderFragment extends BaseFragment {
      * 删除订单
      */
     private void deleteOrder(final String orderId, final int position) {
-        LogUtils.log(position + "");
         AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity(),
                 R.style.Theme_AppCompat_DayNight_Dialog_Alert);
         dialog.setTitle(R.string.delete_order);
@@ -613,36 +626,45 @@ public class OrderFragment extends BaseFragment {
 
                     @Override
                     public void onResponse(String response, int id) {
-                        imgLoadError.setVisibility(View.GONE);
-                        OrderInfoBean orderInfoBean = GsonUtils.jsonToBean(response, OrderInfoBean.class);
-
-                        if (orderInfoBean.getPages() != null) {
-                            pages = orderInfoBean.getPages().getTotalpage();
-                        }
-
-                        if (isRefresh) {
-                            refreshLayout.finishRefresh();
-                            isRefresh = false;
-                            dataList.clear();
-                        } else if (isLoadMore) {
-                            refreshLayout.finishLoadMore();
-                        } else {
-                            dataList.clear();
-                            viewLoading.smoothToHide();
-                        }
-                        if (orderInfoBean.getCode() == 10000 && orderInfoBean.getData().size() > 0) {
-                            dataList.addAll(orderInfoBean.getData());
-                            llNoOrder.setVisibility(View.GONE);
-                        } else {
-                            if (!isLoadMore) {
-                                llNoOrder.setVisibility(View.VISIBLE);
+                        if (getActivity() != null) {
+                            if (imgLoadError != null) {
+                                imgLoadError.setVisibility(View.GONE);
                             }
-                            if (orderInfoBean.getCode() == 10001) {
-                                SharedPreferencesUtils.deleteStr(getActivity(), "token");
+                            if (viewLoading != null && viewLoading.isShown()) {
+                                viewLoading.smoothToHide();
                             }
+
+
+                            OrderInfoBean orderInfoBean = GsonUtils.jsonToBean(response, OrderInfoBean.class);
+
+                            if (orderInfoBean.getPages() != null) {
+                                pages = orderInfoBean.getPages().getTotalpage();
+                            }
+
+                            if (isRefresh) {
+                                refreshLayout.finishRefresh();
+                                isRefresh = false;
+                                dataList.clear();
+                            } else if (isLoadMore) {
+                                refreshLayout.finishLoadMore();
+                            } else {
+                                dataList.clear();
+                            }
+                            if (orderInfoBean.getCode() == 10000 && orderInfoBean.getData().size() > 0) {
+                                dataList.addAll(orderInfoBean.getData());
+                                llNoOrder.setVisibility(View.GONE);
+                            } else {
+                                if (!isLoadMore) {
+                                    llNoOrder.setVisibility(View.VISIBLE);
+                                }
+                                if (orderInfoBean.getCode() == 10001) {
+                                    SharedPreferencesUtils.deleteStr(getActivity(), "token");
+                                }
+                            }
+                            isLoadMore = false;
+                            adapter.notifyDataSetChanged();
                         }
-                        isLoadMore = false;
-                        adapter.notifyDataSetChanged();
+
                     }
                 });
 
@@ -673,8 +695,13 @@ public class OrderFragment extends BaseFragment {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_no_order:
+                Intent intent = new Intent(getActivity(), MainActivity.class);
+                intent.putExtra("page", 1);
+                startActivity(intent);
+                getActivity().finish();
                 break;
             case R.id.img_load_error:
+                initData();
                 break;
         }
     }

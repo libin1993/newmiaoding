@@ -61,6 +61,15 @@ public class PayOrderBean {
         private String discount;
         private String promotions;
         private String real_freight;
+        private String real_amount;
+
+        public String getReal_amount() {
+            return real_amount;
+        }
+
+        public void setReal_amount(String real_amount) {
+            this.real_amount = real_amount;
+        }
 
         public String getOrder_sn() {
             return order_sn;

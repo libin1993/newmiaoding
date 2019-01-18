@@ -26,7 +26,9 @@ public class Constant {
     //定制商品
     public static final String GOODS_LIST = NEW_HOST + "/user/goods/custom_series";
     //腔调作品
-    public static final String DESIGNER_WORKS = HOST_INDEX + "cobbler_goods_list";
+    public static final String ACCENT_WORKS = NEW_HOST + "/user/goods/products";
+    //腔调作品
+    public static final String WORKS_STOCK = NEW_HOST + "/goods/sku";
     //定制商品详情
     public static final String GOODS_DETAILS = NEW_HOST + "/user/goods/goods_one";
     //定制商品配件
@@ -92,7 +94,7 @@ public class Constant {
     //删除订单
     public static final String DELETE_ORDER = NEW_HOST + "/order/delete";
     //确认收货
-    public static final String CONFIRM_RECEIVE = NEW_HOST + "/order/confirm";
+    public static final String CONFIRM_RECEIVE = NEW_HOST + "/order/confirm_delivery";
     //添加收藏
     public static final String ADD_COLLECTION = NEW_HOST + "/user/collects/add_user_collect";
     //购物车跳转定制详情
@@ -103,8 +105,8 @@ public class Constant {
     public static final String QUESTION_CLASSIFY = NEW_HOST + "/user_center/help_classify";
     public static final String QUESTION_LIST = NEW_HOST + "/user_center/help_list";
     public static final String QUESTION_DETAIL = NEW_HOST + "/user_center/help_detail";
-    //系统配置
-    public static final String APP_INDEX = HOST + "/index.php/index/sys/index";
+    //检测更新
+    public static final String CHECK_UPDATE = NEW_HOST + "/version/get_lastest";
     //支付宝付款
     public static final String ALI_PAY = NEW_HOST + "/alipay/order_pay_info";
     //物流信息
@@ -120,15 +122,17 @@ public class Constant {
     //检查登录
     public static final String CHECK_LOGIN = NEW_HOST + "/token/is_valid";
     //消息中心
-    public static final String MESSAGE_TYPE = HOST + "/index.php/index/message/message_type";
+    public static final String MESSAGE_TYPE = NEW_HOST + "/notifications/type";
     //消息详情
-    public static final String MESSAGE_DETAIL = HOST + "/index.php/index/message/message_list";
+    public static final String MESSAGE_DETAIL = NEW_HOST + "/notifications/list";
+    //已读消息
+    public static final String READ_MSG = NEW_HOST + "/notifications/read";
     //售后
     public static final String AFTER_SALE = HOST_INDEX + "add_sh_order";
     //设备Id
     public static final String CLIENT_ID = HOST_INDEX + "add_device";
     //预约状态
-    public static final String APPOINTMENT_STATUS = HOST_INDEX + "get_yuyue_status";
+    public static final String APPOINTMENT_STATUS = NEW_HOST + "/user/volume/get_yuyue_status";
     //引导图
     public static final String GUIDE_IMG = NEW_HOST + "/user/extra/get_guide_img";
     //购物车商品推荐
@@ -144,7 +148,7 @@ public class Constant {
     //生日礼包
     public static final String BIRTHDAY_GIFT = NEW_HOST + "/user/user/get_birthday_gift";
     //拍照上传
-    public static final String TAKE_PHOTO = HOST + "/index.php/web/cc/cameraAndroidUpload_new";
+    public static final String TAKE_PHOTO = NEW_HOST + "/user/volume/save_volumes";
     //设计师列表
     public static final String DESIGNER_LIST = HOST_INDEX + "get_designer_list";
     //设计师详情
@@ -193,8 +197,8 @@ public class Constant {
     public static final String SERVICE_PHONE = NEW_HOST + "/user/sysset/get_tel";
     //确认支付
     public static final String CONFIRM_PAY = NEW_HOST + "/order/order_confirm";
-    //确认支付
-    public static final String GIFT_CARD_PAY = NEW_HOST + "/alipay/gift_card_buy";
+    //礼品卡支付
+    public static final String GIFT_CARD_PAY = NEW_HOST + "/order/gift_card_buy";
 
     //WebView
     //咨讯详情

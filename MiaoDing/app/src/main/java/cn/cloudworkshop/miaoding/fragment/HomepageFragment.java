@@ -121,6 +121,10 @@ public class HomepageFragment extends BaseFragment {
                         if (imgLoadError != null) {
                             imgLoadError.setVisibility(View.GONE);
                         }
+                        if (viewLoading != null && viewLoading.isShown()) {
+                            viewLoading.smoothToHide();
+                        }
+
                         homepageBean = GsonUtils.jsonToBean(response, HomepageNewsBean.class);
                         if (homepageBean.getData() != null && homepageBean.getData().getArticle().size() > 0) {
                             //刷新，初始化数据
@@ -135,7 +139,6 @@ public class HomepageFragment extends BaseFragment {
                                 rvNews.refreshComplete(0);
                                 mLRecyclerViewAdapter.notifyDataSetChanged();
                             } else {
-                                viewLoading.smoothToHide();
                                 initView();
                             }
                             isLoadMore = false;
@@ -249,7 +252,7 @@ public class HomepageFragment extends BaseFragment {
                     @Override
                     public void onClick(View v) {
                         if (!TextUtils.isEmpty(SharedPreferencesUtils.getStr(getActivity(), "token"))) {
-                            addCollection(articleBean, position - 2);
+                            addCollection(articleBean.getId(), position - 2);
                         } else {
                             Intent login = new Intent(getActivity(), LoginActivity.class);
                             login.putExtra("page_name", "收藏");
@@ -263,7 +266,7 @@ public class HomepageFragment extends BaseFragment {
                     @Override
                     public void onClick(View v) {
                         if (!TextUtils.isEmpty(SharedPreferencesUtils.getStr(getActivity(), "token"))) {
-                            addLove(articleBean, position - 2, articleBean.getLike_nums());
+                            addLove(articleBean.getId(), position - 2, articleBean.getLike_nums());
                         } else {
                             Intent login = new Intent(getActivity(), LoginActivity.class);
                             login.putExtra("page_name", "喜爱");
@@ -344,13 +347,13 @@ public class HomepageFragment extends BaseFragment {
     }
 
     /**
-     * @param dataBean 添加收藏
+     *   添加收藏
      */
-    private void addCollection(HomepageNewsBean.DataBean.ArticleBean dataBean, final int position) {
+    private void addCollection(int id, final int position) {
         OkHttpUtils.post()
                 .url(Constant.ADD_COLLECTION)
                 .addParams("token", SharedPreferencesUtils.getStr(getActivity(), "token"))
-                .addParams("rid", String.valueOf(dataBean.getId()))
+                .addParams("rid", String.valueOf(id))
                 .addParams("type", "1")
                 .build()
                 .execute(new StringCallback() {
@@ -380,11 +383,11 @@ public class HomepageFragment extends BaseFragment {
     /**
      * 添加喜爱
      */
-    private void addLove(HomepageNewsBean.DataBean.ArticleBean dataBean, final int position, final int loveNum) {
+    private void addLove(int id, final int position, final int loveNum) {
         OkHttpUtils.get()
                 .url(Constant.ADD_LOVE)
                 .addParams("token", SharedPreferencesUtils.getStr(getActivity(), "token"))
-                .addParams("rid", String.valueOf(dataBean.getId()))
+                .addParams("rid", String.valueOf(id))
                 .addParams("type", "1")
                 .build()
                 .execute(new StringCallback() {

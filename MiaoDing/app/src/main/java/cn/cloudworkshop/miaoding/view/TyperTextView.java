@@ -54,6 +54,7 @@ public class TyperTextView extends TextView {
                 return false;
             }
         });
+
     }
 
     public int getTyperSpeed() {

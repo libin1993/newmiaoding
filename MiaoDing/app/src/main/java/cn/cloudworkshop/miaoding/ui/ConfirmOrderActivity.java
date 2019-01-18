@@ -10,10 +10,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -23,6 +21,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.umeng.analytics.MobclickAgent;
+import com.wang.avi.AVLoadingIndicatorView;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -45,14 +44,12 @@ import cn.cloudworkshop.miaoding.R;
 import cn.cloudworkshop.miaoding.base.BaseActivity;
 import cn.cloudworkshop.miaoding.bean.ConfirmOrderBean;
 import cn.cloudworkshop.miaoding.bean.ResponseBean;
-import cn.cloudworkshop.miaoding.bean.ShoppingCartBean;
 import cn.cloudworkshop.miaoding.constant.Constant;
 import cn.cloudworkshop.miaoding.utils.BigDecimalUtils;
 import cn.cloudworkshop.miaoding.utils.DateUtils;
 import cn.cloudworkshop.miaoding.utils.DisplayUtils;
 import cn.cloudworkshop.miaoding.utils.GsonUtils;
 import cn.cloudworkshop.miaoding.utils.MyLinearLayoutManager;
-import cn.cloudworkshop.miaoding.utils.PayOrderUtils;
 import cn.cloudworkshop.miaoding.utils.RVItemDecoration;
 import cn.cloudworkshop.miaoding.utils.SharedPreferencesUtils;
 import cn.cloudworkshop.miaoding.utils.ToastUtils;
@@ -114,6 +111,8 @@ public class ConfirmOrderActivity extends BaseActivity {
     TextView tvMeasurerWeight;
     @BindView(R.id.ll_measure)
     LinearLayout llMeasure;
+    @BindView(R.id.view_loading)
+    AVLoadingIndicatorView viewLoading;
 
     //购物车id
     private String cartIds;
@@ -137,7 +136,6 @@ public class ConfirmOrderActivity extends BaseActivity {
     //商品adapter
     private CommonAdapter<ConfirmOrderBean.DataBean.CarListBean> adapter;
 
-    private PayOrderUtils payOrderUtil;
 
     //用户未创建收货地址，新建地址
     private boolean isNoAddress;
@@ -157,6 +155,7 @@ public class ConfirmOrderActivity extends BaseActivity {
         setContentView(R.layout.activity_confirm_order);
         ButterKnife.bind(this);
         EventBus.getDefault().register(this);
+        viewLoading.smoothToShow();
         getData();
         initData();
     }
@@ -176,11 +175,13 @@ public class ConfirmOrderActivity extends BaseActivity {
                     public void onError(Call call, Exception e, int id) {
                         imgLoadingError.setBackgroundColor(Color.WHITE);
                         imgLoadingError.setVisibility(View.VISIBLE);
+                        viewLoading.smoothToHide();
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
                         imgLoadingError.setVisibility(View.GONE);
+                        viewLoading.smoothToHide();
                         confirmOrderBean = GsonUtils.jsonToBean(response, ConfirmOrderBean.class);
                         if (confirmOrderBean.getData() != null) {
                             initView();
@@ -250,14 +251,24 @@ public class ConfirmOrderActivity extends BaseActivity {
                 holder.setVisible(R.id.ll_cart_edit1, true);
                 holder.setText(R.id.tv_goods_name, carListBean.getGoods_name());
                 TextView tvContent = holder.getView(R.id.tv_goods_content);
-                if (carListBean.getPart() != null) {
-                    String parts = "";
-                    for (ConfirmOrderBean.DataBean.CarListBean.PartBean partBean : carListBean.getPart()) {
-                        parts += partBean.getPart_name() + ":" + partBean.getPart_value() + ";";
-                    }
-                    parts = parts.substring(0, parts.length() - 1);
-                    tvContent.setText(parts);
+
+
+                String parts = "";
+                switch (carListBean.getCategory_id()) {
+                    case 1:
+                        for (ConfirmOrderBean.DataBean.CarListBean.PartBean partBean : carListBean.getPart()) {
+                            parts += partBean.getPart_name() + ":" + partBean.getPart_value() + ";";
+                        }
+                        parts = parts.substring(0, parts.length() - 1);
+                        break;
+                    case 2:
+                        for (ConfirmOrderBean.DataBean.CarListBean.SkuBean skuBean : carListBean.getSku()) {
+                            parts += skuBean.getType() + ":" + skuBean.getValue() + ";";
+                        }
+                        parts = parts.substring(0, parts.length() - 1);
+                        break;
                 }
+                tvContent.setText(parts);
 
 
                 holder.setText(R.id.tv_goods_price, "¥" + carListBean.getSell_price());
@@ -267,7 +278,7 @@ public class ConfirmOrderActivity extends BaseActivity {
                 tvContent.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (carListBean.getPart() != null) {
+                        if (carListBean.getCategory_id() == 1 && carListBean.getPart() != null) {
                             goodsPart(carListBean.getPart());
                         }
                     }
@@ -589,7 +600,7 @@ public class ConfirmOrderActivity extends BaseActivity {
                                     startActivity(intent);
                                     finish();
                                 }
-                            }else {
+                            } else {
                                 ToastUtils.showToast(ConfirmOrderActivity.this, msg);
                             }
 

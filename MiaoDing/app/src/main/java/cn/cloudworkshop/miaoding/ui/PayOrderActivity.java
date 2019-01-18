@@ -132,7 +132,7 @@ public class PayOrderActivity extends BaseActivity {
                         .subtract(new BigDecimal(dataBean.getTicket_reduce_money()))
                         .subtract(new BigDecimal(dataBean.getPayable_amount()));
                 holder.setText(R.id.tv_order_other_discount, "其他扣减：¥" + otherDiscount.toString());
-                holder.setText(R.id.tv_order_actual_money, "实需付款：¥" + dataBean.getPayable_amount());
+                holder.setText(R.id.tv_order_actual_money, "实需付款：¥" + dataBean.getReal_amount());
                 holder.setText(R.id.tv_order_total_price, "¥" + dataBean.getOrder_amount());
             }
         };
@@ -214,7 +214,7 @@ public class PayOrderActivity extends BaseActivity {
     private void iniPrice() {
         BigDecimal needPay = new BigDecimal("0");
         for (PayOrderBean.DataBean dataBean : orderList) {
-            needPay = needPay.add(new BigDecimal(dataBean.getPayable_amount()));
+            needPay = needPay.add(new BigDecimal(dataBean.getReal_amount()));
         }
 
         if (useGiftCard == 1) {

@@ -60,12 +60,13 @@
             android:id="@+id/tv_goods_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="15dp"
             android:layout_marginTop="5dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="10dp"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:textColor="@color/text_gray_6a"
-            android:textSize="10sp"
-            android:maxLines="2"
-            android:layout_marginBottom="10dp"/>
+            android:textSize="10sp"/>
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -133,10 +134,10 @@
         android:id="@+id/ll_cart_edit1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_marginBottom="25dp"
+        android:layout_alignParentBottom="true"
         android:layout_marginRight="15dp"
+        android:layout_marginBottom="25dp"
         android:orientation="horizontal"
         android:visibility="gone">
 

@@ -38,6 +38,7 @@ import cn.cloudworkshop.miaoding.ui.CustomizedGoodsActivity;
 import cn.cloudworkshop.miaoding.ui.NewCustomizedGoodsActivity;
 import cn.cloudworkshop.miaoding.utils.DisplayUtils;
 import cn.cloudworkshop.miaoding.utils.GsonUtils;
+import cn.cloudworkshop.miaoding.utils.SharedPreferencesUtils;
 import cn.cloudworkshop.miaoding.utils.SpaceItemDecoration;
 import okhttp3.Call;
 
@@ -82,13 +83,16 @@ public class SubGoodsFragment extends BaseFragment {
     private void initData() {
         OkHttpUtils.post()
                 .url(Constant.GOODS_LIST)
+                .addParams("token", SharedPreferencesUtils.getStr(getParentFragment().getActivity(),"token"))
                 .addParams("use_goodsid", String.valueOf(classifyId))
                 .addParams("page", String.valueOf(page))
                 .build()
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-
+                        if (isRefresh || isLoadMore) {
+                            rvGoods.refreshComplete(0);
+                        }
                     }
 
                     @Override
@@ -101,7 +105,6 @@ public class SubGoodsFragment extends BaseFragment {
                             dataList.addAll(listBean.getGoodsid());
                             if (isRefresh || isLoadMore) {
                                 rvGoods.refreshComplete(0);
-
                             }
                             mLRecyclerViewAdapter.notifyDataSetChanged();
                             isRefresh = false;

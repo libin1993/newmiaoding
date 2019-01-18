@@ -51,12 +51,18 @@ public class MsgCenterBean {
          * last_msg : {"title":"消息01","is_read":0,"c_time":1483339033}
          */
 
-        private int id;
         private String name;
         private String img;
-        private LastMsgBean last_msg;
-        private int num;
         private int type;
+        private int unread_message_num;
+
+        public int getUnread_message_num() {
+            return unread_message_num;
+        }
+
+        public void setUnread_message_num(int unread_message_num) {
+            this.unread_message_num = unread_message_num;
+        }
 
         public int getType() {
             return type;
@@ -66,21 +72,6 @@ public class MsgCenterBean {
             this.type = type;
         }
 
-        public int getNum() {
-            return num;
-        }
-
-        public void setNum(int num) {
-            this.num = num;
-        }
-
-        public int getId() {
-            return id;
-        }
-
-        public void setId(int id) {
-            this.id = id;
-        }
 
         public String getName() {
             return name;
@@ -98,48 +89,5 @@ public class MsgCenterBean {
             this.img = img;
         }
 
-        public LastMsgBean getLast_msg() {
-            return last_msg;
-        }
-
-        public void setLast_msg(LastMsgBean last_msg) {
-            this.last_msg = last_msg;
-        }
-
-        public static class LastMsgBean {
-            /**
-             * title : 消息01
-             * is_read : 0
-             * c_time : 1483339033
-             */
-
-            private String title;
-            private int is_read;
-            private int c_time;
-
-            public String getTitle() {
-                return title;
-            }
-
-            public void setTitle(String title) {
-                this.title = title;
-            }
-
-            public int getIs_read() {
-                return is_read;
-            }
-
-            public void setIs_read(int is_read) {
-                this.is_read = is_read;
-            }
-
-            public int getC_time() {
-                return c_time;
-            }
-
-            public void setC_time(int c_time) {
-                this.c_time = c_time;
-            }
-        }
     }
 }

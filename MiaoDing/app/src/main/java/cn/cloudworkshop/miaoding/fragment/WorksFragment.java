@@ -12,8 +12,6 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.facebook.drawee.drawable.ScalingUtils;
-import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.github.jdsjlzx.interfaces.OnItemClickListener;
 import com.github.jdsjlzx.interfaces.OnLoadMoreListener;
@@ -78,7 +76,7 @@ public class WorksFragment extends BaseFragment {
     private void initData() {
 
         OkHttpUtils.get()
-                .url(Constant.DESIGNER_WORKS)
+                .url(Constant.ACCENT_WORKS)
                 .addParams("page", String.valueOf(page))
                 .build()
                 .execute(new StringCallback() {

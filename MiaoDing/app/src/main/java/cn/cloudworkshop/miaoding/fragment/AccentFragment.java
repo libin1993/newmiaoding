@@ -3,33 +3,34 @@ package cn.cloudworkshop.miaoding.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.facebook.drawee.drawable.ScalingUtils;
-import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.github.jdsjlzx.interfaces.OnItemClickListener;
 import com.github.jdsjlzx.interfaces.OnLoadMoreListener;
 import com.github.jdsjlzx.interfaces.OnRefreshListener;
-import com.github.jdsjlzx.recyclerview.LRecyclerView;
 import com.github.jdsjlzx.recyclerview.LRecyclerViewAdapter;
 import com.github.jdsjlzx.util.RecyclerViewStateUtils;
 import com.github.jdsjlzx.view.LoadingFooter;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
+import com.wang.avi.AVLoadingIndicatorView;
 import com.zhy.adapter.recyclerview.CommonAdapter;
+import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
-import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -41,17 +42,13 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import cn.cloudworkshop.miaoding.R;
-import cn.cloudworkshop.miaoding.adapter.SectionedRecyclerViewAdapter;
 import cn.cloudworkshop.miaoding.base.BaseFragment;
-import cn.cloudworkshop.miaoding.bean.HomepageNewsBean;
+import cn.cloudworkshop.miaoding.bean.AccentBean;
 import cn.cloudworkshop.miaoding.bean.NewDesignWorksBean;
+import cn.cloudworkshop.miaoding.bean.OrderInfoBean;
 import cn.cloudworkshop.miaoding.constant.Constant;
-import cn.cloudworkshop.miaoding.ui.DesignerDetailActivity;
-import cn.cloudworkshop.miaoding.ui.HomepageInfoActivity;
 import cn.cloudworkshop.miaoding.ui.LoginActivity;
-import cn.cloudworkshop.miaoding.ui.QuickLoginActivity;
 import cn.cloudworkshop.miaoding.ui.WorksDetailActivity;
-import cn.cloudworkshop.miaoding.utils.DisplayUtils;
 import cn.cloudworkshop.miaoding.utils.GsonUtils;
 import cn.cloudworkshop.miaoding.utils.ShareUtils;
 import cn.cloudworkshop.miaoding.utils.SharedPreferencesUtils;
@@ -63,30 +60,39 @@ import okhttp3.Call;
  * Describe：腔调
  */
 public class AccentFragment extends BaseFragment {
-    @BindView(R.id.rv_accent)
-    LRecyclerView rvAccent;
+
     @BindView(R.id.img_load_error)
     ImageView imgLoadError;
+    @BindView(R.id.rv_accent)
+    RecyclerView rvAccent;
+    @BindView(R.id.sfl_accent)
+    SmartRefreshLayout refreshLayout;
+    @BindView(R.id.view_loading)
+    AVLoadingIndicatorView viewLoading;
     private Unbinder unbinder;
 
-    private List<NewDesignWorksBean.DataBeanX.DataBean> worksList = new ArrayList<>();
+    private List<AccentBean.DataBean.GoodsBean> accentList = new ArrayList<>();
 
-    //页面
+    //当前页
     private int page = 1;
     //刷新
     private boolean isRefresh;
     //加载更多
     private boolean isLoadMore;
+    //总页数
+    private int pages;
 
-    private LRecyclerViewAdapter mLRecyclerViewAdapter;
-    private CommonAdapter<NewDesignWorksBean.DataBeanX.DataBean> adapter;
+
+    private CommonAdapter<AccentBean.DataBean.GoodsBean> adapter;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_accent, container, false);
         unbinder = ButterKnife.bind(this, view);
+        viewLoading.smoothToShow();
         initData();
+        initView();
         return view;
 
     }
@@ -97,36 +103,46 @@ public class AccentFragment extends BaseFragment {
     private void initData() {
 
         OkHttpUtils.get()
-                .url(Constant.DESIGNER_WORKS)
+                .url(Constant.ACCENT_WORKS)
                 .addParams("token", SharedPreferencesUtils.getStr(getActivity(), "token"))
                 .addParams("page", String.valueOf(page))
                 .build()
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-
+                        imgLoadError.setVisibility(View.VISIBLE);
+                        viewLoading.smoothToHide();
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
-                        NewDesignWorksBean worksBean = GsonUtils.jsonToBean(response, NewDesignWorksBean.class);
-                        if (worksBean.getData().getData() != null && worksBean.getData().getData().size() > 0) {
-                            if (isRefresh) {
-                                worksList.clear();
-                            }
-                            worksList.addAll(worksBean.getData().getData());
-                            if (isRefresh || isLoadMore) {
-                                rvAccent.refreshComplete(0);
-                                mLRecyclerViewAdapter.notifyDataSetChanged();
-                            } else {
-                                initView();
-                            }
+
+                        if (imgLoadError != null) {
+                            imgLoadError.setVisibility(View.GONE);
+                        }
+                        if (viewLoading != null && viewLoading.isShown()) {
+                            viewLoading.smoothToHide();
+                        }
+
+                        AccentBean accentBean = GsonUtils.jsonToBean(response, AccentBean.class);
+                        if (accentBean.getData().getPages() != null) {
+                            pages = accentBean.getData().getPages().getTotalpage();
+                        }
+
+                        if (isRefresh) {
+                            refreshLayout.finishRefresh();
                             isRefresh = false;
+                            accentList.clear();
+                        } else if (isLoadMore) {
+                            refreshLayout.finishLoadMore();
                             isLoadMore = false;
                         } else {
-                            RecyclerViewStateUtils.setFooterViewState(getActivity(),
-                                    rvAccent, 0, LoadingFooter.State.NoMore, null);
+                            accentList.clear();
                         }
+                        if (accentBean.getCode() == 10000 && accentBean.getData().getGoods().size() > 0) {
+                            accentList.addAll(accentBean.getData().getGoods());
+                        }
+                        adapter.notifyDataSetChanged();
                     }
                 });
     }
@@ -137,23 +153,17 @@ public class AccentFragment extends BaseFragment {
      */
     private void initView() {
         rvAccent.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new CommonAdapter<NewDesignWorksBean.DataBeanX.DataBean>(getActivity(),
-                R.layout.listitem_accent, worksList) {
+        adapter = new CommonAdapter<AccentBean.DataBean.GoodsBean>(getActivity(),
+                R.layout.listitem_accent, accentList) {
             @Override
-            protected void convert(ViewHolder holder, final NewDesignWorksBean.DataBeanX.DataBean
-                    itemBean, final int position) {
-
+            protected void convert(ViewHolder holder, final AccentBean.DataBean.GoodsBean dataBean, final int position) {
+                holder.setText(R.id.tv_accent_name, dataBean.getName());
                 SimpleDraweeView imgWorks = holder.getView(R.id.img_accent_works);
-                if (!TextUtils.isEmpty(itemBean.getImg_info())) {
-                    imgWorks.setAspectRatio(Float.parseFloat(itemBean.getImg_info()));
+                if (!TextUtils.isEmpty(dataBean.getAd_img_info())) {
+                    imgWorks.setAspectRatio(Float.parseFloat(dataBean.getAd_img_info()));
                 }
-                imgWorks.setImageURI(Constant.IMG_HOST + itemBean.getImg());
+                imgWorks.setImageURI(Constant.IMG_HOST + dataBean.getAd_img());
 
-                SimpleDraweeView imgDesigner = holder.getView(R.id.img_designer_icon);
-                imgDesigner.setImageURI(Constant.IMG_HOST + itemBean.getAvatar());
-                holder.setText(R.id.tv_designer_intro, itemBean.getIntroduce());
-                holder.setText(R.id.tv_designer_nickname, itemBean.getUname());
-                holder.setText(R.id.tv_designer_workshop, "/" + itemBean.getTag());
 
                 ImageView imgShare = (ImageView) holder.itemView.findViewById(R.id.img_accent_share);
                 ImageView imgCollect = (ImageView) holder.itemView.findViewById(R.id.img_accent_collect);
@@ -161,50 +171,26 @@ public class AccentFragment extends BaseFragment {
                 ImageView imgLove = (ImageView) holder.itemView.findViewById(R.id.img_accent_love);
                 TextView tvLove = (TextView) holder.itemView.findViewById(R.id.tv_accent_love);
 
-                tvLove.setText(String.valueOf(itemBean.getLove_num()));
+                tvLove.setText(String.valueOf(dataBean.getLove_num()));
 
-                if (itemBean.getIs_collect() == 1) {
+                if (dataBean.getIs_collect() == 1) {
                     imgCollect.setImageResource(R.mipmap.icon_collect_check);
                 } else {
                     imgCollect.setImageResource(R.mipmap.icon_collect_normal);
                 }
-                if (itemBean.getIs_love() == 1) {
+                if (dataBean.getIs_love() == 1) {
                     imgLove.setImageResource(R.mipmap.icon_love_check);
                 } else {
                     imgLove.setImageResource(R.mipmap.icon_love_normal);
                 }
 
-                LinearLayout llWorks = (LinearLayout) holder.itemView.findViewById(R.id.ll_accent_works);
-                LinearLayout llDesigner = (LinearLayout) holder.itemView.findViewById(R.id.ll_accent_designer);
-
-                llWorks.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(getActivity(), WorksDetailActivity.class);
-                        intent.putExtra("id", String.valueOf(itemBean.getGoods_id()));
-                        startActivity(intent);
-                    }
-                });
-
-                llDesigner.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(getActivity(), DesignerDetailActivity.class);
-                        intent.putExtra("id", String.valueOf(itemBean.getDes_uid()));
-                        startActivity(intent);
-                    }
-                });
 
                 imgShare.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String share_url = Constant.WORKS_SHARE + "?goods_id=" + itemBean.getGoods_id() + "&type=2";
-                        String uid = SharedPreferencesUtils.getStr(getActivity(), "uid");
-                        if (!TextUtils.isEmpty(uid)) {
-                            share_url += "&shareout_id=" + uid;
-                        }
-                        ShareUtils.showShare(getActivity(), Constant.IMG_HOST + itemBean.getImg(),
-                                itemBean.getTitle(), itemBean.getUname(), share_url);
+                        String share_url = Constant.CUSTOM_SHARE + "?goods_id=" + dataBean.getId();
+                        ShareUtils.showShare(getActivity(), Constant.IMG_HOST + dataBean.getAd_img(),
+                                dataBean.getName(), dataBean.getContent(), share_url);
                     }
                 });
 
@@ -212,7 +198,7 @@ public class AccentFragment extends BaseFragment {
                     @Override
                     public void onClick(View v) {
                         if (!TextUtils.isEmpty(SharedPreferencesUtils.getStr(getActivity(), "token"))) {
-                            addCollection(itemBean, position - 1);
+                            addCollection(dataBean.getId(), position);
                         } else {
                             Intent login = new Intent(getActivity(), LoginActivity.class);
                             login.putExtra("page_name", "收藏");
@@ -226,7 +212,7 @@ public class AccentFragment extends BaseFragment {
                     @Override
                     public void onClick(View v) {
                         if (!TextUtils.isEmpty(SharedPreferencesUtils.getStr(getActivity(), "token"))) {
-                            addLove(itemBean, position - 1, itemBean.getLove_num());
+                            addLove(dataBean.getId(), position, dataBean.getLove_num());
                         } else {
                             Intent login = new Intent(getActivity(), LoginActivity.class);
                             login.putExtra("page_name", "喜爱");
@@ -237,33 +223,42 @@ public class AccentFragment extends BaseFragment {
                 });
 
             }
+
         };
 
-        mLRecyclerViewAdapter = new LRecyclerViewAdapter(adapter);
-        rvAccent.setAdapter(mLRecyclerViewAdapter);
+        rvAccent.setAdapter(adapter);
 
-        //刷新
-        rvAccent.setOnRefreshListener(new OnRefreshListener() {
+        adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
-            public void onRefresh() {
-                new Handler().postDelayed(new Runnable() {
-                    public void run() {
-                        isRefresh = true;
-                        page = 1;
-                        initData();
-                    }
-                }, 1000);
+            public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+                Intent intent = new Intent(getActivity(), WorksDetailActivity.class);
+                intent.putExtra("id", String.valueOf(accentList.get(position).getId()));
+                startActivity(intent);
+            }
+
+            @Override
+            public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
+                return false;
             }
         });
 
-        //加载更多
-        rvAccent.setOnLoadMoreListener(new OnLoadMoreListener() {
+
+        refreshLayout.setOnRefreshLoadMoreListener(new OnRefreshLoadMoreListener() {
             @Override
-            public void onLoadMore() {
-                RecyclerViewStateUtils.setFooterViewState(getActivity(), rvAccent,
-                        0, LoadingFooter.State.Loading, null);
-                isLoadMore = true;
-                page++;
+            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+                if (page < pages) {
+                    isLoadMore = true;
+                    page++;
+                    initData();
+                } else {
+                    refreshLayout.finishLoadMore();
+                }
+            }
+
+            @Override
+            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+                isRefresh = true;
+                page = 1;
                 initData();
             }
         });
@@ -271,14 +266,14 @@ public class AccentFragment extends BaseFragment {
     }
 
     /**
-     * @param dataBean 添加收藏
+     * 添加收藏
      */
-    private void addCollection(NewDesignWorksBean.DataBeanX.DataBean dataBean, final int position) {
+    private void addCollection(int id, final int position) {
         OkHttpUtils.get()
                 .url(Constant.ADD_COLLECTION)
                 .addParams("token", SharedPreferencesUtils.getStr(getActivity(), "token"))
                 .addParams("type", "2")
-                .addParams("cid", String.valueOf(dataBean.getGoods_id()))
+                .addParams("rid", String.valueOf(id))
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -291,12 +286,11 @@ public class AccentFragment extends BaseFragment {
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             int code = jsonObject.getInt("code");
-                            if (code == 1) {
-                                worksList.get(position).setIs_collect(1);
-                            } else {
-                                worksList.get(position).setIs_collect(0);
+                            int status = jsonObject.getInt("status");
+                            if (code == 10000) {
+                                accentList.get(position).setIs_collect(status);
+                                adapter.notifyDataSetChanged();
                             }
-                            adapter.notifyDataSetChanged();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -308,12 +302,12 @@ public class AccentFragment extends BaseFragment {
     /**
      * 添加喜爱
      */
-    private void addLove(NewDesignWorksBean.DataBeanX.DataBean dataBean, final int position, final int loveNum) {
+    private void addLove(int id, final int position, final int loveNum) {
         OkHttpUtils.get()
                 .url(Constant.ADD_LOVE)
                 .addParams("token", SharedPreferencesUtils.getStr(getActivity(), "token"))
-                .addParams("news_id", String.valueOf(dataBean.getGoods_id()))
-                .addParams("is_type", "2")
+                .addParams("rid", String.valueOf(id))
+                .addParams("type", "2")
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -325,16 +319,18 @@ public class AccentFragment extends BaseFragment {
                     public void onResponse(String response, int id) {
                         try {
                             JSONObject jsonObject = new JSONObject(response);
-                            int data = jsonObject.getInt("data");
-                            if (data == 1) {
-                                worksList.get(position).setIs_love(1);
-                                worksList.get(position).setLove_num(loveNum + 1);
-                            } else {
-                                worksList.get(position).setIs_love(0);
-                                worksList.get(position).setLove_num(loveNum - 1);
+                            int code = jsonObject.getInt("code");
+                            int status = jsonObject.getInt("status");
+                            if (code == 10000) {
+                                accentList.get(position).setIs_love(status);
+                                if (status == 1) {
+                                    accentList.get(position).setLove_num(loveNum + 1);
+                                } else {
+                                    accentList.get(position).setLove_num(loveNum - 1);
+                                }
+                                adapter.notifyDataSetChanged();
                             }
 
-                            adapter.notifyDataSetChanged();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

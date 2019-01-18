@@ -362,6 +362,7 @@ public class CustomizeActivity extends BaseActivity {
                         Glide.with(CustomizeActivity.this)
                                 .load(Constant.IMG_HOST + mustDisplayPartBean.getAndroid_min())
                                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                                .placeholder(R.mipmap.place_holder_goods)
                                 .into((ImageView) holder.getView(R.id.img_tailor_item));
                     }
 
@@ -418,6 +419,7 @@ public class CustomizeActivity extends BaseActivity {
                 Glide.with(CustomizeActivity.this)
                         .load(Constant.IMG_HOST + sonBean.getAndroid_min())
                         .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                        .placeholder(R.mipmap.place_holder_goods)
                         .into((CircleImageView) holder.getView(R.id.img_tailor_item));
             }
 

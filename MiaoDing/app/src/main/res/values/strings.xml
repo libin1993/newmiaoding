@@ -312,7 +312,7 @@
     <string name="msg_center">消息中心</string>
     <string name="year_month_day">yyyy年MM月dd日</string>
     <string name="your_order">您的订单：</string>
-    <string name="send_company">配送单位：</string>
+    <string name="send_company">物流公司：顺丰快递</string>
     <string name="notic_msg">通知消息</string>
     <string name="activity_pop">活动精选</string>
     <string name="logistics_notice">物流通知</string>
@@ -418,5 +418,6 @@
     <string name="customize_tab">定制</string>
     <string name="works_tab">腔调</string>
     <string name="me">我</string>
+    <string name="stock_pull">库存不足</string>
 
 </resources>

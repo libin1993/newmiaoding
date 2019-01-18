@@ -1,7 +1,9 @@
 package cn.cloudworkshop.miaoding.ui;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -10,6 +12,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -47,12 +52,21 @@ public class MessageDetailActivity extends BaseActivity {
     TextView tvNoneMsg;
     @BindView(R.id.img_load_error)
     ImageView imgLoadError;
+    @BindView(R.id.sfl_msg)
+    SmartRefreshLayout refreshLayout;
     private int type;
     //消息详情布局id
     private int layoutId;
     private List<MsgDetailBean.DataBean> msgList = new ArrayList<>();
-    //物流字段分割
-    private String[] logisticsStr;
+
+    private int page = 1;
+    //总页数
+    private int pages;
+    //刷新
+    private boolean isRefresh;
+    //加载更多
+    private boolean isLoadMore;
+    private CommonAdapter<MsgDetailBean.DataBean> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +75,7 @@ public class MessageDetailActivity extends BaseActivity {
         ButterKnife.bind(this);
         getData();
         initData();
+        initView(layoutId);
     }
 
 
@@ -71,7 +86,8 @@ public class MessageDetailActivity extends BaseActivity {
         OkHttpUtils.get()
                 .url(Constant.MESSAGE_DETAIL)
                 .addParams("token", SharedPreferencesUtils.getStr(this, "token"))
-                .addParams("type", type + "")
+                .addParams("type", String.valueOf(type))
+                .addParams("page", String.valueOf(page))
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -83,16 +99,63 @@ public class MessageDetailActivity extends BaseActivity {
                     public void onResponse(String response, int id) {
                         imgLoadError.setVisibility(View.GONE);
                         MsgDetailBean msgBean = GsonUtils.jsonToBean(response, MsgDetailBean.class);
-                        if (msgBean.getData() != null && msgBean.getData().size() > 0) {
-                            msgList.addAll(msgBean.getData());
-                            tvNoneMsg.setVisibility(View.GONE);
-                            initView(layoutId);
-                        } else {
-                            tvNoneMsg.setVisibility(View.VISIBLE);
+
+
+                        if (msgBean.getPages() != null) {
+                            pages = msgBean.getPages().getTotalpage();
                         }
+
+                        //是否刷新状态
+                        if (isRefresh) {
+                            refreshLayout.finishRefresh();
+                            isRefresh = false;
+                            msgList.clear();
+                        } else if (isLoadMore) { //加载更多
+                            refreshLayout.finishLoadMore();
+                        } else {
+                            msgList.clear();
+                        }
+
+                        if (msgBean.getCode() == 10000 && msgBean.getData() != null && msgBean.getData().size() > 0) {
+                            msgList.addAll(msgBean.getData());
+                            readMsg();
+                            tvNoneMsg.setVisibility(View.GONE);
+                        } else {
+                            if (!isLoadMore) {
+                                tvNoneMsg.setVisibility(View.VISIBLE);
+                            }
+                        }
+                        isLoadMore = false;
+                        adapter.notifyDataSetChanged();
                     }
                 });
 
+    }
+
+    /**
+     * 设置已读
+     */
+    private void readMsg() {
+        for (int i = 0; i < msgList.size(); i++) {
+            if (msgList.get(i).getStatus() == 1) {
+                OkHttpUtils.post()
+                        .url(Constant.READ_MSG)
+                        .addParams("token", SharedPreferencesUtils.getStr(this, "token"))
+                        .addParams("type", String.valueOf(type))
+                        .addParams("msg_id", String.valueOf(msgList.get(i).getId()))
+                        .build()
+                        .execute(new StringCallback() {
+                            @Override
+                            public void onError(Call call, Exception e, int id) {
+
+                            }
+
+                            @Override
+                            public void onResponse(String response, int id) {
+                            }
+                        });
+            }
+        }
     }
 
     /**
@@ -100,46 +163,35 @@ public class MessageDetailActivity extends BaseActivity {
      */
     private void initView(int layoutId) {
         rvMessage.setLayoutManager(new LinearLayoutManager(this));
-        CommonAdapter<MsgDetailBean.DataBean> adapter = new CommonAdapter<MsgDetailBean.DataBean>(this, layoutId, msgList) {
+        adapter = new CommonAdapter<MsgDetailBean.DataBean>(this, layoutId, msgList) {
             @Override
             protected void convert(ViewHolder holder, MsgDetailBean.DataBean dataBean, int position) {
                 switch (type) {
                     case 1:
-                        holder.setText(R.id.tv_notice_time, DateUtils.getDate("yyyy-MM-dd HH:mm:ss",
-                                dataBean.getC_time()));
+                        holder.setText(R.id.tv_notice_time, dataBean.getCreate_time());
                         holder.setText(R.id.tv_notice_content, dataBean.getContent());
-                        holder.setText(R.id.tv_notice_date, DateUtils.getDate(getString(R.string.year_month_day),
-                                dataBean.getC_time()));
+                        holder.setText(R.id.tv_notice_date, DateUtils.formatTime("yyyy-MM-dd HH:mm:ss",
+                                getString(R.string.year_month_day), dataBean.getCreate_time()));
                         break;
                     case 2:
-                        holder.setText(R.id.tv_select_date, DateUtils.getDate("yyyy-MM-dd HH:mm:ss",
-                                dataBean.getC_time()));
-                        holder.setText(R.id.tv_select_title, dataBean.getTitle());
+                        holder.setText(R.id.tv_select_date, dataBean.getCreate_time());
+                        holder.setText(R.id.tv_select_title, dataBean.getGoods_name());
                         Glide.with(MessageDetailActivity.this)
-                                .load(Constant.IMG_HOST + dataBean.getImg())
+                                .load(Constant.IMG_HOST + dataBean.getCar_img())
                                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                                 .into((ImageView) holder.getView(R.id.img_select_goods));
-                        holder.setText(R.id.tv_select_content, dataBean.getContent());
                         break;
                     case 3:
-                        holder.setText(R.id.tv_logistics_date, DateUtils.getDate("yyyy-MM-dd HH:mm:ss",
-                                msgList.get(position).getC_time()));
-                        holder.setText(R.id.tv_logistics_title, getString(R.string.your_order) + dataBean.getTitle());
+                        holder.setText(R.id.tv_logistics_date, dataBean.getCreate_time());
+                        holder.setText(R.id.tv_logistics_title, getString(R.string.your_order) + dataBean.getRe_marks());
                         Glide.with(MessageDetailActivity.this)
-                                .load(Constant.IMG_HOST + dataBean.getImg())
+                                .load(Constant.IMG_HOST + dataBean.getCar_img())
                                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                                 .into((ImageView) holder.getView(R.id.img_logistics_goods));
-                        logisticsStr = dataBean.getContent().split(",");
-                        holder.setText(R.id.tv_logistics_name, logisticsStr[0]);
-                        if (logisticsStr[1].equals("1")) {
-                            holder.setText(R.id.tv_logistics_size, getString(R.string.customize_type));
-                        } else {
-                            holder.setText(R.id.tv_logistics_size, logisticsStr[1]);
-                        }
 
-                        holder.setText(R.id.tv_logistics_company, getString(R.string.send_company) + logisticsStr[2]);
-                        break;
-                    default:
+                        holder.setText(R.id.tv_logistics_name, getString(R.string.logistics_no) + dataBean.getExpress_no());
+
+                        holder.setText(R.id.tv_logistics_company, getString(R.string.send_company));
                         break;
                 }
             }
@@ -149,19 +201,25 @@ public class MessageDetailActivity extends BaseActivity {
         adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-
                 switch (type) {
                     case 2:
-                        Intent intent2 = new Intent(MessageDetailActivity.this, NewCustomizedGoodsActivity.class);
-                        intent2.putExtra("id", String.valueOf("38"));
+                        Intent intent2 = null;
+                        switch (msgList.get(position).getCategory_id()) {
+                            case 1:
+                                intent2 = new Intent(MessageDetailActivity.this, NewCustomizedGoodsActivity.class);
+                                break;
+                            case 2:
+                                intent2 = new Intent(MessageDetailActivity.this, WorksDetailActivity.class);
+                                break;
+                        }
+                        intent2.putExtra("id", String.valueOf(msgList.get(position).getGoods_id()));
                         startActivity(intent2);
                         break;
                     case 3:
                         Intent intent3 = new Intent(MessageDetailActivity.this, LogisticsActivity.class);
-                        intent3.putExtra("number", logisticsStr[4].trim());
-                        intent3.putExtra("company", logisticsStr[3]);
-                        intent3.putExtra("company_name", logisticsStr[2]);
-                        intent3.putExtra("img_url", msgList.get(position).getImg());
+                        intent3.putExtra("number", msgList.get(position).getExpress_no());
+                        intent3.putExtra("order_id", msgList.get(position).getRe_marks());
+                        intent3.putExtra("img_url", msgList.get(position).getCar_img());
                         startActivity(intent3);
                         break;
                 }
@@ -172,10 +230,31 @@ public class MessageDetailActivity extends BaseActivity {
                 return false;
             }
         });
+
+
+        refreshLayout.setOnRefreshLoadMoreListener(new OnRefreshLoadMoreListener() {
+            @Override
+            public void onLoadMore(RefreshLayout refreshLayout) {
+                if (page < pages) {
+                    isLoadMore = true;
+                    page++;
+                    initData();
+                } else {
+                    refreshLayout.finishLoadMore();
+                }
+            }
+
+            @Override
+            public void onRefresh(RefreshLayout refreshLayout) {
+                isRefresh = true;
+                page = 1;
+                initData();
+            }
+        });
     }
 
     private void getData() {
-        type = getIntent().getIntExtra("content", 1);
+        type = getIntent().getIntExtra("type", 1);
         switch (type) {
             case 1:
                 layoutId = R.layout.listitem_notice_message;
@@ -189,9 +268,6 @@ public class MessageDetailActivity extends BaseActivity {
                 layoutId = R.layout.listitem_logistics_message;
                 tvHeaderTitle.setText(R.string.logistics_notice);
                 break;
-            default:
-                break;
-
         }
     }
 

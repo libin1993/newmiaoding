@@ -435,7 +435,7 @@ public class WorksDetailActivity1 extends BaseActivity {
         tvStock = (TextView) contentView.findViewById(R.id.tv_works_stock);
         ImageView imgCancel = (ImageView) contentView.findViewById(R.id.img_cancel_buy);
         RecyclerView rvSize = (RecyclerView) contentView.findViewById(R.id.rv_works_size);
-        RecyclerView rvColor = (RecyclerView) contentView.findViewById(R.id.rv_works_color);
+//        RecyclerView rvColor = (RecyclerView) contentView.findViewById(R.id.rv_works_color);
         TextView tvReduce = (TextView) contentView.findViewById(R.id.tv_reduce_works);
         tvCount = (TextView) contentView.findViewById(R.id.tv_buy_count);
         TextView tvAdd = (TextView) contentView.findViewById(R.id.tv_add_works);
@@ -497,28 +497,28 @@ public class WorksDetailActivity1 extends BaseActivity {
                 }
             });
 
-
-            //颜色
-            rvColor.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-            colorAdapter = new CommonAdapter<WorksDetailBean.DataBean.SizeListBeanX.SizeListBean>
-                    (WorksDetailActivity1.this, R.layout.listitem_works_color, colorList) {
-                @Override
-                protected void convert(ViewHolder holder, WorksDetailBean.DataBean.SizeListBeanX.SizeListBean
-                        positionBean, int position) {
-                    CircleImageView imgColor = holder.getView(R.id.img_works_color);
-                    CircleImageView imgMask = holder.getView(R.id.img_works_mask);
-                    Glide.with(WorksDetailActivity1.this)
-                            .load(Constant.IMG_HOST + positionBean.getColor_img())
-                            .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                            .into(imgColor);
-                    if (currentColor == position) {
-                        imgMask.setVisibility(View.VISIBLE);
-                    } else {
-                        imgMask.setVisibility(View.GONE);
-                    }
-                }
-            };
-            rvColor.setAdapter(colorAdapter);
+//
+//            //颜色
+//            rvColor.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+//            colorAdapter = new CommonAdapter<WorksDetailBean.DataBean.SizeListBeanX.SizeListBean>
+//                    (WorksDetailActivity1.this, R.layout.listitem_works_color, colorList) {
+//                @Override
+//                protected void convert(ViewHolder holder, WorksDetailBean.DataBean.SizeListBeanX.SizeListBean
+//                        positionBean, int position) {
+//                    CircleImageView imgColor = holder.getView(R.id.img_works_color);
+//                    CircleImageView imgMask = holder.getView(R.id.img_works_mask);
+//                    Glide.with(WorksDetailActivity1.this)
+//                            .load(Constant.IMG_HOST + positionBean.getColor_img())
+//                            .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+//                            .into(imgColor);
+//                    if (currentColor == position) {
+//                        imgMask.setVisibility(View.VISIBLE);
+//                    } else {
+//                        imgMask.setVisibility(View.GONE);
+//                    }
+//                }
+//            };
+//            rvColor.setAdapter(colorAdapter);
             colorAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {

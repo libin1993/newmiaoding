@@ -519,7 +519,6 @@ public class SetUpActivity extends BaseActivity implements EasyPermissions.Permi
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                LogUtils.log(e.getMessage());
             }
 
             @Override

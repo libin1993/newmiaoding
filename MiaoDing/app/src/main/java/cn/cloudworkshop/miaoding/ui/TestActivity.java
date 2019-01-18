@@ -148,7 +148,6 @@ public class TestActivity extends BaseActivity implements CameraBridgeViewBase.C
                     rMax = r;
                 }
             }
-            LogUtils.log(maxHeight+"");
 
             if (rMax != null) {
                 rMax.x += Math.round(rMax.width * 0.1);

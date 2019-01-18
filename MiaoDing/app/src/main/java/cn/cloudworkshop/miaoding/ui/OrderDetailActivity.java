@@ -23,6 +23,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.umeng.analytics.MobclickAgent;
+import com.wang.avi.AVLoadingIndicatorView;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -100,6 +101,8 @@ public class OrderDetailActivity extends BaseActivity {
     TextView tvGiftcardDiscount;
     @BindView(R.id.tv_other_discount)
     TextView tvOtherDiscount;
+    @BindView(R.id.view_loading)
+    AVLoadingIndicatorView viewLoading;
     //订单id
     private String orderId;
     private OrderDetailsBean orderBean;
@@ -116,6 +119,7 @@ public class OrderDetailActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         getData();
+        viewLoading.smoothToShow();
         initData();
     }
 
@@ -137,11 +141,12 @@ public class OrderDetailActivity extends BaseActivity {
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-
+                        viewLoading.smoothToHide();
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
+                        viewLoading.smoothToHide();
                         orderBean = GsonUtils.jsonToBean(response, OrderDetailsBean.class);
                         if (orderBean.getData() != null) {
                             initView();
@@ -155,8 +160,8 @@ public class OrderDetailActivity extends BaseActivity {
      */
     private void initView() {
         tvOrderTime.setText(orderBean.getData().getCreate_time());
-        recLen = System.currentTimeMillis() / 1000 - DateUtils.getTime("yyyy-MM-dd HH:mm:ss",
-                orderBean.getData().getCreate_time());
+        recLen = DateUtils.getTime("yyyy-MM-dd HH:mm:ss",
+                orderBean.getData().getCreate_time()) / 1000 + 3600 - System.currentTimeMillis() / 1000;
         tvOrderStatus.setText(orderBean.getData().getStatus_text());
         switch (orderBean.getData().getStatus()) {
             case 1:
@@ -165,7 +170,6 @@ public class OrderDetailActivity extends BaseActivity {
                     timer.schedule(task, 1000, 1000);
                 }
                 tvPayTime.setTextColor(ContextCompat.getColor(this, R.color.dark_red));
-                tvPayTime.setText(orderBean.getData().getStatus_text());
                 tvOrderCancel.setText(R.string.cancel_order);
                 tvOrderPayMoney.setText(R.string.pay);
                 tvOrderCancel.setVisibility(View.VISIBLE);
@@ -245,12 +249,12 @@ public class OrderDetailActivity extends BaseActivity {
 
         BigDecimal otherDiscount = new BigDecimal(orderBean.getData().getOrder_amount())
                 .subtract(new BigDecimal(orderBean.getData().getTicket_reduce_money()))
-                .subtract(new BigDecimal(orderBean.getData().getGiftcard_eq_money()))
                 .subtract(new BigDecimal(orderBean.getData().getPayable_amount()));
 
         tvOtherDiscount.setText("¥" + otherDiscount.toString());
         tvOrderNeedPay.setTypeface(DisplayUtils.setTextType(this));
-        tvOrderNeedPay.setText("¥" + orderBean.getData().getPayable_amount());
+        tvOrderNeedPay.setText("¥" + BigDecimalUtils.sub(orderBean.getData().getPayable_amount(),
+                orderBean.getData().getGiftcard_eq_money()));
 
         tvOrderPayStyle.setText(orderBean.getData().getPay_type());
 
@@ -276,13 +280,23 @@ public class OrderDetailActivity extends BaseActivity {
                 tvGoodsName.setText(childOrdersBean.getGoods_name());
                 tvGoodsName.setTypeface(DisplayUtils.setTextType(mContext));
 
-                if (childOrdersBean.getPart() != null) {
-                    String parts = "";
-                    for (OrderDetailsBean.DataBean.ChildOrdersBean.PartBean partBean : childOrdersBean.getPart()) {
-                        parts += partBean.getPart_name() + ":" + partBean.getPart_value() + ";";
-                    }
-                    tvContent.setText(parts);
+                String parts = "";
+                switch (childOrdersBean.getCategory_id()) {
+                    case 1:
+                        for (OrderDetailsBean.DataBean.ChildOrdersBean.PartBean partBean : childOrdersBean.getPart()) {
+                            parts += partBean.getPart_name() + ":" + partBean.getPart_value() + ";";
+                        }
+                        parts = parts.substring(0, parts.length() - 1);
+                        break;
+                    case 2:
+                        for (OrderDetailsBean.DataBean.ChildOrdersBean.SkuBean skuBean : childOrdersBean.getSku()) {
+                            parts += skuBean.getType() + ":" + skuBean.getValue() + ";";
+                        }
+                        parts = parts.substring(0, parts.length() - 1);
+                        break;
                 }
+
+                tvContent.setText(parts);
 
                 holder.setText(R.id.tv_goods_price, "¥" + childOrdersBean.getSell_price());
                 holder.setText(R.id.tv_goods_count, "x" + childOrdersBean.getGoods_num());
@@ -291,7 +305,7 @@ public class OrderDetailActivity extends BaseActivity {
                 tvContent.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (childOrdersBean.getPart() != null) {
+                        if (childOrdersBean.getCategory_id() == 1 && childOrdersBean.getPart() != null) {
                             goodsPart(childOrdersBean.getPart());
                         }
                     }

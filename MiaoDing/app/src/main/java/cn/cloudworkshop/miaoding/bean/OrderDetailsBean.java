@@ -84,6 +84,7 @@ public class OrderDetailsBean {
         private List<ChildOrdersBean> childOrders;
         private String express_no;
 
+
         public String getExpress_no() {
             return express_no;
         }
@@ -286,6 +287,24 @@ public class OrderDetailsBean {
             private String img_info;
             private String re_marks;
             private List<PartBean> part;
+            private List<SkuBean> sku;
+            private int category_id;
+
+            public int getCategory_id() {
+                return category_id;
+            }
+
+            public void setCategory_id(int category_id) {
+                this.category_id = category_id;
+            }
+
+            public List<SkuBean> getSku() {
+                return sku;
+            }
+
+            public void setSku(List<SkuBean> sku) {
+                this.sku = sku;
+            }
 
             public String getDetail_order_sn() {
                 return detail_order_sn;
@@ -366,6 +385,33 @@ public class OrderDetailsBean {
 
                 public void setPart_value(String part_value) {
                     this.part_value = part_value;
+                }
+            }
+
+
+            public static class SkuBean {
+                /**
+                 * part_name : 面料
+                 * part_value : VBC 班长会团购款
+                 */
+
+                private String type;
+                private String value;
+
+                public String getType() {
+                    return type;
+                }
+
+                public void setType(String type) {
+                    this.type = type;
+                }
+
+                public String getValue() {
+                    return value;
+                }
+
+                public void setValue(String value) {
+                    this.value = value;
                 }
             }
         }

@@ -47,7 +47,8 @@
                 android:singleLine="true"
                 android:textColor="@color/dark_gray_22"
                 android:textColorHint="@color/light_gray_99"
-                android:textSize="14sp"/>
+                android:textSize="14sp"
+                android:background="@null"/>
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -63,7 +64,8 @@
                 android:singleLine="true"
                 android:textColor="@color/dark_gray_22"
                 android:textColorHint="@color/light_gray_99"
-                android:textSize="14sp"/>
+                android:textSize="14sp"
+                android:background="@null"/>
 
         </LinearLayout>
 

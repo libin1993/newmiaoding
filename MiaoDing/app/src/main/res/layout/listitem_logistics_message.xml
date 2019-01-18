@@ -66,14 +66,6 @@
                     android:textSize="14.5sp"/>
 
                 <TextView
-                    android:id="@+id/tv_logistics_size"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp"
-                    android:textColor="@android:color/darker_gray"
-                    android:textSize="12sp"/>
-
-                <TextView
                     android:id="@+id/tv_logistics_company"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

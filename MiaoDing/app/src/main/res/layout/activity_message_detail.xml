@@ -1,27 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/app_bg"
-              android:fitsSystemWindows="true"
-    >
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/app_bg"
+                android:fitsSystemWindows="true">
+
     <include
         layout="@layout/widget_header_layout"/>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_message_detail"
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+        android:id="@+id/sfl_msg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="44dp"
-        android:overScrollMode="never">
-    </android.support.v7.widget.RecyclerView>
+        android:layout_marginTop="44dp">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_message_detail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:overScrollMode="never">
+        </android.support.v7.widget.RecyclerView>
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
     <TextView
         android:id="@+id/tv_no_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/no_related_msg"
         android:layout_centerInParent="true"
+        android:text="@string/no_related_msg"
         android:textColor="@android:color/darker_gray"
         android:textSize="16sp"
         android:visibility="gone"/>

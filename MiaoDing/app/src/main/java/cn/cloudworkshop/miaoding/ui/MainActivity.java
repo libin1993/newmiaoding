@@ -96,7 +96,7 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
         initView();
         checkUpdate();
         isLogin();
-        submitClientId();
+//        submitClientId();
     }
 
 
@@ -213,7 +213,7 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
 
         if (isCheckUpdate) {
             OkHttpUtils.get()
-                    .url(Constant.APP_INDEX)
+                    .url(Constant.CHECK_UPDATE)
                     .build()
                     .execute(new StringCallback() {
                         @Override
@@ -224,25 +224,20 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
                         @Override
                         public void onResponse(String response, int id) {
                             final AppIndexBean appIndexBean = GsonUtils.jsonToBean(response, AppIndexBean.class);
-                            MyApplication.serverPhone = appIndexBean.getData().getKf_tel();
-                            MyApplication.loginBg = appIndexBean.getData().getLogin_img();
-                            if (appIndexBean.getData().getVersion().getAndroid() != null &&
-                                    Integer.valueOf(appIndexBean.getData().getVersion().getAndroid()
-                                            .getVersion()) > getVersionCode()) {
-                                MyApplication.updateUrl = appIndexBean.getData().getDownload_url();
-                                MyApplication.updateContent = appIndexBean.getData().getVersion()
-                                        .getAndroid().getRemark();
+                            if (appIndexBean.getCode() == 10000 && appIndexBean.getData().getVersion_id() > getVersionCode()) {
+                                MyApplication.updateUrl = appIndexBean.getData().getLink();
+                                MyApplication.updateContent = appIndexBean.getData().getDescription();
                                 //取消检测更新
                                 isCheckUpdate = false;
                                 AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this,
                                         R.style.Theme_AppCompat_DayNight_Dialog_Alert);
                                 dialog.setTitle(R.string.check_new_version);
-                                dialog.setMessage(appIndexBean.getData().getVersion().getAndroid().getRemark());
+                                dialog.setMessage(appIndexBean.getData().getDescription());
                                 //确定
                                 dialog.setPositiveButton(R.string.update_immediately, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        downloadFile(appIndexBean.getData().getDownload_url());
+                                        downloadFile(appIndexBean.getData().getLink());
                                     }
                                 });
                                 //取消

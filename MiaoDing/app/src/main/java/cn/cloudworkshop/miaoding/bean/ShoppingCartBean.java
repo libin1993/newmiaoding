@@ -109,6 +109,15 @@ public class ShoppingCartBean {
         private boolean isSelect = true;
         private int category_id;
         private int goods_id;
+        private List<SkuBean> sku;
+
+        public List<SkuBean> getSku() {
+            return sku;
+        }
+
+        public void setSku(List<SkuBean> sku) {
+            this.sku = sku;
+        }
 
         public int getCategory_id() {
             return category_id;
@@ -205,6 +214,32 @@ public class ShoppingCartBean {
 
             public void setPart_value(String part_value) {
                 this.part_value = part_value;
+            }
+        }
+
+        public static class SkuBean {
+            /**
+             * part_name : 面料
+             * part_value : VBC 班长会团购款
+             */
+
+            private String type;
+            private String value;
+
+            public String getType() {
+                return type;
+            }
+
+            public void setType(String type) {
+                this.type = type;
+            }
+
+            public String getValue() {
+                return value;
+            }
+
+            public void setValue(String value) {
+                this.value = value;
             }
         }
     }

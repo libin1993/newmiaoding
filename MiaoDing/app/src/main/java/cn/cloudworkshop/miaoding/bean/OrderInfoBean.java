@@ -104,6 +104,16 @@ public class OrderInfoBean {
         private List<ChildOrdersBean> childOrders;
         private String express_no;
         private String payable_amount;
+        private String giftcard_eq_money;
+
+        public String getGiftcard_eq_money() {
+            return giftcard_eq_money;
+        }
+
+        public void setGiftcard_eq_money(String giftcard_eq_money) {
+            this.giftcard_eq_money = giftcard_eq_money;
+        }
+
 
         public String getPayable_amount() {
             return payable_amount;
@@ -167,6 +177,24 @@ public class OrderInfoBean {
             private int goods_num;
             private String img_info;
             private String goods_name;
+            private List<SkuBean> sku;
+            private int category_id;
+
+            public int getCategory_id() {
+                return category_id;
+            }
+
+            public void setCategory_id(int category_id) {
+                this.category_id = category_id;
+            }
+
+            public List<SkuBean> getSku() {
+                return sku;
+            }
+
+            public void setSku(List<SkuBean> sku) {
+                this.sku = sku;
+            }
 
             public String getGoods_name() {
                 return goods_name;
@@ -245,6 +273,33 @@ public class OrderInfoBean {
                     this.part_value = part_value;
                 }
             }
+
+            public static class SkuBean {
+                /**
+                 * part_name : 面料
+                 * part_value : VBC 班长会团购款
+                 */
+
+                private String type;
+                private String value;
+
+                public String getType() {
+                    return type;
+                }
+
+                public void setType(String type) {
+                    this.type = type;
+                }
+
+                public String getValue() {
+                    return value;
+                }
+
+                public void setValue(String value) {
+                    this.value = value;
+                }
+            }
+
         }
     }
 }

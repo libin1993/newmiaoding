@@ -161,8 +161,8 @@ public class MyOrderFragment extends BaseFragment {
                                 llNullOrder.setVisibility(View.GONE);
                                 rvGoods.setVisibility(View.VISIBLE);
                             } else {
-                                RecyclerViewStateUtils.setFooterViewState(getActivity(), rvGoods, 0,
-                                        LoadingFooter.State.NoMore, null);
+                                RecyclerViewStateUtils.setFooterViewState(getActivity(), rvGoods,
+                                        0, LoadingFooter.State.NoMore, null);
                                 if (page == 1) {
                                     if (rvGoods != null) {
                                         rvGoods.setVisibility(View.GONE);
@@ -190,7 +190,6 @@ public class MyOrderFragment extends BaseFragment {
                 R.layout.listitem_order, dataList) {
             @Override
             protected void convert(ViewHolder holder, final OrderInfoBean.DataBean dataBean, int position) {
-                LogUtils.log(position + "," + dataList.size());
                 holder.setText(R.id.tv_order_number, dataBean.getOrder_sn());
                 RecyclerView rvChild = holder.getView(R.id.rv_child_order);
                 MyLinearLayoutManager myLinearLayoutManager = new MyLinearLayoutManager(getActivity());

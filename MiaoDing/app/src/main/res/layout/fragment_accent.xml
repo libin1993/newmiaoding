@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/light_gray_ed"
-              android:orientation="vertical">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/light_gray_ed"
+                android:orientation="vertical">
 
     <TextView
         android:layout_width="match_parent"
@@ -14,13 +14,23 @@
         android:textColor="@android:color/white"
         android:textSize="16sp"/>
 
-    <com.github.jdsjlzx.recyclerview.LRecyclerView
-        android:id="@+id/rv_accent"
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+        android:id="@+id/sfl_accent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="44dp">
-    </com.github.jdsjlzx.recyclerview.LRecyclerView>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_accent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </android.support.v7.widget.RecyclerView>
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+
 
     <include
         layout="@layout/loading_error"/>
+
+    <include
+        layout="@layout/loading_view"/>
 </RelativeLayout>

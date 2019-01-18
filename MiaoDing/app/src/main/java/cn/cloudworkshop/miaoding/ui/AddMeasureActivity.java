@@ -168,7 +168,6 @@ public class AddMeasureActivity extends BaseActivity implements EasyPermissions.
         OkHttpUtils.post()
                 .url(Constant.TAKE_PHOTO)
                 .addParams("token", SharedPreferencesUtils.getStr(this, "token"))
-                .addParams("phone", SharedPreferencesUtils.getStr(this, "phone"))
                 .addParams("name", etMeasureName.getText().toString().trim())
                 .addParams("height", etMeasureHeight.getText().toString().trim())
                 .addParams("weight", etMeasureWeight.getText().toString().trim())

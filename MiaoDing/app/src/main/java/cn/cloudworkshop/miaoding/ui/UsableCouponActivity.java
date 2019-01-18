@@ -70,7 +70,6 @@ public class UsableCouponActivity extends BaseActivity {
     ImageView imgHeaderShare;
 
     private List<CouponBean.TicketsBean> couponList = new ArrayList<>();
-    ;
     private String couponRule;
     private CommonAdapter<CouponBean.TicketsBean> adapter;
 

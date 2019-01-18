@@ -429,7 +429,6 @@ public class NewCameraActivity extends BaseActivity implements SensorEventListen
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                LogUtils.log(e.getMessage());
             }
 
             @Override
@@ -458,13 +457,12 @@ public class NewCameraActivity extends BaseActivity implements SensorEventListen
     private void submitData(String imgUrl) {
         Map<String, String> map = new HashMap<>();
         map.put("token", SharedPreferencesUtils.getStr(this, "token"));
-        map.put("phone", SharedPreferencesUtils.getStr(this, "phone"));
         map.put("name", name);
         map.put("height", height);
         map.put("weight", weight);
         map.put("is_index", String.valueOf(isDefault));
         map.put("scale", "1,1,1,1");
-        map.put("img_list", imgUrl);
+        map.put("volume_img", imgUrl);
 
         if (!TextUtils.isEmpty(store)) {
             map.put("factory_id", store);

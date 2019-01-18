@@ -37,10 +37,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:layout_marginRight="15dp"
-            android:maxLines="2"
+            android:layout_marginRight="20dp"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:textColor="@color/text_gray_6a"
-            android:textSize="12sp"/>
+            android:textSize="10sp"/>
 
         <TextView
             android:id="@+id/tv_order_count"

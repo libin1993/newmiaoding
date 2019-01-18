@@ -153,11 +153,17 @@ public class ShoppingCartActivity extends BaseActivity {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         imgLoadError.setVisibility(View.VISIBLE);
+                        if (viewLoading != null && viewLoading.isShown()) {
+                            viewLoading.smoothToHide();
+                        }
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
                         imgLoadError.setVisibility(View.GONE);
+                        if (viewLoading != null && viewLoading.isShown()) {
+                            viewLoading.smoothToHide();
+                        }
                         ShoppingCartBean cartBean = GsonUtils.jsonToBean(response, ShoppingCartBean.class);
                         if (cartBean.getData() != null && cartBean.getData().size() > 0) {
                             if (isRefresh) {
@@ -166,8 +172,6 @@ public class ShoppingCartActivity extends BaseActivity {
                             dataList.addAll(cartBean.getData());
                             if (isLoadMore || isRefresh) {
                                 rvGoodsCart.refreshComplete(0);
-                            } else {
-                                viewLoading.smoothToHide();
                             }
                             getTotalCount();
                             getTotalPrice();
@@ -272,8 +276,6 @@ public class ShoppingCartActivity extends BaseActivity {
      * 加载视图
      */
     private void initView() {
-//        getTotalPrice();
-//        getTotalCount();
 
         checkboxAllSelect.setChecked(true);
         rvGoodsCart.setLayoutManager(new LinearLayoutManager(ShoppingCartActivity.this));
@@ -293,14 +295,22 @@ public class ShoppingCartActivity extends BaseActivity {
                 tvGoodsName.setText(dataBean.getGoods_name());
                 TextView tvContent = holder.getView(R.id.tv_goods_content);
 
-                if (dataBean.getPart() != null) {
-                    String parts = "";
-                    for (ShoppingCartBean.DataBean.PartBean partBean : dataBean.getPart()) {
-                        parts += partBean.getPart_name() + ":" + partBean.getPart_value() + ";";
-                    }
-                    parts = parts.substring(0, parts.length() - 1);
-                    tvContent.setText(parts);
+                String parts = "";
+                switch (dataBean.getCategory_id()) {
+                    case 1:
+                        for (ShoppingCartBean.DataBean.PartBean partBean : dataBean.getPart()) {
+                            parts += partBean.getPart_name() + ":" + partBean.getPart_value() + ";";
+                        }
+                        parts = parts.substring(0, parts.length() - 1);
+                        break;
+                    case 2:
+                        for (ShoppingCartBean.DataBean.SkuBean skuBean : dataBean.getSku()) {
+                            parts += skuBean.getType() + ":" + skuBean.getValue() + ";";
+                        }
+                        parts = parts.substring(0, parts.length() - 1);
+                        break;
                 }
+                tvContent.setText(parts);
 
 
                 holder.setText(R.id.tv_goods_price, "¥" + DisplayUtils.decimalFormat(
@@ -318,7 +328,7 @@ public class ShoppingCartActivity extends BaseActivity {
                 tvContent.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (dataBean.getPart() != null) {
+                        if (dataBean.getCategory_id() == 1 && dataBean.getPart() != null) {
                             goodsPart(dataBean.getPart());
                         }
 

@@ -175,8 +175,7 @@ public class AppointmentActivity extends BaseActivity {
                                 && guideBean.getData().getImg_urls().size() > 0) {
 
                             View popupView = getLayoutInflater().inflate(R.layout.ppw_coupon, null);
-                            mPopupWindow = new PopupWindow(popupView,
-                                    ViewGroup.LayoutParams.MATCH_PARENT,
+                            mPopupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.MATCH_PARENT,
                                     ViewGroup.LayoutParams.MATCH_PARENT);
                             mPopupWindow.setTouchable(true);
                             mPopupWindow.setFocusable(true);

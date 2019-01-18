@@ -27,6 +27,7 @@ import cn.cloudworkshop.miaoding.base.BaseActivity;
 import cn.cloudworkshop.miaoding.bean.MsgCenterBean;
 import cn.cloudworkshop.miaoding.constant.Constant;
 import cn.cloudworkshop.miaoding.utils.GsonUtils;
+import cn.cloudworkshop.miaoding.utils.LogUtils;
 import cn.cloudworkshop.miaoding.utils.SharedPreferencesUtils;
 import cn.cloudworkshop.miaoding.view.BadgeView;
 import okhttp3.Call;
@@ -44,6 +45,7 @@ public class MessageCenterActivity extends BaseActivity {
     @BindView(R.id.rv_message_center)
     RecyclerView rvMessage;
     @BindView(R.id.img_load_error)
+
     ImageView imgLoadError;
     private List<MsgCenterBean.DataBean> msgList = new ArrayList<>();
     private CommonAdapter<MsgCenterBean.DataBean> adapter;
@@ -55,7 +57,7 @@ public class MessageCenterActivity extends BaseActivity {
         ButterKnife.bind(this);
         tvHeaderTitle.setText(R.string.msg_center);
         initData();
-        initView();
+
     }
 
     @Override
@@ -87,7 +89,7 @@ public class MessageCenterActivity extends BaseActivity {
                         if (messageBean.getCode() == 10000 && messageBean.getData() != null &&
                                 messageBean.getData().size() > 0) {
                             msgList.addAll(messageBean.getData());
-                            adapter.notifyDataSetChanged();
+                            initView();
                         }
                     }
                 });
@@ -102,30 +104,29 @@ public class MessageCenterActivity extends BaseActivity {
         adapter = new CommonAdapter<MsgCenterBean.DataBean>(this, R.layout.listitem_message_center, msgList) {
             @Override
             protected void convert(ViewHolder holder, MsgCenterBean.DataBean dataBean, int position) {
+                ImageView ivIcon = holder.getView(R.id.img_message_icon);
                 Glide.with(MessageCenterActivity.this)
                         .load(Constant.IMG_HOST + dataBean.getImg())
                         .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                        .into((ImageView) holder.getView(R.id.img_message_icon));
-                if (msgList.get(position).getNum() > 0 && dataBean.getLast_msg().getIs_read() == 0) {
-                    BadgeView badgeView = new BadgeView(MessageCenterActivity.this);
+                        .into(ivIcon);
+                BadgeView badgeView = new BadgeView(MessageCenterActivity.this);
+                if (dataBean.getUnread_message_num() > 0) {
+                    badgeView.setVisibility(View.VISIBLE);
                     badgeView.setBackgroundResource(R.drawable.badgeview_bg);
                     badgeView.setWidth(25);
                     badgeView.setHeight(25);
                     badgeView.setTextSize(4);
-                    badgeView.setTargetView(holder.getView(R.id.img_message_icon));
-                    if (msgList.get(position).getNum() < 99) {
-                        badgeView.setBadgeCount(dataBean.getNum());
+                    badgeView.setTargetView(ivIcon);
+                    if (msgList.get(position).getUnread_message_num() < 99) {
+                        badgeView.setBadgeCount(dataBean.getUnread_message_num());
                     } else {
                         badgeView.setText("99+");
                     }
+                } else {
+                    badgeView.setVisibility(View.GONE);
                 }
 
                 holder.setText(R.id.tv_message_title, dataBean.getName());
-//                if (msgList.get(position).getLast_msg() != null) {
-//                    holder.setText(R.id.tv_message_content, dataBean.getLast_msg().getTitle());
-//                    holder.setText(R.id.tv_message_time,
-//                            DateUtils.getDate("yyyy-MM-dd HH:mm", dataBean.getLast_msg().getC_time()));
-//                }
             }
         };
         rvMessage.setAdapter(adapter);
@@ -133,7 +134,7 @@ public class MessageCenterActivity extends BaseActivity {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
                 Intent intent = new Intent(MessageCenterActivity.this, MessageDetailActivity.class);
-                intent.putExtra("content", msgList.get(position).getType());
+                intent.putExtra("type", msgList.get(position).getType());
                 startActivity(intent);
             }
 

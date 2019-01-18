@@ -8,7 +8,7 @@ import java.util.List;
  * Email：1993911441@qq.com
  * Describe：
  */
-public class ConfirmOrderBean implements Serializable{
+public class ConfirmOrderBean implements Serializable {
 
 
     /**
@@ -166,7 +166,7 @@ public class ConfirmOrderBean implements Serializable{
             }
         }
 
-        public static class LtArrBean implements Serializable{
+        public static class LtArrBean implements Serializable {
             /**
              * id : 1
              * name : null
@@ -231,6 +231,24 @@ public class ConfirmOrderBean implements Serializable{
             private String goods_name;
             private String img_info;
             private List<PartBean> part;
+            private List<SkuBean> sku;
+            private int category_id;
+
+            public int getCategory_id() {
+                return category_id;
+            }
+
+            public void setCategory_id(int category_id) {
+                this.category_id = category_id;
+            }
+
+            public List<SkuBean> getSku() {
+                return sku;
+            }
+
+            public void setSku(List<SkuBean> sku) {
+                this.sku = sku;
+            }
 
             public List<PartBean> getPart() {
                 return part;
@@ -312,6 +330,32 @@ public class ConfirmOrderBean implements Serializable{
 
                 public void setPart_value(String part_value) {
                     this.part_value = part_value;
+                }
+            }
+
+            public static class SkuBean {
+                /**
+                 * part_name : 面料
+                 * part_value : VBC 班长会团购款
+                 */
+
+                private String type;
+                private String value;
+
+                public String getType() {
+                    return type;
+                }
+
+                public void setType(String type) {
+                    this.type = type;
+                }
+
+                public String getValue() {
+                    return value;
+                }
+
+                public void setValue(String value) {
+                    this.value = value;
                 }
             }
         }

@@ -271,7 +271,6 @@ public class ScrollViewContainer extends RelativeLayout {
     private OnTouchListener bottomViewTouchListener = new OnTouchListener() {
         @Override
         public boolean onTouch(View v, MotionEvent event) {
-            LogUtils.log(v.getScrollY() + "");
             canPullDown = v.getScrollY() == 0 && mCurrentViewIndex == 1;
             return false;
         }
