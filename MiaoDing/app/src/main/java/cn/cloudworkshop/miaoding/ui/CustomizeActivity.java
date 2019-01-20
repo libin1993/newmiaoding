@@ -88,7 +88,6 @@ public class CustomizeActivity extends BaseActivity {
     @BindView(R.id.img_tailor_success)
     ImageView imgTailorSuccess;
 
-    //    private TailorBean.DataBean dataBean;
     //配件
     private List<NewEmbroideryBean.DataBean.MustDisplayPartBean.SonBean> itemList = new ArrayList<>();
     //稀疏数组
@@ -97,17 +96,8 @@ public class CustomizeActivity extends BaseActivity {
 
     private CommonAdapter<NewEmbroideryBean.DataBean.MustDisplayPartBean.SonBean> itemAdapter;
 
-    //进入页面时间
-    private long enterTime;
-
-    private CustomItemBean customItemBean;
-    //部件拼接字段
-    private String specContent;
-
     //当前部件位置
     private int currentPart;
-    //当前子部件位置
-    private int currentItem;
     //法式袖扣
     private String buttonName;
     //首次选择
@@ -148,7 +138,7 @@ public class CustomizeActivity extends BaseActivity {
             dataList = (List<NewEmbroideryBean.DataBean.MustDisplayPartBean>) bundle.getSerializable("parts");
             partsBean = (CustomizePartsBean) bundle.getSerializable("embroidery");
         }
-        enterTime = DateUtils.getCurrentTime();
+
     }
 
 
@@ -216,7 +206,7 @@ public class CustomizeActivity extends BaseActivity {
                     for (NewEmbroideryBean.DataBean.MustDisplayPartBean.SonBean sonBean : dataList.get(i).getSon()) {
                         if (sonBean.getIs_default() == 1) {
                             Glide.with(getApplicationContext())
-                                    .load(Constant.IMG_HOST + sonBean.getAndroid_middle())
+                                    .load(Constant.IMG_HOST + sonBean.getAndroid_max())
                                     .fitCenter()
                                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                                     .into(img1);
@@ -229,7 +219,7 @@ public class CustomizeActivity extends BaseActivity {
                     for (NewEmbroideryBean.DataBean.MustDisplayPartBean.SonBean sonBean : dataList.get(i).getSon()) {
                         if (sonBean.getIs_default() == 1) {
                             Glide.with(getApplicationContext())
-                                    .load(Constant.IMG_HOST + sonBean.getAndroid_middle())
+                                    .load(Constant.IMG_HOST + sonBean.getAndroid_max())
                                     .fitCenter()
                                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                                     .into(img2);
@@ -242,7 +232,7 @@ public class CustomizeActivity extends BaseActivity {
                     for (NewEmbroideryBean.DataBean.MustDisplayPartBean.SonBean sonBean : dataList.get(i).getSon()) {
                         if (sonBean.getIs_default() == 1) {
                             Glide.with(getApplicationContext())
-                                    .load(Constant.IMG_HOST + sonBean.getAndroid_middle())
+                                    .load(Constant.IMG_HOST + sonBean.getAndroid_max())
                                     .fitCenter()
                                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                                     .into(img3);
@@ -443,8 +433,7 @@ public class CustomizeActivity extends BaseActivity {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
                 if (!isLongPress) {
-                    //当前子配件
-                    currentItem = position;
+
                     //选择子配件，默认布局清空
                     if (firstSelect) {
                         for (int i = 0; i < rlPositiveTailor.getChildCount(); i++) {
@@ -489,7 +478,7 @@ public class CustomizeActivity extends BaseActivity {
                         case 1:
                             ImageView positiveImg = (ImageView) rlPositiveTailor.getChildAt(currentPart);
                             Glide.with(CustomizeActivity.this)
-                                    .load(Constant.IMG_HOST + itemList.get(position).getAndroid_middle())
+                                    .load(Constant.IMG_HOST + itemList.get(position).getAndroid_max())
                                     .fitCenter()
                                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                                     .into(positiveImg);
@@ -503,7 +492,7 @@ public class CustomizeActivity extends BaseActivity {
                         case 2:
                             ImageView backImg = (ImageView) rlBackTailor.getChildAt(currentPart);
                             Glide.with(CustomizeActivity.this)
-                                    .load(Constant.IMG_HOST + itemList.get(position).getAndroid_middle())
+                                    .load(Constant.IMG_HOST + itemList.get(position).getAndroid_max())
                                     .fitCenter()
                                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                                     .into(backImg);
@@ -529,7 +518,7 @@ public class CustomizeActivity extends BaseActivity {
                         case 3:
                             ImageView inSideImg = (ImageView) rlInsideTailor.getChildAt(currentPart);
                             Glide.with(CustomizeActivity.this)
-                                    .load(Constant.IMG_HOST + itemList.get(position).getAndroid_middle())
+                                    .load(Constant.IMG_HOST + itemList.get(position).getAndroid_max())
                                     .fitCenter()
                                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                                     .into(inSideImg);
@@ -557,7 +546,9 @@ public class CustomizeActivity extends BaseActivity {
             @Override
             public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
                 Glide.with(CustomizeActivity.this)
-                        .load(Constant.IMG_HOST + itemList.get(position).getAndroid_max())
+                        .load(Constant.IMG_HOST + itemList.get(position).
+
+                                getAndroid_middle())
                         .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                         .into(imgLargeMaterial);
                 isLongPress = true;
@@ -567,7 +558,6 @@ public class CustomizeActivity extends BaseActivity {
                 return false;
             }
         });
-
 
     }
 
@@ -693,7 +683,7 @@ public class CustomizeActivity extends BaseActivity {
                     if (value == dataList.get(j).getSon().get(k).getPart_id()) {
                         partIds += value + ",";
                         CustomizePartsBean.PartsBean partsBean = new CustomizePartsBean.PartsBean();
-                        partsBean.setImg(dataList.get(j).getSon().get(k).getAndroid_middle());
+                        partsBean.setImg(dataList.get(j).getSon().get(k).getAndroid_max());
                         partsBean.setTitle(dataList.get(j).getType_name());
                         partsBean.setName(dataList.get(j).getSon().get(k).getPart_name());
                         partsBean.setPositionId(dataList.get(j).getImg_mark());

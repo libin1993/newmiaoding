@@ -38,9 +38,9 @@
         android:id="@+id/tv_current_size"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="8dp"
         android:gravity="center_horizontal"
-        android:maxLength="4"
+        android:maxLength="5"
         android:singleLine="true"
         android:textColor="@color/dark_gray_22"
         android:textSize="12sp"/>
