@@ -74,7 +74,6 @@ public class PayOrderUtils {
         this.money = money;
         this.orderId = orderId;
         api = WXAPIFactory.createWXAPI(context, Constant.APP_ID);
-        MyApplication.orderId = orderId;
 
     }
 

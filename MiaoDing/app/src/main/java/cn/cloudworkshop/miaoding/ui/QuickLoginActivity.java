@@ -76,12 +76,12 @@ public class QuickLoginActivity extends BaseActivity {
     }
 
     private void initView() {
-        if (MyApplication.loginBg != null) {
-            Glide.with(this)
-                    .load(Constant.IMG_HOST + MyApplication.loginBg)
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                    .into(imgBgLogin);
-        }
+//        if (MyApplication.loginBg != null) {
+//            Glide.with(this)
+//                    .load(Constant.IMG_HOST + MyApplication.loginBg)
+//                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+//                    .into(imgBgLogin);
+//        }
     }
 
     /**

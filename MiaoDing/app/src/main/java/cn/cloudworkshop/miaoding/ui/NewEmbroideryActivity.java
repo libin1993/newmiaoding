@@ -52,6 +52,7 @@ import cn.cloudworkshop.miaoding.bean.EmbroideryBean;
 import cn.cloudworkshop.miaoding.bean.NewEmbroideryBean;
 import cn.cloudworkshop.miaoding.constant.Constant;
 import cn.cloudworkshop.miaoding.utils.DisplayUtils;
+import cn.cloudworkshop.miaoding.utils.DoubleClickUtils;
 import cn.cloudworkshop.miaoding.utils.GsonUtils;
 import cn.cloudworkshop.miaoding.utils.SharedPreferencesUtils;
 import cn.cloudworkshop.miaoding.utils.ToastUtils;
@@ -188,7 +189,7 @@ public class NewEmbroideryActivity extends BaseActivity {
                         @Override
                         protected void convert(ViewHolder holder, NewEmbroideryBean.DataBean.SpecialMarkPartBean.SonBeanX sonBeanX, int position) {
                             Glide.with(NewEmbroideryActivity.this)
-                                    .load(Constant.IMG_HOST + sonBeanX.getPart_img())
+                                    .load(Constant.IMG_HOST + sonBeanX.getAndroid_min())
                                     .placeholder(R.mipmap.place_holder_goods)
                                     .dontAnimate()
 
@@ -388,7 +389,7 @@ public class NewEmbroideryActivity extends BaseActivity {
                         @Override
                         protected void convert(ViewHolder holder, NewEmbroideryBean.DataBean.SpecialMarkPartBean.SonBeanX sonBeanX, int position) {
                             Glide.with(NewEmbroideryActivity.this)
-                                    .load(Constant.IMG_HOST + sonBeanX.getPart_img())
+                                    .load(Constant.IMG_HOST + sonBeanX.getAndroid_min())
                                     .placeholder(R.mipmap.place_holder_goods)
                                     .dontAnimate()
                                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
@@ -497,14 +498,19 @@ public class NewEmbroideryActivity extends BaseActivity {
             case R.id.tv_add_to_cart:
                 if (embroideryBean != null) {
                     type = 2;
-                    addToCart();
+                    if (DoubleClickUtils.isFastClick()) {
+                        addToCart();
+                    }
                 }
 
                 break;
             case R.id.tv_confirm_buy_goods:
                 if (embroideryBean != null) {
                     type = 1;
-                    addToCart();
+                    if (DoubleClickUtils.isFastClick()) {
+                        addToCart();
+                    }
+
                 }
                 break;
             case R.id.img_load_error:
@@ -637,18 +643,6 @@ public class NewEmbroideryActivity extends BaseActivity {
             map.put("special_mark_part_ids", embroideryIds);
         }
 
-
-        String partIds = "";
-        for (NewEmbroideryBean.DataBean.MustDisplayPartBean mustDisplayPartBean : embroideryBean.getData().getMust_display_part()) {
-            for (NewEmbroideryBean.DataBean.MustDisplayPartBean.SonBean sonBean : mustDisplayPartBean.getSon()) {
-                if (sonBean.getIs_default() == 1) {
-                    partIds += sonBean.getPart_id() + ",";
-                    break;
-                }
-            }
-        }
-        partIds = partIds.substring(0, partIds.length() - 1);
-        map.put("must_display_part_ids", partIds);
 
         OkHttpUtils.post()
                 .url(Constant.ADD_CART)

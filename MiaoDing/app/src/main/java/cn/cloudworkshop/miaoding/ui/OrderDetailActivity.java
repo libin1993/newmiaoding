@@ -174,17 +174,19 @@ public class OrderDetailActivity extends BaseActivity {
                 tvOrderPayMoney.setText(R.string.pay);
                 tvOrderCancel.setVisibility(View.VISIBLE);
                 tvOrderPayMoney.setVisibility(View.VISIBLE);
+                tvOrderAfter.setVisibility(View.GONE);
                 break;
             case 2:
                 tvPayTime.setText(orderBean.getData().getPay_time());
                 tvOrderCancel.setText(R.string.notice_send_goods);
                 tvOrderCancel.setVisibility(View.VISIBLE);
+                tvOrderPayMoney.setVisibility(View.GONE);
+                tvOrderAfter.setVisibility(View.GONE);
                 break;
             case 3:
                 tvPayTime.setText(orderBean.getData().getPay_time());
                 tvOrderAfter.setVisibility(View.GONE);
                 tvOrderAfter.setText(R.string.after_sale);
-
                 tvOrderCancel.setVisibility(View.VISIBLE);
                 tvOrderPayMoney.setVisibility(View.VISIBLE);
                 tvOrderCancel.setText(R.string.view_logistics);
@@ -196,6 +198,7 @@ public class OrderDetailActivity extends BaseActivity {
                 tvOrderAfter.setText(R.string.after_sale);
                 tvOrderCancel.setVisibility(View.VISIBLE);
                 tvOrderCancel.setText(R.string.buy_again);
+                tvOrderPayMoney.setVisibility(View.GONE);
 //                if (orderBean.getData().getOrder_comment().getId() == 0) {
 //                    tvOrderPayMoney.setVisibility(View.VISIBLE);
 //                    tvOrderPayMoney.setText(R.string.evaluate);
@@ -206,33 +209,23 @@ public class OrderDetailActivity extends BaseActivity {
             case 5:
                 tvPayTime.setText(R.string.cancelled);
                 tvOrderCancel.setVisibility(View.VISIBLE);
+                tvOrderAfter.setVisibility(View.GONE);
+                tvOrderPayMoney.setVisibility(View.GONE);
                 tvOrderCancel.setText(R.string.delete_order);
                 break;
-            case 6:
-                if (!TextUtils.isEmpty(orderBean.getData().getPay_time()))
-                    tvPayTime.setText(orderBean.getData().getPay_time());
-            case 7:
+            default:
                 if (!TextUtils.isEmpty(orderBean.getData().getPay_time())) {
                     tvPayTime.setText(orderBean.getData().getPay_time());
                 } else {
                     tvPayTime.setText(orderBean.getData().getStatus_text());
                 }
-
+                tvOrderCancel.setVisibility(View.GONE);
+                tvOrderAfter.setVisibility(View.GONE);
+                tvOrderPayMoney.setVisibility(View.GONE);
                 break;
         }
         tvOrderNum.setText(orderBean.getData().getOrder_sn());
 
-//        if (orderBean.getData().getQuick_type() == 2) {
-//            llOrderAddress.setVisibility(View.GONE);
-//        } else {
-//            llOrderAddress.setVisibility(View.VISIBLE);
-//            tvOrderUserName.setText(orderBean.getData().getAccept_name());
-//            tvOrderUserPhone.setText(orderBean.getData().getAddress_phone());
-//            tvOrderUserAddress.setText(orderBean.getData().getProvince()
-//                    + orderBean.getData().getCity()
-//                    + orderBean.getData().getArea()
-//                    + orderBean.getData().getAddress());
-//        }
 
         tvOrderUserName.setText(orderBean.getData().getAccept_name());
         tvOrderUserPhone.setText(orderBean.getData().getAddress_phone());

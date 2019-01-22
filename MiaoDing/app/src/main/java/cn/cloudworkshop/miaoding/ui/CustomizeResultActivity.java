@@ -44,6 +44,7 @@ import cn.cloudworkshop.miaoding.base.BaseActivity;
 import cn.cloudworkshop.miaoding.bean.CustomResultBean;
 import cn.cloudworkshop.miaoding.bean.CustomizePartsBean;
 import cn.cloudworkshop.miaoding.constant.Constant;
+import cn.cloudworkshop.miaoding.utils.DoubleClickUtils;
 import cn.cloudworkshop.miaoding.utils.MyLinearLayoutManager;
 import cn.cloudworkshop.miaoding.utils.SharedPreferencesUtils;
 import cn.cloudworkshop.miaoding.utils.ToastUtils;
@@ -310,11 +311,16 @@ public class CustomizeResultActivity extends BaseActivity {
                 break;
             case R.id.tv_buy_now:
                 type = 1;
-                addToCart();
+                if (DoubleClickUtils.isFastClick()){
+                    addToCart();
+                }
+
                 break;
             case R.id.tv_add_bag:
                 type = 2;
-                addToCart();
+                if (DoubleClickUtils.isFastClick()){
+                    addToCart();
+                }
                 break;
             case R.id.img_header_share:
                 startActivity(new Intent(this, ShoppingCartActivity.class));

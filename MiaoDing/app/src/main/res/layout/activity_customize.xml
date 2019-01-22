@@ -12,7 +12,7 @@
         android:id="@+id/rl_tailor_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="226dp"
+        android:layout_marginBottom="164dp"
         android:layout_marginTop="44dp">
 
         <RelativeLayout
@@ -96,17 +96,6 @@
             android:visibility="gone"/>
 
         <ImageView
-            android:id="@+id/img_tailor_icon"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingLeft="30dp"
-            android:paddingRight="30dp"
-            android:paddingTop="30dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/tailor_list"
-            android:visibility="gone"/>
-
-        <ImageView
             android:id="@+id/img_tailor_reset"
             android:layout_width="60dp"
             android:layout_height="60dp"
@@ -125,16 +114,6 @@
             android:src="@mipmap/customize_next"
             android:visibility="gone"/>
     </RelativeLayout>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_tailor_button"
-        android:layout_width="wrap_content"
-        android:layout_height="62dp"
-        android:layout_above="@+id/rv_tailor_item"
-        android:layout_centerHorizontal="true"
-        android:overScrollMode="never"
-        android:visibility="visible">
-    </android.support.v7.widget.RecyclerView>
 
 
     <android.support.v7.widget.RecyclerView

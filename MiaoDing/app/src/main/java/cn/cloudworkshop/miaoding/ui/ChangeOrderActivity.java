@@ -302,7 +302,7 @@ public class ChangeOrderActivity extends BaseActivity implements EasyPermissions
 //            }
 //        });
 
-        tvConsultPhone.setText(getString(R.string.service_hotline) + MyApplication.serverPhone);
+//        tvConsultPhone.setText(getString(R.string.service_hotline) + MyApplication.serverPhone);
     }
 
     /**

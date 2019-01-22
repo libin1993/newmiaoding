@@ -45,16 +45,6 @@ public class MyApplication extends Application {
     public static String updateUrl;
     //更新内容
     public static String updateContent;
-    //客服电话
-    public static String serverPhone;
-    //登录背景图
-    public static String loginBg;
-    //量体协议
-    //public static String measureAgreement;
-    //订单id
-    public static String orderId;
-    //支付id
-    public static String payId;
 
 
     @Override
@@ -73,7 +63,8 @@ public class MyApplication extends Application {
                 .build();
         OkHttpUtils.initClient(okHttpClient);
 
-        Unicorn.init(this, "e98a79aca99f25ebf9bacbc8c334b76b", options(), new FrescoImageLoader(this));
+        Unicorn.init(this, "e98a79aca99f25ebf9bacbc8c334b76b", options(),
+                new FrescoImageLoader(this));
     }
 
 

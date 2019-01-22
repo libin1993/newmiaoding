@@ -1,7 +1,6 @@
 package cn.cloudworkshop.miaoding.ui;
 
 import android.content.Intent;
-import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -36,13 +35,10 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.cloudworkshop.miaoding.R;
 import cn.cloudworkshop.miaoding.base.BaseActivity;
-import cn.cloudworkshop.miaoding.bean.CustomItemBean;
 import cn.cloudworkshop.miaoding.bean.CustomizePartsBean;
 import cn.cloudworkshop.miaoding.bean.GuideBean;
 import cn.cloudworkshop.miaoding.bean.NewEmbroideryBean;
-import cn.cloudworkshop.miaoding.bean.TailorBean;
 import cn.cloudworkshop.miaoding.constant.Constant;
-import cn.cloudworkshop.miaoding.utils.DateUtils;
 import cn.cloudworkshop.miaoding.utils.GsonUtils;
 import cn.cloudworkshop.miaoding.utils.SharedPreferencesUtils;
 import cn.cloudworkshop.miaoding.view.CircleImageView;
@@ -73,10 +69,7 @@ public class CustomizeActivity extends BaseActivity {
     RelativeLayout rlBackTailor;
     @BindView(R.id.rgs_select_orientation)
     RadioGroup rgsSelectOrientation;
-    @BindView(R.id.img_tailor_icon)
-    ImageView imgTailorIcon;
-    @BindView(R.id.rv_tailor_button)
-    RecyclerView rvTailorButton;
+
     @BindView(R.id.rl_inside_tailor)
     RelativeLayout rlInsideTailor;
     @BindView(R.id.img_tailor_reset)
@@ -98,12 +91,8 @@ public class CustomizeActivity extends BaseActivity {
 
     //当前部件位置
     private int currentPart;
-    //法式袖扣
-    private String buttonName;
     //首次选择
     private boolean firstSelect = true;
-    //选择钮扣动画
-    private AnimationDrawable animation;
     //展示图滑动监听
     private float x1 = 0;
     private float x2 = 0;
@@ -121,7 +110,7 @@ public class CustomizeActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_customize_old);
+        setContentView(R.layout.activity_customize);
         ButterKnife.bind(this);
 
         EventBus.getDefault().register(this);
@@ -185,7 +174,6 @@ public class CustomizeActivity extends BaseActivity {
      */
     private void initView() {
         tvHeaderTitle.setText(R.string.customize);
-        animation = (AnimationDrawable) imgTailorIcon.getDrawable();
         ((RadioButton) rgsSelectOrientation.getChildAt(0)).setChecked(true);
         //进入页面显示默认部件图
         for (int i = 0; i < dataList.size(); i++) {
@@ -384,8 +372,6 @@ public class CustomizeActivity extends BaseActivity {
                 currentPart = position;
                 //部件大图隐藏
                 imgLargeMaterial.setVisibility(View.GONE);
-                //纽扣布局隐藏
-                rvTailorButton.setVisibility(View.GONE);
                 //子配件布局显示
                 rvTailorItem.setVisibility(View.VISIBLE);
                 //判断不可搭配
@@ -483,10 +469,6 @@ public class CustomizeActivity extends BaseActivity {
                                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                                     .into(positiveImg);
 
-                            imgTailorIcon.setVisibility(View.GONE);
-                            animation.stop();
-                            rvTailorButton.setVisibility(View.GONE);
-
                             break;
                         //当前子配件是反面
                         case 2:
@@ -496,23 +478,6 @@ public class CustomizeActivity extends BaseActivity {
                                     .fitCenter()
                                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                                     .into(backImg);
-
-//                        if (itemList.get(position).getName().contains("袖")) {
-//                            if (itemList.get(position).getName().contains("法式")) {
-//
-//                                imgTailorIcon.setVisibility(View.VISIBLE);
-//                                animation.start();
-//                                rvTailorButton.setVisibility(View.GONE);
-//                                ToastUtils.showToast(CustomizeActivity.this,
-//                                        "您选择了法式袖，请挑选扣子");
-//                            } else {
-//                                imgTailorIcon.setVisibility(View.GONE);
-//                                animation.stop();
-//                                rvTailorButton.setVisibility(View.GONE);
-//                                buttonName = null;
-//                            }
-//                        }
-
                             break;
                         //当前子配件是里子
                         case 3:
@@ -522,11 +487,6 @@ public class CustomizeActivity extends BaseActivity {
                                     .fitCenter()
                                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                                     .into(inSideImg);
-
-                            imgTailorIcon.setVisibility(View.GONE);
-                            animation.stop();
-                            rvTailorButton.setVisibility(View.GONE);
-
                             break;
                     }
                     //标题显示当前子配件名称
@@ -612,7 +572,7 @@ public class CustomizeActivity extends BaseActivity {
 
 
     @OnClick({R.id.img_header_back, R.id.img_tailor_success, R.id.rl_positive_tailor,
-            R.id.img_tailor_icon, R.id.img_tailor_reset, R.id.img_tailor_guide})
+            R.id.img_tailor_reset, R.id.img_tailor_guide})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.img_header_back:
@@ -623,9 +583,6 @@ public class CustomizeActivity extends BaseActivity {
                 break;
             case R.id.rl_positive_tailor:
                 imgLargeMaterial.setVisibility(View.GONE);
-                break;
-            case R.id.img_tailor_icon:
-//                selectButton();
                 break;
             case R.id.img_tailor_reset:
                 reselect();
@@ -645,12 +602,9 @@ public class CustomizeActivity extends BaseActivity {
         itemArray.clear();
         itemList.clear();
         itemAdapter.notifyDataSetChanged();
-
-        buttonName = null;
         firstSelect = true;
         imgTailorSuccess.setVisibility(View.GONE);
         rvTailorItem.setVisibility(View.GONE);
-        rvTailorButton.setVisibility(View.GONE);
         imgReset.setVisibility(View.GONE);
         rlPositiveTailor.removeAllViews();
         rlBackTailor.removeAllViews();
@@ -705,69 +659,7 @@ public class CustomizeActivity extends BaseActivity {
         startActivity(intent);
 
     }
-//
-//    /**
-//     * 选择钮扣
-//     */
-//    private void selectButton() {
-//        animation.stop();
-//        imgTailorIcon.setVisibility(View.GONE);
-//        rvTailorButton.setVisibility(View.VISIBLE);
-//        rvTailorButton.setLayoutManager(new LinearLayoutManager(this,
-//                LinearLayoutManager.HORIZONTAL, false));
-//        CommonAdapter<TailorBean.DataBean.SpecListBean.ListBean.ChildBean> buttonAdapter = new
-//                CommonAdapter<TailorBean.DataBean.SpecListBean.ListBean.ChildBean>(this,
-//                        R.layout.listitem_customize_parts, itemList.get(currentItem).getChild_list()) {
-//                    @Override
-//                    protected void convert(ViewHolder holder, TailorBean.DataBean.SpecListBean
-//                            .ListBean.ChildBean childBean, int position) {
-//                        Glide.with(CustomizeActivity.this)
-//                                .load(Constant.IMG_HOST + childBean.getImg_a())
-//                                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-//                                .into((ImageView) holder.getView(R.id.img_tailor_item));
-//                    }
-//                };
-//
-//        rvTailorButton.setAdapter(buttonAdapter);
-//        rvTailorButton.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View view, MotionEvent motionEvent) {
-//                if (motionEvent.getAction() == MotionEvent.ACTION_MOVE || motionEvent.getAction() == MotionEvent.ACTION_UP) {
-//                    imgLargeMaterial.setVisibility(View.GONE);
-//                }
-//                return false;
-//            }
-//        });
-//
-//        buttonAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-//                if (!isLongPress) {
-//                    tvHeaderTitle.setText(itemList.get(currentItem).getChild_list().get(position).getName());
-//                    buttonName = itemList.get(currentItem).getChild_list().get(position).getName();
-//                } else {
-//                    isLongPress = false;
-//                    if (imgLargeMaterial.getVisibility() == View.VISIBLE) {
-//                        imgLargeMaterial.setVisibility(View.GONE);
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
-//                Glide.with(CustomizeActivity.this)
-//                        .load(Constant.IMG_HOST + itemList.get(currentItem).getChild_list()
-//                                .get(position).getImg_b())
-//                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-//                        .into(imgLargeMaterial);
-//                isLongPress = true;
-//                if (imgLargeMaterial.getVisibility() == View.GONE) {
-//                    imgLargeMaterial.setVisibility(View.VISIBLE);
-//                }
-//                return false;
-//            }
-//        });
-//    }
+
 
     /**
      * @param msg 下单成功，结束当前页面

@@ -31,7 +31,7 @@ public class CameraDistance {
         double maxHeight = 0;
         hogDescriptor.detectMultiScale(img, matOfRect, matOfDouble, 0, new Size(
                 4, 4), new Size(8, 8), 1.05, 2, false);
-        LogUtils.log(matOfRect.toArray().length+"");
+
         if (matOfRect.toArray().length > 0) { // 判断是否检测到目标对象，如果有就画矩形，没有就执行下一步
             for (Rect r : matOfRect.toArray()) { // 检测到的目标转成数组形式，方便遍历
                 r.x += Math.round(r.width * 0.1);

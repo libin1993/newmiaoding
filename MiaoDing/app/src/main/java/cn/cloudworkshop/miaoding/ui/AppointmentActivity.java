@@ -201,7 +201,7 @@ public class AppointmentActivity extends BaseActivity {
                                             Constant.IMG_HOST + guideBean.getData().getImg_urls().get(0).getImg(),
                                             getString(R.string.order_share_title),
                                             getString(R.string.order_share_content),
-                                            Constant.SHARE_COUPON + "?pay_ids=" + MyApplication.payId
+                                            Constant.SHARE_COUPON + "?pay_ids=" + ""
                                                     + "&uid=" + SharedPreferencesUtils.getStr(AppointmentActivity.this, "uid"));
                                 }
                             });

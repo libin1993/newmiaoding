@@ -65,6 +65,15 @@ public class AccentDetailBean {
         private List<ImgInfoBean> img_info;
         private List<SkuBeanX> sku;
         private List<CollectListBean> collect_list;
+        private String detail;
+
+        public String getDetail() {
+            return detail;
+        }
+
+        public void setDetail(String detail) {
+            this.detail = detail;
+        }
 
         public int getId() {
             return id;

@@ -156,7 +156,7 @@ public class Constant {
     //优惠券规则
     public static final String COUPON_RULE = NEW_HOST + "/ticket/rule";
     //订单评价
-    public static final String EVALUATE = HOST_INDEX + "save_order_comment";
+    public static final String EVALUATE = NEW_HOST + "/user/order/save_order_comment";
     //商品全部评价
     public static final String EVALUATE_LIST = HOST_INDEX + "get_goods_comment_list";
     //app icon

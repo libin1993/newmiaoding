@@ -55,6 +55,7 @@ import cn.cloudworkshop.miaoding.constant.Constant;
 import cn.cloudworkshop.miaoding.utils.ContactService;
 import cn.cloudworkshop.miaoding.utils.DateUtils;
 import cn.cloudworkshop.miaoding.utils.DisplayUtils;
+import cn.cloudworkshop.miaoding.utils.DoubleClickUtils;
 import cn.cloudworkshop.miaoding.utils.GsonUtils;
 import cn.cloudworkshop.miaoding.utils.ImageEncodeUtils;
 import cn.cloudworkshop.miaoding.utils.MyLinearLayoutManager;
@@ -345,7 +346,7 @@ public class NewCustomizedGoodsActivity extends BaseActivity {
     }
 
     @OnClick({R.id.tv_goods_tailor, R.id.img_tailor_back, R.id.img_add_like, R.id.img_tailor_consult,
-            R.id.img_tailor_share, R.id.tv_custom_goods, R.id.tv_all_evaluate, R.id.img_load_error})
+            R.id.img_tailor_share, R.id.tv_all_evaluate, R.id.img_load_error})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_goods_tailor:
@@ -355,21 +356,11 @@ public class NewCustomizedGoodsActivity extends BaseActivity {
                     startActivity(login);
                 } else {
                     if (customBean != null && customBean.getData() != null) {
-                        buyGoods();
+                        if (DoubleClickUtils.isFastClick()){
+                            buyGoods();
+                        }
                     }
                 }
-                break;
-            case R.id.tv_custom_goods:
-//                if (TextUtils.isEmpty(SharedPreferencesUtils.getStr(this, "token"))) {
-//                    Intent login = new Intent(this, QuickLoginActivity.class);
-//                    login.putExtra("page_name", "定制");
-//                    startActivity(login);
-//                } else {
-//                    if (customBean != null && customBean.getData() != null) {
-//                        selectGoodsType();
-//                    }
-//                }
-
                 break;
             case R.id.img_tailor_back:
                 finish();

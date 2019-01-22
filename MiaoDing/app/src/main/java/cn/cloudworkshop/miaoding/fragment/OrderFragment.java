@@ -75,8 +75,6 @@ public class OrderFragment extends BaseFragment {
     RecyclerView rvOrder;
     @BindView(R.id.layout_refresh_order)
     SmartRefreshLayout refreshLayout;
-    @BindView(R.id.tv_no_order)
-    TextView tvNoOrder;
     @BindView(R.id.ll_no_order)
     LinearLayout llNoOrder;
     @BindView(R.id.img_load_error)
@@ -220,6 +218,11 @@ public class OrderFragment extends BaseFragment {
                         tvPay.setVisibility(View.GONE);
 
                         tvControl.setText(R.string.delete_order);
+                        break;
+                    default:
+                        tvAfter.setVisibility(View.GONE);
+                        tvControl.setVisibility(View.GONE);
+                        tvPay.setVisibility(View.GONE);
                         break;
                 }
 
@@ -610,7 +613,6 @@ public class OrderFragment extends BaseFragment {
      * 获取订单数据
      */
     private void initData() {
-
         OkHttpUtils.get()
                 .url(Constant.GOODS_ORDER)
                 .addParams("token", SharedPreferencesUtils.getStr(getActivity(), "token"))

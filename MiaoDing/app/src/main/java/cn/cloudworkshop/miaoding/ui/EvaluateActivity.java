@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.umeng.analytics.MobclickAgent;
 import com.wang.avi.AVLoadingIndicatorView;
 import com.wang.avi.indicators.BallSpinFadeLoaderIndicator;
 import com.zhy.adapter.recyclerview.CommonAdapter;
@@ -26,7 +27,11 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,6 +53,13 @@ import me.iwf.photopicker.PhotoPicker;
 import me.iwf.photopicker.PhotoPreview;
 import me.iwf.photopicker.utils.AndroidLifecycleUtils;
 import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import pub.devrel.easypermissions.EasyPermissions;
 
 /**
@@ -78,14 +90,11 @@ public class EvaluateActivity extends BaseActivity implements EasyPermissions.Pe
     TextView tvGoodsType;
 
     private String orderId;
-    private String cartId;
-    private String goodsId;
     private String goodsName;
     private String goodsImg;
     private String goodsType;
 
     private ArrayList<String> selectedPhotos = new ArrayList<>();
-    private String imgEncode;
     private CommonAdapter<String> adapter;
     //相机权限
     static final String[] permissionStr = {Manifest.permission.CAMERA};
@@ -156,8 +165,6 @@ public class EvaluateActivity extends BaseActivity implements EasyPermissions.Pe
     private void getData() {
         Intent intent = getIntent();
         orderId = intent.getStringExtra("order_id");
-        cartId = intent.getStringExtra("cart_id");
-        goodsId = intent.getStringExtra("goods_id");
         goodsImg = intent.getStringExtra("goods_img");
         goodsName = intent.getStringExtra("goods_name");
         goodsType = intent.getStringExtra("goods_type");
@@ -181,74 +188,111 @@ public class EvaluateActivity extends BaseActivity implements EasyPermissions.Pe
                 }
                 break;
             case R.id.tv_submit_evaluate:
-                submitData();
+                if (!TextUtils.isEmpty(etEvaluate.getText().toString().trim())) {
+                    loadingView.smoothToShow();
+                    tvSubmit.setEnabled(false);
+
+                    if (selectedPhotos.size() != 0) {
+                        uploadImg();
+                    } else {
+                        submitData(null);
+                    }
+
+                } else {
+                    ToastUtils.showToast(this, getString(R.string.please_input_evaluate));
+                }
                 break;
         }
     }
 
+
+    /**
+     * @param
+     */
+    private void uploadImg() {
+        MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
+        for (int i = 0; i < selectedPhotos.size(); i++) {
+            File file = new File(selectedPhotos.get(i));
+            builder.addFormDataPart("file[]", file.getName(),
+                    RequestBody.create(MediaType.parse("image/png"), file));
+        }
+        MultipartBody requestBody = builder.build();
+        //构建请求
+        Request request = new Request.Builder()
+                .url(Constant.UPLOAD_FILE)
+                .post(requestBody)
+                .build();
+        OkHttpClient client = new OkHttpClient();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, final Response response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response.body().string());
+                    int code = jsonObject.getInt("code");
+                    if (code == 10000) {
+                        String imgUrl = jsonObject.getString("info");
+                        submitData(imgUrl);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+    }
+
+
     /**
      * 提交评论
      */
-    private void submitData() {
-        if (!TextUtils.isEmpty(etEvaluate.getText().toString().trim())) {
-            loadingView.smoothToShow();
-            tvSubmit.setEnabled(false);
-
-            new Thread(myRunnable).start();
-        } else {
-            ToastUtils.showToast(this, getString(R.string.please_input_evaluate));
+    private void submitData(String imgUrl) {
+        Map<String, String> map = new HashMap<>();
+        map.put("order_id", orderId);
+        map.put("token", SharedPreferencesUtils.getStr(EvaluateActivity.this, "token"));
+        map.put("content", etEvaluate.getText().toString().trim());
+        if (!TextUtils.isEmpty(imgUrl)) {
+            map.put("img_list", imgUrl);
         }
+
+        OkHttpUtils.post()
+                .url(Constant.EVALUATE)
+                .params(map)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        tvSubmit.setEnabled(true);
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+
+                        loadingView.smoothToHide();
+                        tvSubmit.setEnabled(true);
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            int code = jsonObject.getInt("code");
+                            String msg = jsonObject.getString("msg");
+                            if (code == 10000) {
+                                finish();
+                            }
+                            ToastUtils.showToast(EvaluateActivity.this, msg);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+
     }
 
-    /**
-     * 开启线程处理图片
-     */
-    Runnable myRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if (selectedPhotos.size() != 0) {
-                imgEncode = ImageEncodeUtils.encodeFile(selectedPhotos);
-                handler.sendEmptyMessage(1);
-            } else {
-                handler.sendEmptyMessage(2);
-            }
-        }
-    };
-
-
-    Handler handler = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message msg) {
-            Map<String, String> map = new HashMap<>();
-            map.put("order_id", orderId);
-            map.put("car_id", cartId);
-            map.put("goods_id", goodsId);
-            map.put("token", SharedPreferencesUtils.getStr(EvaluateActivity.this, "token"));
-            map.put("content", etEvaluate.getText().toString().trim());
-            if (msg.what == 1) {
-                map.put("img_list", imgEncode);
-            }
-
-            OkHttpUtils.post()
-                    .url(Constant.EVALUATE)
-                    .params(map)
-                    .build()
-                    .execute(new StringCallback() {
-                        @Override
-                        public void onError(Call call, Exception e, int id) {
-                        }
-
-                        @Override
-                        public void onResponse(String response, int id) {
-                            loadingView.smoothToHide();
-                            ToastUtils.showToast(EvaluateActivity.this, getString(R.string.evaluate_success));
-                            finish();
-                        }
-                    });
-
-            return false;
-        }
-    });
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -267,12 +311,6 @@ public class EvaluateActivity extends BaseActivity implements EasyPermissions.Pe
                 adapter.notifyDataSetChanged();
             }
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        handler.removeCallbacksAndMessages(null);
-        super.onDestroy();
     }
 
     /**

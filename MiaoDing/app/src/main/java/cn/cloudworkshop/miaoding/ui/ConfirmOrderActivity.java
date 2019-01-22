@@ -48,6 +48,7 @@ import cn.cloudworkshop.miaoding.constant.Constant;
 import cn.cloudworkshop.miaoding.utils.BigDecimalUtils;
 import cn.cloudworkshop.miaoding.utils.DateUtils;
 import cn.cloudworkshop.miaoding.utils.DisplayUtils;
+import cn.cloudworkshop.miaoding.utils.DoubleClickUtils;
 import cn.cloudworkshop.miaoding.utils.GsonUtils;
 import cn.cloudworkshop.miaoding.utils.MyLinearLayoutManager;
 import cn.cloudworkshop.miaoding.utils.RVItemDecoration;
@@ -438,7 +439,7 @@ public class ConfirmOrderActivity extends BaseActivity {
     /**
      * 获取总价格
      */
-    private String getTotalPrice() {
+    private void getTotalPrice() {
         double totalPrice = 0.00;
         for (int i = 0; i < confirmOrderBean.getData().getCar_list().size(); i++) {
             double price = Double.parseDouble(confirmOrderBean.getData().getCar_list().get(i).getSell_price());
@@ -453,7 +454,6 @@ public class ConfirmOrderActivity extends BaseActivity {
         }
 
         tvNeedPay.setText("¥" + DisplayUtils.decimalFormat(totalPrice));
-        return DisplayUtils.decimalFormat(totalPrice);
     }
 
     /**
@@ -506,7 +506,6 @@ public class ConfirmOrderActivity extends BaseActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.img_header_back:
-//                customGoodsLog();
                 finish();
                 break;
             case R.id.rl_select_address:
@@ -534,7 +533,9 @@ public class ConfirmOrderActivity extends BaseActivity {
                 if (addressListBean == null) {
                     ToastUtils.showToast(this, getString(R.string.select_address));
                 } else {
-                    confirmOrder();
+                    if (DoubleClickUtils.isFastClick()) {
+                        confirmOrder();
+                    }
                 }
                 break;
             case R.id.ll_select_coupon:

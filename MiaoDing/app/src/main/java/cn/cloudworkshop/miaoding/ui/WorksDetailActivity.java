@@ -315,7 +315,7 @@ public class WorksDetailActivity extends BaseActivity {
         });
 
         TextView tvWorks = (TextView) contentView.findViewById(R.id.tv_works_info);
-        tvWorks.setText(worksBean.getData().getContent());
+        tvWorks.setText(worksBean.getData().getDetail());
 
     }
 

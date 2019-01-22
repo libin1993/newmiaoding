@@ -220,7 +220,6 @@ public class HomepageFragment extends BaseFragment {
                 imgShare.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
                         ShareUtils.showShare(getActivity(), Constant.IMG_HOST +
                                 articleBean.getImg(), articleBean.getTitle(), articleBean
                                 .getSub_title(), Constant.HOMEPAGE_SHARE +
@@ -228,23 +227,6 @@ public class HomepageFragment extends BaseFragment {
 
                     }
                 });
-
-//                if (articleBean.getIs_type() == 1) {
-//                    imgShare.setVisibility(View.VISIBLE);
-//                    imgShare.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//                            if (dataBean.getIs_type() == 1) {
-//                                ShareUtils.showShare(getActivity(), Constant.IMG_HOST +
-//                                        dataBean.getImg_new(), dataBean.getTitle(), dataBean
-//                                        .getSub_title(), Constant.HOMEPAGE_SHARE +
-//                                        "?content=1&id=" + dataBean.getId());
-//                            }
-//                        }
-//                    });
-//                } else {
-//                    imgShare.setVisibility(View.GONE);
-//                }
 
 
                 //收藏
