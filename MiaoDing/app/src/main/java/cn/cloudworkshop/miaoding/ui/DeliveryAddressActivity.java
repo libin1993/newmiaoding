@@ -92,13 +92,7 @@ public class DeliveryAddressActivity extends BaseActivity {
 
     private void getData() {
         type = getIntent().getIntExtra("type", 1);
-    }
 
-
-    /**
-     * 加载数据
-     */
-    private void initData() {
         switch (type) {
             case 1:
                 tvHeaderTitle.setText(R.string.receive_goods_address);
@@ -109,6 +103,13 @@ public class DeliveryAddressActivity extends BaseActivity {
 
                 break;
         }
+    }
+
+
+    /**
+     * 加载数据
+     */
+    private void initData() {
 
         OkHttpUtils.get()
                 .url(Constant.MY_ADDRESS)

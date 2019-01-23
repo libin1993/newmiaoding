@@ -235,11 +235,11 @@ public class AddAddressActivity extends BaseActivity {
                                     String msg = jsonObject.getString("msg");
                                     ToastUtils.showToast(AddAddressActivity.this, msg);
                                     if (code == 10000) {
-                                        String addressId = jsonObject.getString("address_id");
                                         //地址编辑成功
                                         EventBus.getDefault().post("edit_success");
                                         switch (type) {
                                             case 1:
+                                                String addressId = jsonObject.getString("address_id");
                                                 Intent intent = new Intent();
                                                 ConfirmOrderBean.DataBean.AddressListBean addressListBean
                                                         = new ConfirmOrderBean.DataBean.AddressListBean();

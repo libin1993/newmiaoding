@@ -108,7 +108,9 @@ public class MyOrderFragment extends BaseFragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
-            onStateChangeListener = (OnStateChangeListener) context;
+            onStateChangeListener = (
+
+                    OnStateChangeListener) context;
         } catch (Exception e) {
             throw new ClassCastException(context.toString() + "must implement OnButton2ClickListener");
         }
@@ -620,3 +622,4 @@ public class MyOrderFragment extends BaseFragment {
         void onStateChange(int page);
     }
 }
+
