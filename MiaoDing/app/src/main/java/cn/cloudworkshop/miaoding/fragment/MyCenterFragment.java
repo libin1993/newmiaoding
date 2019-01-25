@@ -308,8 +308,8 @@ public class MyCenterFragment extends BaseFragment {
         intent.putExtra("share_title", R.string.invite_friend_gift);
         intent.putExtra("share_content", userInfoBean.getData()
                 .getUser_info().getUsername() + getString(R.string.invite_your_friend));
-        intent.putExtra("url", Constant.INVITE_FRIENDS + "?id=" + uid);
-        intent.putExtra("share_url", Constant.INVITE_SHARE + "?id=" + uid);
+        intent.putExtra("url", Constant.INVITE_FRIENDS + "?uid=" + uid);
+        intent.putExtra("share_url", Constant.INVITE_SHARE + "?uid=" + uid);
         startActivity(intent);
 
     }

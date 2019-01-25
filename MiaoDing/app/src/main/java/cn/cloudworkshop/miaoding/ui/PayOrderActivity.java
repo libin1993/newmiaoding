@@ -44,6 +44,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.cloudworkshop.miaoding.R;
+import cn.cloudworkshop.miaoding.application.MyApplication;
 import cn.cloudworkshop.miaoding.base.BaseActivity;
 import cn.cloudworkshop.miaoding.bean.PayOrderBean;
 import cn.cloudworkshop.miaoding.bean.PayResultBean;
@@ -61,7 +62,7 @@ import okhttp3.Call;
 /**
  * Author：Libin on 2019/1/12 11:30
  * Email：1993911441@qq.com
- * Describe：
+ * Describe：确认支付
  */
 public class PayOrderActivity extends BaseActivity {
     @BindView(R.id.img_header_back)
@@ -237,6 +238,7 @@ public class PayOrderActivity extends BaseActivity {
         tvHeaderTitle.setText("待处理订单");
         tvHeaderNext.setVisibility(View.VISIBLE);
         tvHeaderNext.setText("刷新");
+        MyApplication.orderNo = orderId;
     }
 
 

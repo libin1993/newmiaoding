@@ -45,6 +45,8 @@ public class MyApplication extends Application {
     public static String updateUrl;
     //更新内容
     public static String updateContent;
+    //订单号
+    public static String orderNo;
 
 
     @Override

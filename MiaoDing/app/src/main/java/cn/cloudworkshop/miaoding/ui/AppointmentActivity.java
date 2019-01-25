@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,8 +49,6 @@ public class AppointmentActivity extends BaseActivity {
     TextView tvHeaderTitle;
     @BindView(R.id.tv_appoint_result)
     TextView tvAppointResult;
-    @BindView(R.id.tv_header_next)
-    TextView tvHeaderNext;
     @BindView(R.id.tv_go_back)
     TextView tvGoBack;
     @BindView(R.id.tv_check_order)
@@ -100,19 +99,13 @@ public class AppointmentActivity extends BaseActivity {
                             public void onResponse(String response, int id) {
                                 try {
                                     JSONObject jsonObject = new JSONObject(response);
-                                    JSONObject jsonObject1 = jsonObject.getJSONObject("data");
-                                    if (jsonObject1 != null) {
-                                        int status = jsonObject1.getInt("status");
-                                        int time = jsonObject1.getInt("sm_time");
+                                    int code = jsonObject.getInt("code");
+                                    JSONObject data = jsonObject.getJSONObject("data");
+                                    if (code == 10000) {
+                                        int status = data.getInt("status");
                                         switch (status) {
-                                            case 1:
                                             case 2:
                                                 tvAppointResult.setText(R.string.state_appoint_success);
-                                                break;
-                                            case 3:
-                                            case 4:
-                                                tvAppointResult.setText(getString(R.string.state_measure_time)
-                                                        + DateUtils.getDate("yyyy.MM.dd HH:mm", time));
                                                 break;
                                             case -1:
                                                 tvAppointResult.setText(R.string.state_cancel);
@@ -140,7 +133,7 @@ public class AppointmentActivity extends BaseActivity {
                 tvCheckOrder.setVisibility(View.VISIBLE);
                 tvGoBack.setTextColor(ContextCompat.getColor(this, R.color.dark_gray_22));
                 tvGoBack.setBackgroundResource(R.drawable.text_white_2dp);
-//                shareCoupon();
+                shareCoupon();
                 break;
             case "pay_fail":
                 tvHeaderTitle.setText(R.string.pay_fail);
@@ -172,7 +165,8 @@ public class AppointmentActivity extends BaseActivity {
                     public void onResponse(String response, int id) {
                         final GuideBean guideBean = GsonUtils.jsonToBean(response, GuideBean.class);
                         if (guideBean.getData() != null && guideBean.getData().getImg_urls() != null
-                                && guideBean.getData().getImg_urls().size() > 0) {
+                                && guideBean.getData().getImg_urls().size() > 0
+                                && !TextUtils.isEmpty(MyApplication.orderNo)) {
 
                             View popupView = getLayoutInflater().inflate(R.layout.ppw_coupon, null);
                             mPopupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.MATCH_PARENT,
@@ -201,7 +195,7 @@ public class AppointmentActivity extends BaseActivity {
                                             Constant.IMG_HOST + guideBean.getData().getImg_urls().get(0).getImg(),
                                             getString(R.string.order_share_title),
                                             getString(R.string.order_share_content),
-                                            Constant.SHARE_COUPON + "?pay_ids=" + ""
+                                            Constant.SHARE_COUPON + "?order_ids=" + MyApplication.orderNo
                                                     + "&uid=" + SharedPreferencesUtils.getStr(AppointmentActivity.this, "uid"));
                                 }
                             });
@@ -221,16 +215,11 @@ public class AppointmentActivity extends BaseActivity {
         type = getIntent().getStringExtra("type");
     }
 
-    @OnClick({R.id.img_header_back, R.id.tv_header_next, R.id.tv_go_back, R.id.tv_check_order})
+    @OnClick({R.id.img_header_back, R.id.tv_go_back, R.id.tv_check_order})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.img_header_back:
                 finish();
-                break;
-            case R.id.tv_header_next:
-//                Intent intent = new Intent(this, UserAgreementActivity.class);
-//                intent.putExtra("content", "measure");
-//                startActivity(intent);
                 break;
             case R.id.tv_go_back:
                 if (type.equals("pay_success") || type.equals("pay_fail")) {

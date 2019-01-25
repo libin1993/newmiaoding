@@ -9,7 +9,7 @@ package cn.cloudworkshop.miaoding.constant;
 public class Constant {
     public static final String HOST = "http://www.cloudworkshop.cn";
     //    public static final String NEW_HOST = "http://192.168.1.120/index.php";
-    public static final String NEW_HOST = "http://api.cloudworkshop.cn";
+    public static final String NEW_HOST = "https://api.cloudworkshop.cn";
     public static final String WEB_HOST = "https://h5.morder.cn";
 
     //oss图片

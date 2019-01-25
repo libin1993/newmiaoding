@@ -508,8 +508,8 @@ public class HomepageFragment extends BaseFragment {
                                 invite.putExtra("share_title", getString(R.string.invite_gift));
                                 invite.putExtra("share_content", getString(R.string.friend) + SharedPreferencesUtils
                                         .getStr(getActivity(), "username") + getString(R.string.invite_join));
-                                invite.putExtra("url", Constant.INVITE_FRIENDS + "?id=" + uid);
-                                invite.putExtra("share_url", Constant.INVITE_SHARE + "?id=" + uid);
+                                invite.putExtra("url", Constant.INVITE_FRIENDS + "?uid=" + uid);
+                                invite.putExtra("share_url", Constant.INVITE_SHARE + "?uid=" + uid);
                                 startActivity(invite);
                             } else {
                                 Intent login = new Intent(getActivity(), LoginActivity.class);

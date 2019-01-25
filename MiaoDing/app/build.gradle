@@ -8,10 +8,10 @@ android {
         applicationId "cn.cloudworkshop.miaoding"
         minSdkVersion 14
         targetSdkVersion 28
-        versionCode 61
-        versionName "2.1.8"
+        versionCode 62
+        versionName "3.0.0"
         multiDexEnabled true
-        flavorDimensions "61"
+        flavorDimensions "62"
 
         manifestPlaceholders = [
                 GETUI_APP_ID    : "giNqTlq7c4AAPv4gmSmKL8",
@@ -85,37 +85,49 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     testImplementation 'junit:junit:4.12'
     implementation 'com.android.support:appcompat-v7:28.0.0'
+
     //tablayout
     implementation project(':slidingtablayout')
+
     //opencv轮阔识别
     implementation project(':opencv')
+
     //AppBarLayout越界弹性效果
     implementation project(':appbarbehavior')
+
     //recyclerview
     implementation project(':lrecyclerview')
+
     //图片选择
     implementation project(':photopicker')
+
     //banner
     implementation 'com.bigkoo:convenientbanner:2.0.5'
+
     //glide图片加载
     implementation 'com.github.bumptech.glide:glide:3.7.0'
     implementation 'com.android.support:support-v4:28.0.0'
+
     //recyclerview适配器
     implementation 'com.zhy:base-rvadapter:3.0.3'
+
     //butterknife
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+
     //okhttp网络请求
     implementation 'com.zhy:okhttputils:2.6.2'
+
     //七鱼客服
     implementation 'com.qiyukf.unicorn:unicorn:2.7.0'
     implementation 'com.android.support:design:28.0.0'
+
     //cardview
     implementation 'com.android.support:cardview-v7:28.0.0'
+
     //fresco图片加载
     implementation 'com.facebook.fresco:fresco:1.5.0'
-    //jazzyviewpager动画
-    implementation 'com.nineoldandroids:library:2.4.0'
+
     //gson
     implementation 'com.google.code.gson:gson:2.8.0'
 
@@ -132,38 +144,54 @@ dependencies {
     //高德地图
     implementation files('libs/Amap_2DMap_V2.9.2_20161026.jar')
     implementation files('libs/AMapSearch_3.5.0_AMapLocation_3.1.0_20161027.jar')
+
     //支付宝支付
     implementation files('libs/alipaySdk-20161009.jar')
+
     //微信支付
     implementation files('libs/libammsdk.jar')
+
     //图片裁剪
     implementation 'com.soundcloud.android:android-crop:1.0.1@aar'
+
     //个推
     implementation 'com.getui:sdk:2.10.2.0'
+
     //友盟统计
     implementation 'com.umeng.sdk:common:latest.integration'
     implementation 'com.umeng.analytics:analytics:latest.integration'
+
     //图片缩放
     implementation 'com.github.chrisbanes:PhotoView:1.3.1'
+
     //加载动画
     implementation 'com.wang.avi:library:2.1.3'
+
     //分包
     implementation 'com.android.support:multidex:1.0.1'
+
     //扫描二维码
     implementation 'com.yanzhenjie.zbar:zbar:1.0.0'
     implementation 'com.yanzhenjie.zbar:camera:1.0.0'
+
     //权限请求
     implementation 'pub.devrel:easypermissions:0.4.2'
+
     //eventbus
     implementation 'org.greenrobot:eventbus:3.1.1'
+
     //选择器
     implementation('com.github.gzu-liyujiang.AndroidPicker:WheelPicker:1.5.6') {
         exclude group: 'com.android.support'
     }
+
     //vlayout
-    implementation ('com.alibaba.android:vlayout:1.2.8@aar') {
+    implementation('com.alibaba.android:vlayout:1.2.8@aar') {
         transitive = true
     }
+
     //SmartRefreshLayout
     implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.0.5.1'
+    //jazzyviewpager动画
+    implementation 'com.nineoldandroids:library:2.4.0'
 }
