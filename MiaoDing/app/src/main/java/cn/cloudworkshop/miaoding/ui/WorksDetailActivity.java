@@ -92,7 +92,6 @@ public class WorksDetailActivity extends BaseActivity {
     private int type;
     private TextView tvStock;
     private TextView tvCount;
-    private String[] split = new String[0];
 
     private List<AccentDetailBean.DataBean.SkuBeanX> typeList = new ArrayList<>();
     //配件id
@@ -152,58 +151,60 @@ public class WorksDetailActivity extends BaseActivity {
      */
     private void initView() {
 
-        if (!TextUtils.isEmpty(worksBean.getData().getContent())) {
-            split = worksBean.getData().getContent().split("\\|");
-            typerText(split[0]);
+        if (worksBean.getData().getAd_img() != null && worksBean.getData().getAd_img().size() > 0){
+            if (!TextUtils.isEmpty(worksBean.getData().getAd_img().get(0).getDesc())) {
+                typerText(worksBean.getData().getAd_img().get(0).getDesc());
+            }
+
+            vpWorks.setOffscreenPageLimit(worksBean.getData().getAd_img().size());
+            vpWorks.setAdapter(new PagerAdapter() {
+                @Override
+                public int getCount() {
+                    return worksBean.getData().getAd_img().size();
+                }
+
+                @Override
+                public boolean isViewFromObject(View view, Object object) {
+                    return view == object;
+                }
+
+                @Override
+                public Object instantiateItem(ViewGroup container, final int position) {
+                    View view = LayoutInflater.from(WorksDetailActivity.this)
+                            .inflate(R.layout.viewpager_goods_details, null);
+                    ImageView img = (ImageView) view.findViewById(R.id.img_goods_picture);
+                    Glide.with(WorksDetailActivity.this)
+                            .load(Constant.IMG_HOST + worksBean.getData().getAd_img().get(position).getImg())
+                            .placeholder(R.mipmap.place_holder_news)
+                            .dontAnimate()
+                            .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                            .into(img);
+                    container.addView(view);
+                    return view;
+                }
+
+                @Override
+                public void destroyItem(ViewGroup container, int position, Object object) {
+                    container.removeView((View) object);
+                }
+            });
+            vpWorks.setCurrentItem(0);
+
+
+            for (int i = 0; i < worksBean.getData().getAd_img().size(); i++) {
+                RadioButton radioButton = new RadioButton(this);
+
+                RadioGroup.LayoutParams layoutParams = new RadioGroup.LayoutParams(18, 18);
+                layoutParams.setMargins(10, 10, 10, 10);
+                radioButton.setLayoutParams(layoutParams);
+                radioButton.setButtonDrawable(null);
+                radioButton.setClickable(false);
+                radioButton.setBackgroundResource(R.drawable.viewpager_indicator);
+                rgsIndicator.addView(radioButton);
+            }
+            ((RadioButton) rgsIndicator.getChildAt(0)).setChecked(true);
         }
 
-        vpWorks.setOffscreenPageLimit(worksBean.getData().getImg_info().size());
-        vpWorks.setAdapter(new PagerAdapter() {
-            @Override
-            public int getCount() {
-                return worksBean.getData().getImg_info().size();
-            }
-
-            @Override
-            public boolean isViewFromObject(View view, Object object) {
-                return view == object;
-            }
-
-            @Override
-            public Object instantiateItem(ViewGroup container, final int position) {
-                View view = LayoutInflater.from(WorksDetailActivity.this)
-                        .inflate(R.layout.viewpager_goods_details, null);
-                ImageView img = (ImageView) view.findViewById(R.id.img_goods_picture);
-                Glide.with(WorksDetailActivity.this)
-                        .load(Constant.IMG_HOST + worksBean.getData().getImg_info().get(position).getImg())
-                        .placeholder(R.mipmap.place_holder_news)
-                        .dontAnimate()
-                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                        .into(img);
-                container.addView(view);
-                return view;
-            }
-
-            @Override
-            public void destroyItem(ViewGroup container, int position, Object object) {
-                container.removeView((View) object);
-            }
-        });
-        vpWorks.setCurrentItem(0);
-
-
-        for (int i = 0; i < worksBean.getData().getImg_info().size(); i++) {
-            RadioButton radioButton = new RadioButton(this);
-
-            RadioGroup.LayoutParams layoutParams = new RadioGroup.LayoutParams(18, 18);
-            layoutParams.setMargins(10, 10, 10, 10);
-            radioButton.setLayoutParams(layoutParams);
-            radioButton.setButtonDrawable(null);
-            radioButton.setClickable(false);
-            radioButton.setBackgroundResource(R.drawable.viewpager_indicator);
-            rgsIndicator.addView(radioButton);
-        }
-        ((RadioButton) rgsIndicator.getChildAt(0)).setChecked(true);
 
         vpWorks.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
@@ -215,10 +216,10 @@ public class WorksDetailActivity extends BaseActivity {
             @Override
             public void onPageSelected(int position) {
                 ((RadioButton) rgsIndicator.getChildAt(position)).setChecked(true);
-                if (split.length > position) {
+                if (!TextUtils.isEmpty(worksBean.getData().getAd_img().get(0).getDesc())) {
                     tvContent.setVisibility(View.VISIBLE);
-                    typerText(split[position]);
-                }else {
+                    typerText(worksBean.getData().getAd_img().get(0).getDesc());
+                } else {
                     tvContent.setVisibility(View.GONE);
                 }
 
@@ -278,7 +279,7 @@ public class WorksDetailActivity extends BaseActivity {
                     String share_url = Constant.CUSTOM_SHARE + "?goods_id=" + id;
 
                     ShareUtils.showShare(this, Constant.IMG_HOST + worksBean
-                                    .getData().getImg_info().get(0).getImg(), worksBean.getData().getName(),
+                                    .getData().getAd_img().get(0).getImg(), worksBean.getData().getName(),
                             worksBean.getData().getContent(), share_url);
                 }
                 break;
@@ -392,7 +393,7 @@ public class WorksDetailActivity extends BaseActivity {
             rvType.setLayoutManager(new LinearLayoutManager(this));
             CommonAdapter<AccentDetailBean.DataBean.SkuBeanX> typeAdapter = new CommonAdapter<
                     AccentDetailBean.DataBean.SkuBeanX>(
-                            this, R.layout.rv_works_type_item, typeList) {
+                    this, R.layout.rv_works_type_item, typeList) {
                 @Override
                 protected void convert(ViewHolder holder, final AccentDetailBean.DataBean.SkuBeanX skuBeanX, int position) {
                     holder.setText(R.id.tv_goods_size, skuBeanX.getType());

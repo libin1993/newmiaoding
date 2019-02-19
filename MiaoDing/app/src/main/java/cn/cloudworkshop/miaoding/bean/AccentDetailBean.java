@@ -33,7 +33,8 @@ public class AccentDetailBean {
         this.data = data;
     }
 
-    public static class DataBean {
+    public static class
+    DataBean {
         /**
          * id : 24
          * name : 测试成品1
@@ -62,7 +63,6 @@ public class AccentDetailBean {
         private int category_id;
         private int collect_num;
         private List<AdImgBean> ad_img;
-        private List<ImgInfoBean> img_info;
         private List<SkuBeanX> sku;
         private List<CollectListBean> collect_list;
         private String detail;
@@ -163,13 +163,6 @@ public class AccentDetailBean {
             this.ad_img = ad_img;
         }
 
-        public List<ImgInfoBean> getImg_info() {
-            return img_info;
-        }
-
-        public void setImg_info(List<ImgInfoBean> img_info) {
-            this.img_info = img_info;
-        }
 
         public List<SkuBeanX> getSku() {
             return sku;
@@ -195,6 +188,15 @@ public class AccentDetailBean {
 
             private String img;
             private String ratio;
+            private String desc;
+
+            public String getDesc() {
+                return desc;
+            }
+
+            public void setDesc(String desc) {
+                this.desc = desc;
+            }
 
             public String getImg() {
                 return img;
@@ -213,31 +215,6 @@ public class AccentDetailBean {
             }
         }
 
-        public static class ImgInfoBean {
-            /**
-             * img : public/20190118/ff351e53011babda0c6bb80d8bcc1bd4135951ac.png
-             * ratio : 1.000000
-             */
-
-            private String img;
-            private String ratio;
-
-            public String getImg() {
-                return img;
-            }
-
-            public void setImg(String img) {
-                this.img = img;
-            }
-
-            public String getRatio() {
-                return ratio;
-            }
-
-            public void setRatio(String ratio) {
-                this.ratio = ratio;
-            }
-        }
 
         public static class SkuBeanX {
             /**
