@@ -201,11 +201,11 @@ public class ConfirmOrderActivity extends BaseActivity {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             cartIds = bundle.getString("cart_id");
-            logId = bundle.getString("log_id");
-            goodsTime = bundle.getLong("goods_time");
-            dingzhiTime = bundle.getLong("dingzhi_time");
-            goodsId = bundle.getString("goods_id");
-            goodsName = bundle.getString("goods_name");
+//            logId = bundle.getString("log_id");
+//            goodsTime = bundle.getLong("goods_time");
+//            dingzhiTime = bundle.getLong("dingzhi_time");
+//            goodsId = bundle.getString("goods_id");
+//            goodsName = bundle.getString("goods_name");
         }
     }
 

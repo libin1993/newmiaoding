@@ -152,6 +152,7 @@ public class MessageDetailActivity extends BaseActivity {
 
                             @Override
                             public void onResponse(String response, int id) {
+
                             }
                         });
             }
@@ -223,6 +224,7 @@ public class MessageDetailActivity extends BaseActivity {
                         startActivity(intent3);
                         break;
                 }
+
             }
 
             @Override

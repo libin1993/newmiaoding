@@ -76,8 +76,6 @@ public class ScanCodeActivity extends BaseActivity {
                                     case "market_id":
                                         market_id = split1[i].split("=")[1];
                                         break;
-                                    default:
-                                        break;
                                 }
 
                             }

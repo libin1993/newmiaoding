@@ -25,6 +25,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.umeng.analytics.MobclickAgent;
 import com.wang.avi.AVLoadingIndicatorView;
 import com.zhy.adapter.recyclerview.CommonAdapter;
+import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -107,7 +108,7 @@ public class OrderDetailActivity extends BaseActivity {
     private String orderId;
     private OrderDetailsBean orderBean;
     //倒计时时间
-    private long recLen;
+    private int recLen;
     Timer timer = new Timer();
 
     private MyTimerTask task;
@@ -160,8 +161,7 @@ public class OrderDetailActivity extends BaseActivity {
      */
     private void initView() {
         tvOrderTime.setText(orderBean.getData().getCreate_time());
-        recLen = DateUtils.getTime("yyyy-MM-dd HH:mm:ss",
-                orderBean.getData().getCreate_time()) / 1000 + 3600 - System.currentTimeMillis() / 1000;
+        recLen =orderBean.getData().getPay_count_down_time();
         tvOrderStatus.setText(orderBean.getData().getStatus_text());
         switch (orderBean.getData().getStatus()) {
             case 1:
@@ -246,8 +246,8 @@ public class OrderDetailActivity extends BaseActivity {
 
         tvOtherDiscount.setText("¥" + otherDiscount.toString());
         tvOrderNeedPay.setTypeface(DisplayUtils.setTextType(this));
-        tvOrderNeedPay.setText("¥" + BigDecimalUtils.sub(orderBean.getData().getPayable_amount(),
-                orderBean.getData().getGiftcard_eq_money()));
+        tvOrderNeedPay.setText("¥" + DisplayUtils.decimalFormat(BigDecimalUtils.sub(orderBean.getData().getPayable_amount(),
+                orderBean.getData().getGiftcard_eq_money())));
 
         tvOrderPayStyle.setText(orderBean.getData().getPay_type());
 
@@ -307,6 +307,29 @@ public class OrderDetailActivity extends BaseActivity {
 
         };
         rvOrderDetails.setAdapter(adapter);
+
+//        adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+//                switch (orderBean.getData().getChildOrders().get(position).getCategory_id()) {
+//                    case 1:
+//                        Intent intent = new Intent(OrderDetailActivity.this, NewCustomizedGoodsActivity.class);
+//                        intent.putExtra("id", String.valueOf(orderBean.getData().getChildOrders().get(position).getGoods_id()));
+//                        startActivity(intent);
+//                        break;
+//                    case 2:
+//                        Intent intent1 = new Intent(OrderDetailActivity.this, WorksDetailActivity.class);
+//                        intent1.putExtra("id", String.valueOf(orderBean.getData().getChildOrders().get(position).getGoods_id()));
+//                        startActivity(intent1);
+//                        break;
+//                }
+//            }
+//
+//            @Override
+//            public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
+//                return false;
+//            }
+//        });
     }
 
     /**

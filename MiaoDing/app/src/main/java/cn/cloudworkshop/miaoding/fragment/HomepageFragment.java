@@ -183,7 +183,7 @@ public class HomepageFragment extends BaseFragment {
                 holder.setText(R.id.tv_news_content, articleBean.getSub_title());
 
                 tvLove.setText(String.valueOf(articleBean.getLike_nums()));
-                tvComment.setText(String.valueOf(articleBean.getView_nums()));
+                tvComment.setText(String.valueOf(articleBean.getReply_nums()));
 
                 if (articleBean.getIs_collect() == 1) {
                     imgCollect.setImageResource(R.mipmap.icon_collect_check);

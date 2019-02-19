@@ -16,3 +16,5 @@ public class FadePageTransformer implements ViewPager.PageTransformer {
         page.setScaleY(1 - v1);
     }
 }
+
+

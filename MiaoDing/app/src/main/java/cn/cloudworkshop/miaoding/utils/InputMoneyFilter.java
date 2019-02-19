@@ -66,7 +66,7 @@ public class InputMoneyFilter implements InputFilter {
         }
         String first = destText.substring(0, dstart);
 
-        String second = destText.substring(dstart, destText.length());
+        String second = destText.substring(dstart);
 
         String sum = first + sourceText + second;
         //验证输入金额的大小

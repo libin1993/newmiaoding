@@ -216,7 +216,10 @@ public class WorksDetailActivity extends BaseActivity {
             public void onPageSelected(int position) {
                 ((RadioButton) rgsIndicator.getChildAt(position)).setChecked(true);
                 if (split.length > position) {
+                    tvContent.setVisibility(View.VISIBLE);
                     typerText(split[position]);
+                }else {
+                    tvContent.setVisibility(View.GONE);
                 }
 
             }
@@ -388,7 +391,8 @@ public class WorksDetailActivity extends BaseActivity {
 
             rvType.setLayoutManager(new LinearLayoutManager(this));
             CommonAdapter<AccentDetailBean.DataBean.SkuBeanX> typeAdapter = new CommonAdapter<
-                    AccentDetailBean.DataBean.SkuBeanX>(this, R.layout.rv_works_type_item, typeList) {
+                    AccentDetailBean.DataBean.SkuBeanX>(
+                            this, R.layout.rv_works_type_item, typeList) {
                 @Override
                 protected void convert(ViewHolder holder, final AccentDetailBean.DataBean.SkuBeanX skuBeanX, int position) {
                     holder.setText(R.id.tv_goods_size, skuBeanX.getType());
@@ -453,7 +457,6 @@ public class WorksDetailActivity extends BaseActivity {
                         count++;
                         tvCount.setText(String.valueOf(count));
                     }
-
                 }
             });
 

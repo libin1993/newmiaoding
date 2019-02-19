@@ -170,8 +170,8 @@ public class OrderFragment extends BaseFragment {
                 TextView tvAfter = (TextView) holder.getView(R.id.tv_after_sale_footer);
                 TextView tvControl = (TextView) holder.getView(R.id.tv_order_control_footer);
                 TextView tvPay = (TextView) holder.getView(R.id.tv_order_pay_footer);
-                tvMoney.setText("¥" + BigDecimalUtils.sub(dataList.get(section).getPayable_amount()
-                        , dataList.get(section).getGiftcard_eq_money()));
+                tvMoney.setText("¥" + DisplayUtils.decimalFormat(BigDecimalUtils.sub(dataList.get(section).getPayable_amount()
+                        , dataList.get(section).getGiftcard_eq_money())));
 
                 switch (dataList.get(section).getStatus()) {
                     case 1:
