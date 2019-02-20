@@ -98,21 +98,23 @@ public class SubGoodsFragment extends BaseFragment {
                     @Override
                     public void onResponse(String response, int id) {
                         CustomizedGoodsListBean listBean = GsonUtils.jsonToBean(response, CustomizedGoodsListBean.class);
+                        if (isRefresh || isLoadMore) {
+                            rvGoods.refreshComplete(0);
+                        }
+
                         if (listBean.getGoodsid() != null && listBean.getGoodsid().size() > 0) {
                             if (isRefresh) {
                                 dataList.clear();
                             }
                             dataList.addAll(listBean.getGoodsid());
-                            if (isRefresh || isLoadMore) {
-                                rvGoods.refreshComplete(0);
-                            }
+
                             mLRecyclerViewAdapter.notifyDataSetChanged();
-                            isRefresh = false;
-                            isLoadMore = false;
                         } else {
                             RecyclerViewStateUtils.setFooterViewState(getParentFragment().getActivity(),
                                     rvGoods, 0, LoadingFooter.State.NoMore, null);
                         }
+                        isRefresh = false;
+                        isLoadMore = false;
                     }
                 });
     }
