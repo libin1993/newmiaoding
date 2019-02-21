@@ -118,10 +118,14 @@ public class CustomizedGoodsFragment extends BaseFragment {
         //tab个数低于5个平分，不可滑动
         if (titleList.size() <= 2) {
             tabGoods.setTabSpaceEqual(true);
-            tabGoods.setPadding((int) DisplayUtils.dp2px(getActivity(), 70), 0, (int) DisplayUtils.dp2px(getActivity(), 70), 0);
+            tabGoods.setPadding((int) DisplayUtils.dp2px(getActivity(), 70), 0,
+                    (int) DisplayUtils.dp2px(getActivity(), 70), 0);
         } else {
             ViewGroup.LayoutParams layoutParams = tabGoods.getLayoutParams();
-            layoutParams.width = (int) (DisplayUtils.getMetrics(getActivity()).widthPixels - DisplayUtils.dp2px(getActivity(), 55));
+            layoutParams.width = (int) (DisplayUtils.getMetrics(getActivity()).widthPixels
+                    -
+
+                    DisplayUtils.dp2px(getActivity(), 55));
             tabGoods.setLayoutParams(layoutParams);
 
             tabGoods.setTabSpaceEqual(false);

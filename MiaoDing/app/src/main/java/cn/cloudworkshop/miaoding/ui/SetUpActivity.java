@@ -33,6 +33,8 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -151,15 +153,47 @@ public class SetUpActivity extends BaseActivity implements EasyPermissions.Permi
         tvSetName.setText(userName);
 
         if (!TextUtils.isEmpty(userBirthday)) {
-            int age = Calendar.getInstance().get(Calendar.YEAR) -
-                    Integer.parseInt(userBirthday.split("-")[0]);
-            tvSetBirthday.setText(String.valueOf(age));
+            tvSetBirthday.setText(String.valueOf(getAge()));
         }
 
         if (setBirthday) {
             changeBirthday();
         }
     }
+
+
+    /**
+     * @return 年龄
+     */
+    private int getAge() {
+        Calendar cal = Calendar.getInstance();
+        int yearNow = cal.get(Calendar.YEAR);  //当前年份
+        int monthNow = cal.get(Calendar.MONTH);  //当前月份
+        int dayOfMonthNow = cal.get(Calendar.DAY_OF_MONTH); //当前日期
+
+
+        try {
+            cal.setTime(new SimpleDateFormat("yyyy-MM-dd").parse(userBirthday));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        int yearBirth = cal.get(Calendar.YEAR);
+        int monthBirth = cal.get(Calendar.MONTH);
+        int dayOfMonthBirth = cal.get(Calendar.DAY_OF_MONTH);
+
+        int age = yearNow - yearBirth;   //计算整岁数
+        if (monthNow <= monthBirth) {
+            if (monthNow == monthBirth) {
+                if (dayOfMonthNow < dayOfMonthBirth) age--;//当前日期在生日之前，年龄减一
+            } else {
+                age--;//当前月份在生日之前，年龄减一
+            }
+        }
+
+        return age;
+    }
+
 
     /**
      * 加载数据
@@ -168,7 +202,7 @@ public class SetUpActivity extends BaseActivity implements EasyPermissions.Permi
         OkHttpUtils.get()
                 .url(Constant.USER_INFO)
                 .addParams("token", SharedPreferencesUtils.getStr(this, "token"))
-                .addParams("is_android","2")
+                .addParams("is_android", "2")
                 .build()
                 .execute(new StringCallback() {
                     @Override
