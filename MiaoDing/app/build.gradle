@@ -8,10 +8,10 @@ android {
         applicationId "cn.cloudworkshop.miaoding"
         minSdkVersion 14
         targetSdkVersion 28
-        versionCode 62
+        versionCode 63
         versionName "2.5.0"
         multiDexEnabled true
-        flavorDimensions "62"
+        flavorDimensions "63"
 
         manifestPlaceholders = [
                 GETUI_APP_ID    : "giNqTlq7c4AAPv4gmSmKL8",

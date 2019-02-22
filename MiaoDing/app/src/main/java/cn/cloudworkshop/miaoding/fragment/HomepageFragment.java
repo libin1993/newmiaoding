@@ -505,9 +505,9 @@ public class HomepageFragment extends BaseFragment {
                                 String uid = SharedPreferencesUtils.getStr(getActivity(), "uid");
                                 Intent invite = new Intent(getActivity(), DressingResultActivity.class);
                                 invite.putExtra("title", getString(R.string.invite_gift));
-                                invite.putExtra("share_title", getString(R.string.invite_gift));
+                                invite.putExtra("share_title", getString(R.string.invite_friend_gift));
                                 invite.putExtra("share_content", getString(R.string.friend) + SharedPreferencesUtils
-                                        .getStr(getActivity(), "username") + getString(R.string.invite_join));
+                                        .getStr(getActivity(), "username") + getString(R.string.invite_your_friend));
                                 invite.putExtra("url", Constant.INVITE_FRIENDS + "?uid=" + uid);
                                 invite.putExtra("share_url", Constant.INVITE_SHARE + "?uid=" + uid);
                                 startActivity(invite);

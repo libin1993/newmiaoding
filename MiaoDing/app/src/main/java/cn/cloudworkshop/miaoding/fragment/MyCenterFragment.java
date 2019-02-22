@@ -304,8 +304,8 @@ public class MyCenterFragment extends BaseFragment {
     private void inviteFriends() {
         String uid = SharedPreferencesUtils.getStr(getActivity(), "uid");
         Intent intent = new Intent(getActivity(), DressingResultActivity.class);
-        intent.putExtra("title", getString(R.string.invite_join));
-        intent.putExtra("share_title", R.string.invite_friend_gift);
+        intent.putExtra("title", getString(R.string.invite_gift));
+        intent.putExtra("share_title", getString(R.string.invite_friend_gift));
         intent.putExtra("share_content", userInfoBean.getData()
                 .getUser_info().getUsername() + getString(R.string.invite_your_friend));
         intent.putExtra("url", Constant.INVITE_FRIENDS + "?uid=" + uid);

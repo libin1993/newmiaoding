@@ -173,15 +173,13 @@ public class AboutUsActivity extends BaseActivity {
     }
 
 
-
-
     @Override
     protected void onDestroy() {
         if (service != null) {
             unregisterReceiver(service);
         }
         super.onDestroy();
-
-
     }
 }
+
+
