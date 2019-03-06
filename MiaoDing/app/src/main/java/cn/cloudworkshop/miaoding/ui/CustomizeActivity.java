@@ -69,7 +69,6 @@ public class CustomizeActivity extends BaseActivity {
     RelativeLayout rlBackTailor;
     @BindView(R.id.rgs_select_orientation)
     RadioGroup rgsSelectOrientation;
-
     @BindView(R.id.rl_inside_tailor)
     RelativeLayout rlInsideTailor;
     @BindView(R.id.img_tailor_reset)

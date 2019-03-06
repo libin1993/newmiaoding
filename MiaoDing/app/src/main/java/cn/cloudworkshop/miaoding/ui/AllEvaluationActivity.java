@@ -162,7 +162,6 @@ public class AllEvaluationActivity extends BaseActivity {
                                     startActivity(intent);
                                 }
                             });
-
                         }
                     };
                     recyclerView.setAdapter(adapter);
@@ -190,8 +189,8 @@ public class AllEvaluationActivity extends BaseActivity {
         rvComment.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
-                RecyclerViewStateUtils.setFooterViewState(AllEvaluationActivity.this, rvComment, 0,
-                        LoadingFooter.State.Loading, null);
+                RecyclerViewStateUtils.setFooterViewState(AllEvaluationActivity.this, rvComment,
+                        0, LoadingFooter.State.Loading, null);
                 isLoadMore = true;
                 page++;
                 initData();

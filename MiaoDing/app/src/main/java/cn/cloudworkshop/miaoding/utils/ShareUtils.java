@@ -24,7 +24,8 @@ import cn.sharesdk.tencent.qq.QQ;
  */
 public class ShareUtils {
 
-    public static void showShare(final Activity activity, final String imgUrl, final String title, final String content, final String url) {
+    public static void showShare(final Activity activity, final String imgUrl, final String title,
+                                 final String content, final String url) {
 
         ShareSDK.initSDK(activity, "188b0b9b49186");
         final OnekeyShare oks = new OnekeyShare();
@@ -79,4 +80,6 @@ public class ShareUtils {
         oks.show(activity);
     }
 }
+
+
 

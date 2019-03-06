@@ -306,7 +306,7 @@ public class ApplyMeasureActivity extends BaseActivity implements LocationSource
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-
+                        tvSubmit.setEnabled(true);
                     }
 
                     @Override

@@ -227,7 +227,6 @@ public class PayOrderActivity extends BaseActivity {
             }
         } else {
             actualMoney = needPay.toString();
-
         }
         tvActualMoney.setText("¥" + actualMoney);
 

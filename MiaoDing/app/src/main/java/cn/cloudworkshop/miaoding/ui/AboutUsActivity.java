@@ -85,12 +85,10 @@ public class AboutUsActivity extends BaseActivity {
      * 检查更新
      */
     private void checkUpdate() {
-
         if (!TextUtils.isEmpty(MyApplication.updateUrl)) {
             AlertDialog.Builder dialog = new AlertDialog.Builder(AboutUsActivity.this,
                     R.style.Theme_AppCompat_DayNight_Dialog_Alert);
             dialog.setTitle((R.string.check_new_version));
-
 
             dialog.setMessage(MyApplication.updateContent);
             //为“确定”按钮注册监听事件
@@ -117,7 +115,6 @@ public class AboutUsActivity extends BaseActivity {
     }
 
 
-
     /**
      * 下载文件
      */
@@ -127,7 +124,6 @@ public class AboutUsActivity extends BaseActivity {
         request.setTitle(getString(R.string.app_name));
         request.setDescription(getString(R.string.downloading));
         //设置下载可见
-
         request.setVisibleInDownloadsUi(true);
         //下载完成后通知栏可见
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
@@ -181,5 +177,4 @@ public class AboutUsActivity extends BaseActivity {
         super.onDestroy();
     }
 }
-
 

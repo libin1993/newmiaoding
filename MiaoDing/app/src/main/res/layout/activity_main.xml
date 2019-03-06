@@ -27,7 +27,7 @@
         <RadioButton
             style="@style/RadioButton"
             android:drawableTop="@drawable/selector_works_tab"
-            android:text="@string/works_tab"/>
+            android:text="@string/accent"/>
 
         <RadioButton
             style="@style/RadioButton"

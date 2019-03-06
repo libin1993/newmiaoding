@@ -39,7 +39,6 @@ public class AfterSalesActivity extends BaseActivity {
         ButterKnife.bind(this);
         getData();
         initView();
-
     }
 
     private void getData() {
