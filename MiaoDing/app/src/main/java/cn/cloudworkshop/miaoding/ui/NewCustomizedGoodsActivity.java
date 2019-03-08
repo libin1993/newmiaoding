@@ -128,8 +128,6 @@ public class NewCustomizedGoodsActivity extends BaseActivity {
 
     //商品id
     private String id;
-    private String shop_id;
-    private String market_id;
     private CustomizedGoodsBean customBean;
     //监听banner滑动状态
     private boolean isScrolled;
@@ -149,8 +147,6 @@ public class NewCustomizedGoodsActivity extends BaseActivity {
     private void getData() {
         Intent intent = getIntent();
         id = intent.getStringExtra("id");
-        shop_id = intent.getStringExtra("shop_id");
-        market_id = intent.getStringExtra("market_id");
     }
 
     @Override
@@ -383,17 +379,6 @@ public class NewCustomizedGoodsActivity extends BaseActivity {
 
                 if (customBean != null && customBean.getData() != null) {
                     String share_url = Constant.CUSTOM_SHARE + "?goods_id=" + id;
-                    if (shop_id != null) {
-                        share_url += "&shop_id=" + shop_id;
-                    }
-                    if (market_id != null) {
-                        share_url += "&market_id=" + market_id;
-                    }
-                    share_url += "&type=1";
-                    String uid = SharedPreferencesUtils.getStr(this, "uid");
-                    if (!TextUtils.isEmpty(uid)) {
-                        share_url += "&shareout_id=" + uid;
-                    }
                     ShareUtils.showShare(this, Constant.IMG_HOST + customBean.getData().getAd_img().get(0).getImg(),
                             customBean.getData().getName(), customBean.getData().getContent(), share_url);
                 }

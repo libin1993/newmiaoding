@@ -199,6 +199,8 @@ public class Constant {
     public static final String CONFIRM_PAY = NEW_HOST + "/order/order_confirm";
     //礼品卡支付
     public static final String GIFT_CARD_PAY = NEW_HOST + "/order/gift_card_buy";
+    //礼品卡支付
+    public static final String SCAN_CODE = NEW_HOST + "/user/goods/goods_category";
 
     //WebView
     //咨讯详情

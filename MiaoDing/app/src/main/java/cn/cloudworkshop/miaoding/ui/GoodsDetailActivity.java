@@ -37,7 +37,7 @@ import okhttp3.Call;
 public class GoodsDetailActivity extends SwipeBackActivity {
     @BindView(R.id.rv_customize_detail)
     RecyclerView rvGoods;
-    private String imgUrl;
+
     private List<CustomizedGoodsBean.DataBean.ImgInfoBean> list;
 
     @Override
@@ -57,7 +57,8 @@ public class GoodsDetailActivity extends SwipeBackActivity {
 
     private void initView() {
         rvGoods.setLayoutManager(new LinearLayoutManager(this));
-        CommonAdapter<CustomizedGoodsBean.DataBean.ImgInfoBean> adapter = new CommonAdapter<CustomizedGoodsBean.DataBean.ImgInfoBean>(this, R.layout.rv_goods_detail_item, list) {
+        CommonAdapter<CustomizedGoodsBean.DataBean.ImgInfoBean> adapter = new CommonAdapter<
+                CustomizedGoodsBean.DataBean.ImgInfoBean>(this, R.layout.rv_goods_detail_item, list) {
             @Override
             protected void convert(ViewHolder holder, CustomizedGoodsBean.DataBean.ImgInfoBean imgInfoBean, int position) {
                 SimpleDraweeView ivGoods = holder.getView(R.id.iv_goods_detail);

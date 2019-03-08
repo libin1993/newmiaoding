@@ -5,21 +5,29 @@ import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.Service;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.text.TextUtils;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.yanzhenjie.zbar.camera.CameraPreview;
 import com.yanzhenjie.zbar.camera.ScanCallback;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.cloudworkshop.miaoding.R;
 import cn.cloudworkshop.miaoding.base.BaseActivity;
+import cn.cloudworkshop.miaoding.bean.ScanBean;
+import cn.cloudworkshop.miaoding.constant.Constant;
+import cn.cloudworkshop.miaoding.utils.GsonUtils;
 import cn.cloudworkshop.miaoding.utils.ToastUtils;
+import okhttp3.Call;
 
 /**
  * Author：Libin on 2017-06-15 08:48
@@ -53,51 +61,11 @@ public class ScanCodeActivity extends BaseActivity {
             public void onScanResult(String content) {
                 if (content != null) {
                     vibrator();
-                    String goods_id = null;
-                    String goods_type = null;
-                    String shop_id = null;
-                    String market_id = null;
-                    String[] split = content.split("\\?");
-                    if (split.length > 1) {
-                        String[] split1 = split[1].split("&");
-                        if (split1.length > 1) {
-                            for (int i = 0; i < split1.length; i++) {
-                                if (i == split1.length - 1) {
-                                    goods_type = split1[split1.length - 1].split("=")[1];
-                                }
 
-                                switch (split1[i].split("=")[0]) {
-                                    case "goods_id":
-                                        goods_id = split1[i].split("=")[1];
-                                        break;
-                                    case "shop_id":
-                                        shop_id = split1[i].split("=")[1];
-                                        break;
-                                    case "market_id":
-                                        market_id = split1[i].split("=")[1];
-                                        break;
-                                }
-
-                            }
-
-                            if (goods_id != null && goods_type != null) {
-                                switch (goods_type) {
-                                    case "1":
-                                        toGoodsDetail(NewCustomizedGoodsActivity.class, goods_id, shop_id, market_id);
-                                        break;
-                                    case "2":
-                                        toGoodsDetail(WorksDetailActivity.class, goods_id, shop_id, market_id);
-                                        break;
-                                    default:
-                                        scanFail();
-                                        break;
-                                }
-                            } else {
-                                scanFail();
-                            }
-                        } else {
-                            scanFail();
-                        }
+                    Uri uri = Uri.parse(content);
+                    String goodsId = uri.getQueryParameter("goods_id");
+                    if (!TextUtils.isEmpty(goodsId)) {
+                        getGoodsInfo(goodsId);
                     } else {
                         scanFail();
                     }
@@ -107,6 +75,43 @@ public class ScanCodeActivity extends BaseActivity {
                 }
             }
         });
+    }
+
+    /**
+     * @param goodsId 解析加密数据，获取id
+     */
+    private void getGoodsInfo(String goodsId) {
+        OkHttpUtils.get()
+                .url(Constant.SCAN_CODE)
+                .addParams("goods_id", goodsId)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        scanFail();
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        ScanBean scanBean = GsonUtils.jsonToBean(response, ScanBean.class);
+                        if (scanBean.getCode() == 10000) {
+                            switch (scanBean.getData().getCategory_id()) {
+                                case 1:
+                                    toGoodsDetail(NewCustomizedGoodsActivity.class, String.valueOf(scanBean.getData().getGoods_id()));
+                                    break;
+                                case 2:
+                                    toGoodsDetail(WorksDetailActivity.class, String.valueOf(scanBean.getData().getGoods_id()));
+                                    break;
+                                default:
+                                    scanFail();
+                                    break;
+                            }
+                        } else {
+                            scanFail();
+                        }
+                    }
+                });
+
     }
 
     /**
@@ -121,15 +126,9 @@ public class ScanCodeActivity extends BaseActivity {
      * @param cls
      * @param goodsId 跳转商品详情
      */
-    private void toGoodsDetail(Class<? extends Activity> cls, String goodsId, String shopId, String marketId) {
+    private void toGoodsDetail(Class<? extends Activity> cls, String goodsId) {
         Intent intent = new Intent(ScanCodeActivity.this, cls);
         intent.putExtra("id", goodsId);
-        if (shopId != null) {
-            intent.putExtra("shop_id", shopId);
-        }
-        if (marketId != null) {
-            intent.putExtra("market_id", marketId);
-        }
         startActivity(intent);
         finish();
     }
@@ -201,3 +200,4 @@ public class ScanCodeActivity extends BaseActivity {
         finish();
     }
 }
+

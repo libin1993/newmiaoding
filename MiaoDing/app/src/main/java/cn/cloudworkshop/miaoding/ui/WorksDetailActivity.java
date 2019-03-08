@@ -80,8 +80,6 @@ public class WorksDetailActivity extends BaseActivity {
 
     //商品id
     private String id;
-    private String shop_id;
-    private String market_id;
     private AccentDetailBean worksBean;
 
     //库存
@@ -113,9 +111,6 @@ public class WorksDetailActivity extends BaseActivity {
     private void getData() {
         Intent intent = getIntent();
         id = intent.getStringExtra("id");
-        shop_id = intent.getStringExtra("shop_id");
-        market_id = intent.getStringExtra("market_id");
-
     }
 
 
