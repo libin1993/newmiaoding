@@ -168,7 +168,6 @@ public class AboutUsActivity extends BaseActivity {
         return pi != null ? pi.versionName : null;
     }
 
-
     @Override
     protected void onDestroy() {
         if (service != null) {
@@ -177,6 +176,5 @@ public class AboutUsActivity extends BaseActivity {
         super.onDestroy();
     }
 }
-
 
 
