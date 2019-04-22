@@ -505,9 +505,7 @@ public class CustomizeActivity extends BaseActivity {
             @Override
             public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
                 Glide.with(CustomizeActivity.this)
-                        .load(Constant.IMG_HOST + itemList.get(position).
-
-                                getAndroid_middle())
+                        .load(Constant.IMG_HOST + itemList.get(position).getAndroid_middle())
                         .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                         .into(imgLargeMaterial);
                 isLongPress = true;

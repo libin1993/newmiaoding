@@ -127,9 +127,7 @@ public class CustomCameraView extends FrameLayout implements SurfaceHolder.Callb
                 camera.cancelAutoFocus();// 如果要实现连续的自动对焦，这一句必须加上
             } catch (Exception ignored) {
             }
-
         }
-
     }
 
     Handler handler = new Handler(new Handler.Callback() {

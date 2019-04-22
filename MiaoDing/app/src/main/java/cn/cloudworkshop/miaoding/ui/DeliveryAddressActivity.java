@@ -417,7 +417,7 @@ public class DeliveryAddressActivity extends BaseActivity {
     @Subscribe
     public void editAddress(String msg) {
         if ("edit_success".equals(msg)) {
-            dataList.clear();
+            isRefresh = true;
             page = 1;
             initData();
         }

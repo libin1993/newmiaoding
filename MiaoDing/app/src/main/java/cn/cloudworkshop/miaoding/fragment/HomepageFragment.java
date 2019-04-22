@@ -121,7 +121,7 @@ public class HomepageFragment extends BaseFragment {
                         if (imgLoadError != null) {
                             imgLoadError.setVisibility(View.GONE);
                         }
-                        if (viewLoading != null && viewLoading.isShown()) {
+                        if (viewLoading != null && viewLoading.getVisibility() == View.VISIBLE) {
                             viewLoading.smoothToHide();
                         }
 

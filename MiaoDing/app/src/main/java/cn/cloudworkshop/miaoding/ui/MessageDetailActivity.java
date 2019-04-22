@@ -180,6 +180,7 @@ public class MessageDetailActivity extends BaseActivity {
                         Glide.with(MessageDetailActivity.this)
                                 .load(Constant.IMG_HOST + dataBean.getCar_img())
                                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                                .placeholder(R.mipmap.place_holder_banner)
                                 .into((ImageView) holder.getView(R.id.img_select_goods));
                         break;
                     case 3:
@@ -188,6 +189,7 @@ public class MessageDetailActivity extends BaseActivity {
                         Glide.with(MessageDetailActivity.this)
                                 .load(Constant.IMG_HOST + dataBean.getCar_img())
                                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                                .placeholder(R.mipmap.place_holder_banner)
                                 .into((ImageView) holder.getView(R.id.img_logistics_goods));
 
                         holder.setText(R.id.tv_logistics_name, getString(R.string.logistics_no) + dataBean.getExpress_no());
@@ -204,17 +206,19 @@ public class MessageDetailActivity extends BaseActivity {
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
                 switch (type) {
                     case 2:
-                        Intent intent2 = null;
-                        switch (msgList.get(position).getCategory_id()) {
-                            case 1:
-                                intent2 = new Intent(MessageDetailActivity.this, NewCustomizedGoodsActivity.class);
-                                break;
-                            case 2:
-                                intent2 = new Intent(MessageDetailActivity.this, WorksDetailActivity.class);
-                                break;
+                        if (msgList.get(position).getGoods_id() > 0){
+                            Intent intent2 = null;
+                            switch (msgList.get(position).getCategory_id()) {
+                                case 1:
+                                    intent2 = new Intent(MessageDetailActivity.this, NewCustomizedGoodsActivity.class);
+                                    break;
+                                case 2:
+                                    intent2 = new Intent(MessageDetailActivity.this, WorksDetailActivity.class);
+                                    break;
+                            }
+                            intent2.putExtra("id", String.valueOf(msgList.get(position).getGoods_id()));
+                            startActivity(intent2);
                         }
-                        intent2.putExtra("id", String.valueOf(msgList.get(position).getGoods_id()));
-                        startActivity(intent2);
                         break;
                     case 3:
                         Intent intent3 = new Intent(MessageDetailActivity.this, LogisticsActivity.class);

@@ -26,6 +26,7 @@ import cn.cloudworkshop.miaoding.base.BaseActivity;
 import cn.cloudworkshop.miaoding.bean.LogisticsBean;
 import cn.cloudworkshop.miaoding.constant.Constant;
 import cn.cloudworkshop.miaoding.utils.GsonUtils;
+import cn.cloudworkshop.miaoding.utils.ToastUtils;
 import okhttp3.Call;
 
 /**
@@ -106,6 +107,8 @@ public class LogisticsActivity extends BaseActivity {
                         if (entity.getCode() == 10000 && entity.getData() != null && entity.getData().size() > 0) {
                             dataList.addAll(entity.getData());
                             initView();
+                        }else {
+                            ToastUtils.showToast(LogisticsActivity.this,entity.getMsg());
                         }
                     }
                 });

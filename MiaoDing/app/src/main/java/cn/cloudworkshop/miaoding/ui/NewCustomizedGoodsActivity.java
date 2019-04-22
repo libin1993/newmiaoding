@@ -178,6 +178,8 @@ public class NewCustomizedGoodsActivity extends BaseActivity {
                         customBean = GsonUtils.jsonToBean(response, CustomizedGoodsBean.class);
                         if (customBean.getCode() == 10000 && customBean.getData() != null) {
                             initView();
+                        } else {
+                            ToastUtils.showToast(NewCustomizedGoodsActivity.this, customBean.getMsg());
                         }
                     }
                 });
@@ -327,6 +329,7 @@ public class NewCustomizedGoodsActivity extends BaseActivity {
         MyLinearLayoutManager linearLayoutManager = new MyLinearLayoutManager(this);
         linearLayoutManager.setScrollEnabled(false);
         rvGoodsDetail.setLayoutManager(linearLayoutManager);
+
         CommonAdapter<CustomizedGoodsBean.DataBean.ImgInfoBean> adapter = new CommonAdapter
                 <CustomizedGoodsBean.DataBean.ImgInfoBean>(this, R.layout.rv_goods_detail_item,
                 customBean.getData().getImg_info()) {
@@ -352,7 +355,7 @@ public class NewCustomizedGoodsActivity extends BaseActivity {
                     startActivity(login);
                 } else {
                     if (customBean != null && customBean.getData() != null) {
-                        if (DoubleClickUtils.isFastClick()){
+                        if (DoubleClickUtils.isFastClick()) {
                             buyGoods();
                         }
                     }
@@ -378,9 +381,18 @@ public class NewCustomizedGoodsActivity extends BaseActivity {
             case R.id.img_tailor_share:
 
                 if (customBean != null && customBean.getData() != null) {
-                    String share_url = Constant.CUSTOM_SHARE + "?goods_id=" + id;
-                    ShareUtils.showShare(this, Constant.IMG_HOST + customBean.getData().getAd_img().get(0).getImg(),
-                            customBean.getData().getName(), customBean.getData().getContent(), share_url);
+                    String token = SharedPreferencesUtils.getStr(this, "token");
+                    String goodsImg = Constant.IMG_HOST + customBean.getData().getAd_img().get(0).getImg();
+
+                    if (!TextUtils.isEmpty(token)) {
+                        encodeGoods(token, id, goodsImg, customBean.getData().getName(),
+                                customBean.getData().getContent());
+                    } else {
+                        String shareUrl = Constant.CUSTOM_SHARE + "?goods_id=" + id;
+                        ShareUtils.showShare(this, goodsImg, customBean.getData().getName(),
+                                customBean.getData().getContent(), shareUrl);
+                    }
+
                 }
                 break;
             case R.id.tv_all_evaluate:
@@ -400,10 +412,48 @@ public class NewCustomizedGoodsActivity extends BaseActivity {
      * 购买商品
      */
     private void buyGoods() {
-        Intent intent = new Intent(this,NewEmbroideryActivity.class);
-        intent.putExtra("goods_id",customBean.getData().getId());
+        Intent intent = new Intent(this, NewEmbroideryActivity.class);
+        intent.putExtra("goods_id", customBean.getData().getId());
         startActivity(intent);
 
+    }
+
+    /**
+     * @param token
+     * @param goodsId
+     * @param goodsImg
+     * @param goodsName
+     * @param goodsContent 加密商品
+     */
+    private void encodeGoods(String token, final String goodsId, final String goodsImg,
+                             final String goodsName, final String goodsContent) {
+        OkHttpUtils.post()
+                .url(Constant.GOODS_ENCODE)
+                .addParams("token", token)
+                .addParams("goods_id", String.valueOf(goodsId))
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            int code = jsonObject.getInt("code");
+                            if (code == 10000) {
+                                String goodsNo = jsonObject.getString("goods_id");
+                                String shareUrl = Constant.CUSTOM_SHARE + "?goods_id=" + goodsNo;
+                                ShareUtils.showShare(NewCustomizedGoodsActivity.this,
+                                        goodsImg, goodsName, goodsContent, shareUrl);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
     }
 
 
@@ -431,11 +481,11 @@ public class NewCustomizedGoodsActivity extends BaseActivity {
                             int code = jsonObject.getInt("code");
                             int status = jsonObject.getInt("status");
                             if (code == 10000) {
-                                if (status == 1){
+                                if (status == 1) {
                                     MobclickAgent.onEvent(NewCustomizedGoodsActivity.this, "collection");
                                     imgAddLike.setImageResource(R.mipmap.icon_add_like);
                                     ToastUtils.showToast(NewCustomizedGoodsActivity.this, getString(R.string.collect_success));
-                                }else {
+                                } else {
                                     imgAddLike.setImageResource(R.mipmap.icon_cancel_like);
                                     ToastUtils.showToast(NewCustomizedGoodsActivity.this, getString(R.string.cancel_collect));
                                 }

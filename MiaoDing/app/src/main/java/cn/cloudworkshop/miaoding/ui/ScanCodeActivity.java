@@ -82,7 +82,7 @@ public class ScanCodeActivity extends BaseActivity {
      */
     private void getGoodsInfo(String goodsId) {
         OkHttpUtils.get()
-                .url(Constant.SCAN_CODE)
+                .url(Constant.GOODS_DECODE)
                 .addParams("goods_id", goodsId)
                 .build()
                 .execute(new StringCallback() {

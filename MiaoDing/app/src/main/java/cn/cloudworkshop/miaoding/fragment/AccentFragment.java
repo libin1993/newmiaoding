@@ -188,9 +188,8 @@ public class AccentFragment extends BaseFragment {
                 imgShare.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String share_url = Constant.CUSTOM_SHARE + "?goods_id=" + dataBean.getId();
-                        ShareUtils.showShare(getActivity(), Constant.IMG_HOST + dataBean.getAd_img(),
-                                dataBean.getName(), dataBean.getContent(), share_url);
+                        shareGoods(dataBean.getId(), Constant.IMG_HOST + dataBean.getAd_img(),
+                                dataBean.getName(), dataBean.getContent());
                     }
                 });
 
@@ -263,6 +262,57 @@ public class AccentFragment extends BaseFragment {
             }
         });
 
+    }
+
+    /**
+     * 分享商品
+     */
+    private void shareGoods(int goodsId, String goodsImg, String goodsName, String goodsContent) {
+        String token = SharedPreferencesUtils.getStr(getActivity(), "token");
+        if (!TextUtils.isEmpty(token)) {
+            encodeGoods(token, goodsId, goodsImg, goodsName, goodsContent);
+        } else {
+            String shareUrl = Constant.CUSTOM_SHARE + "?goods_id=" + goodsId;
+            ShareUtils.showShare(getActivity(), goodsImg, goodsName, goodsContent, shareUrl);
+        }
+
+    }
+
+    /**
+     * @param token
+     * @param goodsId
+     * @param goodsImg
+     * @param goodsName
+     * @param goodsContent 加密商品
+     */
+    private void encodeGoods(String token, final int goodsId, final String goodsImg,
+                             final String goodsName, final String goodsContent) {
+        OkHttpUtils.post()
+                .url(Constant.GOODS_ENCODE)
+                .addParams("token", token)
+                .addParams("goods_id", String.valueOf(goodsId))
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            int code = jsonObject.getInt("code");
+                            if (code == 10000) {
+                                String goodsNo = jsonObject.getString("goods_id");
+                                String shareUrl = Constant.CUSTOM_SHARE + "?goods_id=" + goodsNo;
+                                ShareUtils.showShare(getActivity(), goodsImg, goodsName, goodsContent, shareUrl);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
     }
 
     /**

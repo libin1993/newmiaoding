@@ -271,11 +271,17 @@ public class WorksDetailActivity extends BaseActivity {
                 break;
             case R.id.img_goods_share:
                 if (worksBean != null && worksBean.getData() != null) {
-                    String share_url = Constant.CUSTOM_SHARE + "?goods_id=" + id;
+                    String token = SharedPreferencesUtils.getStr(this, "token");
+                    String goodsImg = Constant.IMG_HOST + worksBean.getData().getAd_img().get(0).getImg();
 
-                    ShareUtils.showShare(this, Constant.IMG_HOST + worksBean
-                                    .getData().getAd_img().get(0).getImg(), worksBean.getData().getName(),
-                            worksBean.getData().getContent(), share_url);
+                    if (!TextUtils.isEmpty(token)) {
+                        encodeGoods(token, id, goodsImg, worksBean.getData().getName(),
+                                worksBean.getData().getContent());
+                    } else {
+                        String shareUrl = Constant.CUSTOM_SHARE + "?goods_id=" + id;
+                        ShareUtils.showShare(this, goodsImg, worksBean.getData().getName(),
+                                worksBean.getData().getContent(), shareUrl);
+                    }
                 }
                 break;
             case R.id.img_works_info:
@@ -472,7 +478,7 @@ public class WorksDetailActivity extends BaseActivity {
                 @Override
                 public void onClick(View v) {
                     mPopupWindow.dismiss();
-                    if (count < stock) {
+                    if (count <= stock) {
                         addToCart();
                     } else {
                         ToastUtils.showToast(WorksDetailActivity.this, getString(R.string.stock_pull));
@@ -490,6 +496,45 @@ public class WorksDetailActivity extends BaseActivity {
                 }
             });
         }
+    }
+
+
+    /**
+     * @param token
+     * @param goodsId
+     * @param goodsImg
+     * @param goodsName
+     * @param goodsContent 加密商品
+     */
+    private void encodeGoods(String token, final String goodsId, final String goodsImg,
+                             final String goodsName, final String goodsContent) {
+        OkHttpUtils.post()
+                .url(Constant.GOODS_ENCODE)
+                .addParams("token", token)
+                .addParams("goods_id", String.valueOf(goodsId))
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            int code = jsonObject.getInt("code");
+                            if (code == 10000) {
+                                String goodsNo = jsonObject.getString("goods_id");
+                                String shareUrl = Constant.CUSTOM_SHARE + "?goods_id=" + goodsNo;
+                                ShareUtils.showShare(WorksDetailActivity.this,
+                                        goodsImg, goodsName, goodsContent, shareUrl);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
     }
 
     /**

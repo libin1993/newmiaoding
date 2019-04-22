@@ -225,11 +225,6 @@ public class ScrollViewContainer extends RelativeLayout {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
 
-//		topView.layout(0, (int) mMoveLen, mViewWidth, topView.getMeasuredHeight() + (int) mMoveLen);
-//		bottomView.layout(0, topView.getMeasuredHeight() + (int) mMoveLen,
-//				mViewWidth, topView.getMeasuredHeight() + (int) mMoveLen
-//						+ bottomView.getMeasuredHeight());
-
         if (mCurrentViewIndex == 0) {
             topView.layout(0, (int) mMoveLen, mViewWidth, topView.getMeasuredHeight() + (int) mMoveLen);
             bottomView.layout(0, topView.getMeasuredHeight() + (int) mMoveLen, mViewWidth,
@@ -271,7 +266,8 @@ public class ScrollViewContainer extends RelativeLayout {
     private OnTouchListener bottomViewTouchListener = new OnTouchListener() {
         @Override
         public boolean onTouch(View v, MotionEvent event) {
-            canPullDown = v.getScrollY() == 0 && mCurrentViewIndex == 1;
+            ScrollView sv = (ScrollView) v;
+            canPullDown = sv.getScrollY() == 0 && mCurrentViewIndex == 1;
             return false;
         }
     };

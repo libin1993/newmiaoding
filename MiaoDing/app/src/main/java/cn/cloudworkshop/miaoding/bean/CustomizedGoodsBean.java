@@ -16,7 +16,17 @@ public class CustomizedGoodsBean {
      */
 
     private int code;
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
+
     private DataBean data;
+    private String msg;
 
     public int getCode() {
         return code;

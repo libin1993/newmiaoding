@@ -199,8 +199,10 @@ public class Constant {
     public static final String CONFIRM_PAY = NEW_HOST + "/order/order_confirm";
     //礼品卡支付
     public static final String GIFT_CARD_PAY = NEW_HOST + "/order/gift_card_buy";
-    //礼品卡支付
-    public static final String SCAN_CODE = NEW_HOST + "/user/goods/goods_category";
+    //商品id解密
+    public static final String GOODS_DECODE = NEW_HOST + "/user/goods/goods_category";
+    //商品id加密
+    public static final String GOODS_ENCODE = NEW_HOST + "/user/user/get_goods_id_encrypted";
 
     //WebView
     //咨讯详情
@@ -209,7 +211,7 @@ public class Constant {
     public static final String HOMEPAGE_SHARE = WEB_HOST + "/share/html/designer.html";
     //定制商品分享
     public static final String CUSTOM_SHARE = WEB_HOST + "/dd/index.html";
-    //设计师成品分享
+    //设计师成品分享(过期)
     public static final String WORKS_SHARE = WEB_HOST + "/share/html/chengping.html";
     //穿衣测试结果
     public static final String DRESSING_TEST_RESULT = WEB_HOST + "/webapp/html/clo.html";
