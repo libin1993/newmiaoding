@@ -135,6 +135,8 @@ public class WorksDetailActivity extends BaseActivity {
                         worksBean = GsonUtils.jsonToBean(response, AccentDetailBean.class);
                         if (worksBean.getCode() == 10000 && worksBean.getData() != null) {
                             initView();
+                        }else {
+                            ToastUtils.showToast(WorksDetailActivity.this, worksBean.getMsg());
                         }
                     }
                 });
