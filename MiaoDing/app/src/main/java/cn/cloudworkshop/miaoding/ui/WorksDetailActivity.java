@@ -135,7 +135,7 @@ public class WorksDetailActivity extends BaseActivity {
                         worksBean = GsonUtils.jsonToBean(response, AccentDetailBean.class);
                         if (worksBean.getCode() == 10000 && worksBean.getData() != null) {
                             initView();
-                        }else {
+                        } else {
                             ToastUtils.showToast(WorksDetailActivity.this, worksBean.getMsg());
                         }
                     }
@@ -148,7 +148,7 @@ public class WorksDetailActivity extends BaseActivity {
      */
     private void initView() {
 
-        if (worksBean.getData().getAd_img() != null && worksBean.getData().getAd_img().size() > 0){
+        if (worksBean.getData().getAd_img() != null && worksBean.getData().getAd_img().size() > 0) {
             if (!TextUtils.isEmpty(worksBean.getData().getAd_img().get(0).getDesc())) {
                 typerText(worksBean.getData().getAd_img().get(0).getDesc());
             }
@@ -573,10 +573,16 @@ public class WorksDetailActivity extends BaseActivity {
                             if (code == 10000) {
                                 stock = jsonObject.getInt("stock");
                                 tvStock.setText(getString(R.string.stock) + stock + getString(R.string.piece));
-                                if (count > stock) {
-                                    count = stock;
-                                    tvCount.setText(String.valueOf(count));
+
+                                if (stock > 0) {
+                                    if (count > stock) {
+                                        count = stock;
+                                    }
+                                } else {
+                                    count = 1;
                                 }
+
+                                tvCount.setText(String.valueOf(count));
 
                             }
 

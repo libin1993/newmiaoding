@@ -158,6 +158,7 @@ public class AccentFragment extends BaseFragment {
             @Override
             protected void convert(ViewHolder holder, final AccentBean.DataBean.GoodsBean dataBean, final int position) {
                 holder.setText(R.id.tv_accent_name, dataBean.getName());
+                holder.setText(R.id.tv_works_subtitle, dataBean.getContent());
                 SimpleDraweeView imgWorks = holder.getView(R.id.img_accent_works);
                 if (!TextUtils.isEmpty(dataBean.getAd_img_info())) {
                     imgWorks.setAspectRatio(Float.parseFloat(dataBean.getAd_img_info()));

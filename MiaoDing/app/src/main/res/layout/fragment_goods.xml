@@ -16,7 +16,7 @@
             android:layout_height="match_parent"
             app:tl_indicator_color="@android:color/white"
             app:tl_indicator_height="1.5dp"
-            app:tl_indicator_margin_bottom="6dp"
+            app:tl_indicator_margin_bottom="1dp"
             app:tl_indicator_width_equal_title="true"
             app:tl_textSelectColor="@android:color/white"
             app:tl_textUnselectColor="@android:color/white"

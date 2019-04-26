@@ -24,7 +24,9 @@ import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -50,8 +52,10 @@ import okhttp3.Call;
 public class SubGoodsFragment extends BaseFragment {
     @BindView(R.id.rv_sub_goods)
     LRecyclerView rvGoods;
-    //订单状态
+    //商品分类
     private int classifyId;
+    //商品tag
+    private String tag;
     //页面
     private int page = 1;
     //刷新
@@ -78,14 +82,20 @@ public class SubGoodsFragment extends BaseFragment {
 
         Bundle bundle = getArguments();
         classifyId = bundle.getInt("classify_id");
+        tag = bundle.getString("tag");
     }
 
     private void initData() {
+        Map<String, String> map = new HashMap<>();
+        map.put("token", SharedPreferencesUtils.getStr(getParentFragment().getParentFragment().getActivity(), "token"));
+        map.put("use_goodsid", String.valueOf(classifyId));
+        if (!TextUtils.isEmpty(tag)){
+            map.put("goods_name", tag);
+        }
+        map.put("page", String.valueOf(page));
         OkHttpUtils.post()
                 .url(Constant.GOODS_LIST)
-                .addParams("token", SharedPreferencesUtils.getStr(getParentFragment().getActivity(),"token"))
-                .addParams("use_goodsid", String.valueOf(classifyId))
-                .addParams("page", String.valueOf(page))
+                .params(map)
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -110,7 +120,7 @@ public class SubGoodsFragment extends BaseFragment {
 
                             mLRecyclerViewAdapter.notifyDataSetChanged();
                         } else {
-                            RecyclerViewStateUtils.setFooterViewState(getParentFragment().getActivity(),
+                            RecyclerViewStateUtils.setFooterViewState(getParentFragment().getParentFragment().getActivity(),
                                     rvGoods, 0, LoadingFooter.State.NoMore, null);
                         }
                         isRefresh = false;
@@ -120,11 +130,11 @@ public class SubGoodsFragment extends BaseFragment {
     }
 
     private void initView() {
-        rvGoods.setLayoutManager(new GridLayoutManager(getParentFragment().getActivity(), 2));
+        rvGoods.setLayoutManager(new GridLayoutManager(getParentFragment().getParentFragment().getActivity(), 2));
         rvGoods.addItemDecoration(new SpaceItemDecoration((int) DisplayUtils.dp2px(
-                getParentFragment().getActivity(), 4.5f), true));
+                getParentFragment().getParentFragment().getActivity(), 4.5f), true));
         CommonAdapter<CustomizedGoodsListBean.GoodsidBean> adapter = new CommonAdapter
-                <CustomizedGoodsListBean.GoodsidBean>(getParentFragment().getActivity(),
+                <CustomizedGoodsListBean.GoodsidBean>(getParentFragment().getParentFragment().getActivity(),
                 R.layout.listitem_sub_goods, dataList) {
             @Override
             protected void convert(ViewHolder holder, CustomizedGoodsListBean.GoodsidBean goodsidBean, int position) {
@@ -135,7 +145,7 @@ public class SubGoodsFragment extends BaseFragment {
                 imgGoods.setImageURI(Constant.IMG_HOST + goodsidBean.getAd_img());
 
                 holder.setText(R.id.tv_sub_title, goodsidBean.getName());
-                holder.setText(R.id.tv_sub_price, "¥" + goodsidBean.getSell_price());
+                holder.setText(R.id.tv_sub_price, "¥ " + goodsidBean.getSell_price());
                 holder.setText(R.id.tv_sub_content, goodsidBean.getContent());
             }
 
@@ -162,7 +172,7 @@ public class SubGoodsFragment extends BaseFragment {
         rvGoods.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
-                RecyclerViewStateUtils.setFooterViewState(getParentFragment().getActivity(), rvGoods
+                RecyclerViewStateUtils.setFooterViewState(getParentFragment().getParentFragment().getActivity(), rvGoods
                         , 0, LoadingFooter.State.Loading, null);
                 isLoadMore = true;
                 page++;
@@ -174,7 +184,7 @@ public class SubGoodsFragment extends BaseFragment {
         mLRecyclerViewAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Intent intent = new Intent(getParentFragment().getActivity(), NewCustomizedGoodsActivity.class);
+                Intent intent = new Intent(getParentFragment().getParentFragment().getActivity(), NewCustomizedGoodsActivity.class);
                 intent.putExtra("id", String.valueOf(dataList.get(position).getId()));
                 startActivity(intent);
             }
@@ -182,10 +192,11 @@ public class SubGoodsFragment extends BaseFragment {
     }
 
 
-    public static SubGoodsFragment newInstance(int classify_id) {
+    public static SubGoodsFragment newInstance(int classify_id, String tag) {
 
         Bundle args = new Bundle();
         args.putInt("classify_id", classify_id);
+        args.putString("tag", tag);
         SubGoodsFragment fragment = new SubGoodsFragment();
         fragment.setArguments(args);
         return fragment;

@@ -61,6 +61,8 @@ import cn.cloudworkshop.miaoding.utils.DateUtils;
 import cn.cloudworkshop.miaoding.utils.DisplayUtils;
 import cn.cloudworkshop.miaoding.utils.GsonUtils;
 import cn.cloudworkshop.miaoding.utils.NetworkImageHolderView;
+import cn.cloudworkshop.miaoding.utils.RVItemDecoration;
+import cn.cloudworkshop.miaoding.utils.RecyclerItemDecoration;
 import cn.cloudworkshop.miaoding.utils.ShareUtils;
 import cn.cloudworkshop.miaoding.utils.SharedPreferencesUtils;
 import okhttp3.Call;
@@ -165,7 +167,7 @@ public class HomepageFragment extends BaseFragment {
 
                 SimpleDraweeView imgNews = holder.getView(R.id.img_homepage_news);
 
-                imgNews.setAspectRatio((float) articleBean.getImg_info());
+                imgNews.setAspectRatio(Float.parseFloat(articleBean.getImg_info()));
 
                 imgNews.setImageURI(Constant.IMG_HOST + articleBean.getImg());
 
@@ -329,7 +331,7 @@ public class HomepageFragment extends BaseFragment {
     }
 
     /**
-     *   添加收藏
+     * 添加收藏
      */
     private void addCollection(int id, final int position) {
         OkHttpUtils.post()
@@ -413,7 +415,7 @@ public class HomepageFragment extends BaseFragment {
             ViewGroup.LayoutParams layoutParams1 = banner.getLayoutParams();
             int widthPixels = DisplayUtils.getMetrics(getActivity()).widthPixels;
             layoutParams1.width = widthPixels;
-            double imgRatio = homepageBean.getData().getBanner().get(0).getImg_info();
+            double imgRatio = Double.parseDouble(homepageBean.getData().getBanner().get(0).getImg_info());
 
             layoutParams1.height = (int) (widthPixels / imgRatio);
             banner.setLayoutParams(layoutParams1);
@@ -524,23 +526,21 @@ public class HomepageFragment extends BaseFragment {
 
 
         RecyclerView rvGoods = (RecyclerView) view.findViewById(R.id.rv_news_recommend);
+
         rvGoods.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
-        //布局宽高
-        int widthPixels = DisplayUtils.getMetrics(getActivity()).widthPixels;
-        final int width = (int) ((widthPixels - DisplayUtils.dp2px(getActivity(), 36)) / 2);
-        final int height = (int) (width * 105 / 169.5);
-        CommonAdapter<HomepageNewsBean.DataBean.IndextypeBean> adapter = new CommonAdapter<HomepageNewsBean.DataBean.IndextypeBean>(getActivity(),
-                R.layout.listitem_recommend_shop, homepageBean.getData().getIndextype()) {
+        rvGoods.addItemDecoration(new RecyclerItemDecoration((int) DisplayUtils.dp2px(getActivity(), 25)));
+        CommonAdapter<HomepageNewsBean.DataBean.HotGoodsBean> adapter = new CommonAdapter<HomepageNewsBean.DataBean.HotGoodsBean>(getActivity(),
+                R.layout.listitem_recommend_shop, homepageBean.getData().getHot_goods()) {
             @Override
-            protected void convert(ViewHolder holder, HomepageNewsBean.DataBean.IndextypeBean indextypeBean, int position) {
+            protected void convert(ViewHolder holder, HomepageNewsBean.DataBean.HotGoodsBean hotGoodsBean, int position) {
                 SimpleDraweeView imgShop = holder.getView(R.id.img_recommend_shop);
 
-                ViewGroup.LayoutParams layoutParams = imgShop.getLayoutParams();
-                layoutParams.width = width;
-                layoutParams.height = height;
-                imgShop.setLayoutParams(layoutParams);
+                imgShop.setAspectRatio(Float.parseFloat(hotGoodsBean.getAd_img_info()));
 
-                imgShop.setImageURI(Constant.IMG_HOST + indextypeBean.getImg());
+                imgShop.setImageURI(Constant.IMG_HOST + hotGoodsBean.getAd_img());
+
+                holder.setText(R.id.tv_recommend_name, hotGoodsBean.getName());
+                holder.setText(R.id.tv_recommend_price, "¥ " + hotGoodsBean.getSell_price());
             }
 
         };

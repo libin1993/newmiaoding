@@ -242,7 +242,7 @@ public class ShoppingCartActivity extends BaseActivity {
                 SimpleDraweeView imgGoods = holder.getView(R.id.img_sub_goods);
                 imgGoods.setImageURI(Constant.IMG_HOST + dataBean.getCar_img());
                 holder.setText(R.id.tv_sub_title, dataBean.getName());
-                holder.setText(R.id.tv_sub_price, "¥" + dataBean.getSell_price());
+                holder.setText(R.id.tv_sub_price, "¥ " + dataBean.getSell_price());
                 holder.setText(R.id.tv_sub_content, dataBean.getContent());
             }
         };

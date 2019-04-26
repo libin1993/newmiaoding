@@ -222,7 +222,7 @@ public class ApplyMeasureActivity extends BaseActivity implements LocationSource
                             .append(aMapLocation.getStreetNum());
                     if (TextUtils.isEmpty(sb.toString())) {
                         EasyPermissions.requestPermissions(ApplyMeasureActivity.this,
-                                "", 123, permissionStr);
+                                "", 12345, permissionStr);
                     }
                     etCurrentAddress.setText(sb.toString());
                     etCurrentAddress.setSelection(sb.toString().length());
@@ -448,6 +448,8 @@ public class ApplyMeasureActivity extends BaseActivity implements LocationSource
 
     @Override
     public void onPermissionsDenied(int requestCode, List<String> perms) {
-        PermissionUtils.showPermissionDialog(this, getString(R.string.location));
+        if (requestCode == 12345){
+            PermissionUtils.showPermissionDialog(this, getString(R.string.location));
+        }
     }
 }

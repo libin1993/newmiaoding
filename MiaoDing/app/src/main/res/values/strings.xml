@@ -418,5 +418,7 @@
     <string name="works_tab">腔调</string>
     <string name="me">我</string>
     <string name="stock_pull">库存不足</string>
+    <string name="null_shop_bag">您的购物袋空空如也~</string>
+    <string name="hot_goods">热销商品</string>
 
 </resources>

@@ -415,5 +415,4 @@ public class LoginActivity extends BaseActivity {
         }
         finish();
     }
-
 }

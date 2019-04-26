@@ -44,6 +44,17 @@
         fresco:placeholderImageScaleType="centerCrop"
         fresco:roundedCornerRadius="3dp"/>
 
+    <TextView
+        android:id="@+id/tv_works_subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="38dp"
+        android:gravity="center_vertical"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:singleLine="true"
+        android:textColor="@color/dark_gray_22"
+        android:textSize="13sp"/>
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="51dp"

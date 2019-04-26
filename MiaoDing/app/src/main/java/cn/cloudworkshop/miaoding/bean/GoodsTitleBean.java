@@ -63,6 +63,15 @@ public class GoodsTitleBean {
     public static class DataBean {
         private int id;
         private String name;
+        private int type;
+
+        public int getType() {
+            return type;
+        }
+
+        public void setType(int type) {
+            this.type = type;
+        }
 
         public int getId() {
             return id;

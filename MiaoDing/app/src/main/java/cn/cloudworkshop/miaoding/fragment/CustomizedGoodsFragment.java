@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -38,15 +39,17 @@ import cn.cloudworkshop.miaoding.constant.Constant;
 import cn.cloudworkshop.miaoding.ui.ScanCodeActivity;
 import cn.cloudworkshop.miaoding.utils.DisplayUtils;
 import cn.cloudworkshop.miaoding.utils.GsonUtils;
+import cn.cloudworkshop.miaoding.utils.PermissionUtils;
 import cn.cloudworkshop.miaoding.utils.SharedPreferencesUtils;
 import okhttp3.Call;
+import pub.devrel.easypermissions.EasyPermissions;
 
 /**
  * Author：Libin on 2017/9/25 18:57
  * Email：1993911441@qq.com
  * Describe：定制商品（当前版本）
  */
-public class CustomizedGoodsFragment extends BaseFragment {
+public class CustomizedGoodsFragment extends BaseFragment implements EasyPermissions.PermissionCallbacks{
     @BindView(R.id.tab_goods)
     SlidingTabLayout tabGoods;
     @BindView(R.id.img_goods_code)
@@ -61,11 +64,8 @@ public class CustomizedGoodsFragment extends BaseFragment {
 
     private GoodsTitleBean titleBean;
 
-    // 是否需要系统权限检测
-    private boolean isRequireCheck = true;
     static final String[] permissionStr = new String[]{Manifest.permission.CAMERA};
-    //是否授权
-    private boolean isGrant;
+
 
     @Nullable
     @Override
@@ -111,7 +111,7 @@ public class CustomizedGoodsFragment extends BaseFragment {
         List<Fragment> fragmentList = new ArrayList<>();
         List<String> titleList = new ArrayList<>();
         for (int i = 0; i < titleBean.getData().size(); i++) {
-            fragmentList.add(SubGoodsFragment.newInstance(titleBean.getData().get(i).getId()));
+//            fragmentList.add(SubGoodsFragment.newInstance(titleBean.getData().get(i).getId()));
             titleList.add(titleBean.getData().get(i).getName());
         }
 
@@ -122,9 +122,7 @@ public class CustomizedGoodsFragment extends BaseFragment {
                     (int) DisplayUtils.dp2px(getActivity(), 70), 0);
         } else {
             ViewGroup.LayoutParams layoutParams = tabGoods.getLayoutParams();
-            layoutParams.width = (int) (DisplayUtils.getMetrics(getActivity()).widthPixels
-                    -
-
+            layoutParams.width = (int) (DisplayUtils.getMetrics(getActivity()).widthPixels -
                     DisplayUtils.dp2px(getActivity(), 55));
             tabGoods.setLayoutParams(layoutParams);
 
@@ -139,6 +137,7 @@ public class CustomizedGoodsFragment extends BaseFragment {
         vpGoods.setAdapter(adapter);
         tabGoods.setViewPager(vpGoods);
         tabGoods.setCurrentTab(0);
+
     }
 
     @Override
@@ -159,26 +158,19 @@ public class CustomizedGoodsFragment extends BaseFragment {
 
 
     /**
-     * 检测权限
+     * 扫码，检测权限
      */
-    private void judgePermission() {
-        if (isRequireCheck) {
-            //权限没有授权，进入授权界面
-            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA)
-                    != PackageManager.PERMISSION_GRANTED) {
-                isGrant = false;
-                if (Build.VERSION.SDK_INT >= 23) {
-                    requestPermissions(permissionStr, 1);
-                } else {
-                    showPermissionDialog();
-                }
-            } else {
-                isGrant = true;
-            }
+    private void scanCode() {
+
+        if (!EasyPermissions.hasPermissions(getActivity(), permissionStr)) {
+            EasyPermissions.requestPermissions(this, "", 123, permissionStr);
         } else {
-            isRequireCheck = true;
+            Intent intent = new Intent(getActivity(), ScanCodeActivity.class);
+            startActivity(intent);
         }
+
     }
+
 
 
     /**
@@ -193,70 +185,37 @@ public class CustomizedGoodsFragment extends BaseFragment {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            isRequireCheck = false;
-            isGrant = true;
-            Intent intent = new Intent(getActivity(), ScanCodeActivity.class);
-            startActivity(intent);
-
-        } else {
-            isRequireCheck = true;
-            isGrant = false;
-            showPermissionDialog();
-        }
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
 
 
-    @Override
-    public boolean shouldShowRequestPermissionRationale(String permission) {
-        return false;
-    }
-
-    /**
-     * 提示对话框
-     */
-    public void showPermissionDialog() {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity(),
-                R.style.Theme_AppCompat_DayNight_Dialog_Alert);
-        dialog.setTitle(getString(R.string.help));
-        dialog.setMessage(R.string.need_camera);
-        //为“确定”按钮注册监听事件
-        dialog.setPositiveButton(getString(R.string.set), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // 启动应用的设置
-                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                intent.setData(Uri.parse("package:" + getActivity().getPackageName()));
-                startActivity(intent);
-            }
-        });
-        //为“取消”按钮注册监听事件
-        dialog.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // 根据实际情况编写相应代码。
-                dialog.dismiss();
-            }
-        });
-        dialog.create();
-        dialog.show();
-
-    }
 
     @OnClick({R.id.img_goods_code, R.id.img_load_error})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.img_goods_code:
-                judgePermission();
-                if (isGrant) {
-                    Intent intent = new Intent(getActivity(), ScanCodeActivity.class);
-                    startActivity(intent);
-                }
+                scanCode();
                 break;
             case R.id.img_load_error:
                 initTitle();
                 break;
         }
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+        Intent intent = new Intent(getActivity(), ScanCodeActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+        PermissionUtils.showPermissionDialog(getActivity(), getString(R.string.camera));
+    }
+
+    @Override
+    public boolean shouldShowRequestPermissionRationale(@NonNull String permission) {
+        return false;
     }
 }
 

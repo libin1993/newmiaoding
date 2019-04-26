@@ -53,9 +53,11 @@ import cn.cloudworkshop.miaoding.fragment.AccentFragment;
 import cn.cloudworkshop.miaoding.fragment.CustomizedGoodsFragment;
 import cn.cloudworkshop.miaoding.fragment.HomepageFragment;
 import cn.cloudworkshop.miaoding.fragment.MyCenterFragment;
+import cn.cloudworkshop.miaoding.fragment.NewCustomizeGoodsFragment;
 import cn.cloudworkshop.miaoding.service.DownloadService;
 import cn.cloudworkshop.miaoding.utils.GsonUtils;
 import cn.cloudworkshop.miaoding.utils.FragmentTabUtils;
+import cn.cloudworkshop.miaoding.utils.LogUtils;
 import cn.cloudworkshop.miaoding.utils.PermissionUtils;
 import cn.cloudworkshop.miaoding.utils.SharedPreferencesUtils;
 import cn.cloudworkshop.miaoding.utils.ToastUtils;
@@ -105,7 +107,7 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
      */
     private void storagePermission() {
         if (!EasyPermissions.hasPermissions(this, permissionStr)) {
-            EasyPermissions.requestPermissions(this, "", 123, permissionStr);
+            EasyPermissions.requestPermissions(this, "", 1234, permissionStr);
         }
     }
 
@@ -317,7 +319,7 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
      */
     public void initView() {
         fragmentList.add(HomepageFragment.newInstance());
-        fragmentList.add(CustomizedGoodsFragment.newInstance());
+        fragmentList.add(NewCustomizeGoodsFragment.newInstance());
         fragmentList.add(AccentFragment.newInstance());
         fragmentList.add(MyCenterFragment.newInstance());
         fragmentUtils = new FragmentTabUtils(this, getSupportFragmentManager(), fragmentList,
@@ -403,7 +405,9 @@ public class MainActivity extends BaseActivity implements EasyPermissions.Permis
 
     @Override
     public void onPermissionsDenied(int requestCode, List<String> perms) {
-        PermissionUtils.showPermissionDialog(this, getString(R.string.read_and_write));
+        if (requestCode == 1234){
+            PermissionUtils.showPermissionDialog(this, getString(R.string.read_and_write));
+        }
     }
 
     @Override

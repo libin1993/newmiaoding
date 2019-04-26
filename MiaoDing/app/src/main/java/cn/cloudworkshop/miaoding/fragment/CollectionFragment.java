@@ -198,7 +198,7 @@ public class CollectionFragment extends BaseFragment {
                         imgGoods.setImageURI(Constant.IMG_HOST + itemBean.getImg());
 
                         holder.setText(R.id.tv_sub_title, itemBean.getName());
-                        holder.setText(R.id.tv_sub_price, "¥" + itemBean.getPrice());
+                        holder.setText(R.id.tv_sub_price, "¥ " + itemBean.getPrice());
                         holder.setText(R.id.tv_sub_content, itemBean.getSub_name());
                     }
                 };
