@@ -76,7 +76,7 @@ import okhttp3.Response;
 /**
  * Author：Libin on 2018/4/3 19:00
  * Email：1993911441@qq.com
- * Describe：
+ * Describe：拍照
  */
 public class NewCameraActivity extends BaseActivity implements SensorEventListener {
     @BindView(R.id.camera_view)

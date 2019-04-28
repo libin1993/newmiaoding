@@ -243,6 +243,7 @@
             android:name=".ui.NewEmbroideryActivity"
             android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".ui.PayOrderActivity"/>
+        <activity android:name=".ui.NewCustomizeGoodsActivity"/>
 
         <service android:name="com.amap.api.location.APSService"/>
         <service

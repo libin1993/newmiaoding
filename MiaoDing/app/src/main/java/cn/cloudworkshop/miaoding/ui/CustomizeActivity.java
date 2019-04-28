@@ -196,6 +196,7 @@ public class CustomizeActivity extends BaseActivity {
                                     .load(Constant.IMG_HOST + sonBean.getAndroid_max())
                                     .fitCenter()
                                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                                    .dontAnimate()
                                     .into(img1);
                             break;
                         }
@@ -209,6 +210,7 @@ public class CustomizeActivity extends BaseActivity {
                                     .load(Constant.IMG_HOST + sonBean.getAndroid_max())
                                     .fitCenter()
                                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                                    .dontAnimate()
                                     .into(img2);
                             break;
                         }
@@ -222,6 +224,7 @@ public class CustomizeActivity extends BaseActivity {
                                     .load(Constant.IMG_HOST + sonBean.getAndroid_max())
                                     .fitCenter()
                                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                                    .dontAnimate()
                                     .into(img3);
                             break;
                         }
@@ -339,6 +342,7 @@ public class CustomizeActivity extends BaseActivity {
                         Glide.with(CustomizeActivity.this)
                                 .load(Constant.IMG_HOST + mustDisplayPartBean.getAndroid_min())
                                 .placeholder(R.mipmap.place_holder_goods)
+                                .dontAnimate()
                                 .into((ImageView) holder.getView(R.id.img_tailor_item));
                     }
 
@@ -450,6 +454,7 @@ public class CustomizeActivity extends BaseActivity {
                     Glide.with(CustomizeActivity.this)
                             .load(Constant.IMG_HOST + itemList.get(position).getAndroid_min())
                             .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                            .dontAnimate()
                             .into(img);
                     //当前子配件蒙版
                     View itemBg = rvTailor.findViewHolderForAdapterPosition(currentPart).itemView
@@ -468,6 +473,7 @@ public class CustomizeActivity extends BaseActivity {
                                     .load(Constant.IMG_HOST + itemList.get(position).getAndroid_max())
                                     .fitCenter()
                                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                                    .dontAnimate()
                                     .into(positiveImg);
 
                             break;
@@ -478,6 +484,7 @@ public class CustomizeActivity extends BaseActivity {
                                     .load(Constant.IMG_HOST + itemList.get(position).getAndroid_max())
                                     .fitCenter()
                                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                                    .dontAnimate()
                                     .into(backImg);
                             break;
                         //当前子配件是里子
@@ -487,6 +494,7 @@ public class CustomizeActivity extends BaseActivity {
                                     .load(Constant.IMG_HOST + itemList.get(position).getAndroid_max())
                                     .fitCenter()
                                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                                    .dontAnimate()
                                     .into(inSideImg);
                             break;
                     }
@@ -509,6 +517,7 @@ public class CustomizeActivity extends BaseActivity {
                 Glide.with(CustomizeActivity.this)
                         .load(Constant.IMG_HOST + itemList.get(position).getAndroid_middle())
                         .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                        .dontAnimate()
                         .into(imgLargeMaterial);
                 isLongPress = true;
                 if (imgLargeMaterial.getVisibility() == View.GONE) {

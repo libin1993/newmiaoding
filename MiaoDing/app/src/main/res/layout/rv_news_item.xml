@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:fresco="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@android:color/white">
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/iv_homepage_news"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        fresco:actualImageScaleType="centerCrop"
+        fresco:placeholderImage="@mipmap/place_holder_banner"
+        fresco:placeholderImageScaleType="centerCrop"/>
+
+
+    <TextView
+        android:id="@+id/tv_homepage_news_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="22sp"
+        android:textColor="@color/gray_20"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="24dp"/>
+    <TextView
+        android:id="@+id/tv_homepage_news_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textColor="@color/gray_20"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="38dp"/>
+</LinearLayout>

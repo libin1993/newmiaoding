@@ -119,6 +119,23 @@ public class MsgDetailBean {
         private String goods_name;
         private String car_img;
         private String express_no;
+        private String username;
+
+        public String getUsername() {
+            return username;
+        }
+
+        public void setUsername(String username) {
+            this.username = username;
+        }
+
+        public String getImg() {
+            return img;
+        }
+
+        public void setImg(String img) {
+            this.img = img;
+        }
 
         public int getGoods_id() {
             return goods_id;

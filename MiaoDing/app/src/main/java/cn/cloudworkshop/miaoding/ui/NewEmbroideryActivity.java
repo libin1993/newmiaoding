@@ -192,8 +192,6 @@ public class NewEmbroideryActivity extends BaseActivity {
                                     .load(Constant.IMG_HOST + sonBeanX.getAndroid_min())
                                     .placeholder(R.mipmap.place_holder_goods)
                                     .dontAnimate()
-
-
                                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                                     .into((ImageView) holder.getView(R.id.img_embroidery_fabric));
                             if (sonBeanX.getIs_default() == 1) {

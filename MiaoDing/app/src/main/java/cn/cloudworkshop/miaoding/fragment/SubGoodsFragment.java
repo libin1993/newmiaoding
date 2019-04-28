@@ -37,6 +37,7 @@ import cn.cloudworkshop.miaoding.bean.CustomizedGoodsListBean;
 import cn.cloudworkshop.miaoding.bean.GoodsListBean;
 import cn.cloudworkshop.miaoding.constant.Constant;
 import cn.cloudworkshop.miaoding.ui.CustomizedGoodsActivity;
+import cn.cloudworkshop.miaoding.ui.NewCustomizeGoodsActivity;
 import cn.cloudworkshop.miaoding.ui.NewCustomizedGoodsActivity;
 import cn.cloudworkshop.miaoding.utils.DisplayUtils;
 import cn.cloudworkshop.miaoding.utils.GsonUtils;
@@ -140,13 +141,13 @@ public class SubGoodsFragment extends BaseFragment {
             protected void convert(ViewHolder holder, CustomizedGoodsListBean.GoodsidBean goodsidBean, int position) {
                 SimpleDraweeView imgGoods = holder.getView(R.id.img_sub_goods);
 
-                imgGoods.setAspectRatio((float) goodsidBean.getAd_img_info());
-
                 imgGoods.setImageURI(Constant.IMG_HOST + goodsidBean.getAd_img());
+                imgGoods.setAspectRatio((float) goodsidBean.getAd_img_info());
 
                 holder.setText(R.id.tv_sub_title, goodsidBean.getName());
                 holder.setText(R.id.tv_sub_price, "¥ " + goodsidBean.getSell_price());
                 holder.setText(R.id.tv_sub_content, goodsidBean.getContent());
+                holder.setVisible(R.id.tv_goods_tag, goodsidBean.getIs_new() == 1);
             }
 
         };
@@ -184,7 +185,7 @@ public class SubGoodsFragment extends BaseFragment {
         mLRecyclerViewAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Intent intent = new Intent(getParentFragment().getParentFragment().getActivity(), NewCustomizedGoodsActivity.class);
+                Intent intent = new Intent(getParentFragment().getParentFragment().getActivity(), NewCustomizeGoodsActivity.class);
                 intent.putExtra("id", String.valueOf(dataList.get(position).getId()));
                 startActivity(intent);
             }

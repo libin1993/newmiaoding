@@ -8,7 +8,7 @@
         android:id="@+id/tv_notice_time"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
-        android:textColor="@android:color/darker_gray"
+        android:textColor="@color/gray_88"
         android:layout_gravity="center_horizontal"
         android:gravity="center"
         android:textSize="13sp"/>
@@ -17,27 +17,24 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:background="@drawable/btn_white_1dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:paddingLeft="30dp"
-        android:paddingRight="30dp"
-        android:paddingTop="20dp"
-        android:paddingBottom="20dp">
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:padding="15dp">
         <TextView
             android:id="@+id/tv_notice_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/dear_member"
             android:textColor="@color/dark_gray_22"
-            android:textSize="15sp"/>
+            android:textSize="14sp"
+            android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/tv_notice_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="10dp"
             android:textColor="@color/dark_gray_22"
-            android:textSize="13sp"
+            android:textSize="12sp"
             android:lineSpacingExtra="5dp"/>
 
         <TextView
@@ -45,18 +42,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
-            android:textColor="@color/dark_gray_22"
-            android:textSize="13sp"
-            android:layout_marginTop="20dp"/>
+            android:textColor="@color/gray_88"
+            android:textSize="12sp"
+            android:layout_marginTop="10dp"/>
         <TextView
             android:id="@+id/tv_notice_company"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/company_name"
-            android:textColor="@color/dark_gray_22"
-            android:textSize="13sp"
+            android:textColor="@color/gray_88"
+            android:textSize="12sp"
             android:layout_gravity="right"
-            android:layout_marginTop="10dp"/>
+            android:layout_marginTop="5dp"/>
 
     </LinearLayout>
 </LinearLayout>

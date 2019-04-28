@@ -57,11 +57,9 @@ public class CollectionActivity extends BaseActivity {
         fragmentList = new ArrayList<>();
         titleList.add(getString(R.string.goods));
         titleList.add(getString(R.string.news));
-        titleList.add(getString(R.string.store));
 
         fragmentList.add(CollectionFragment.newInstance(2));
         fragmentList.add(CollectionFragment.newInstance(1));
-        fragmentList.add(CollectionFragment.newInstance(3));
 
         initView();
 

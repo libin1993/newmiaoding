@@ -241,6 +241,7 @@ public class ShoppingCartActivity extends BaseActivity {
 
                 SimpleDraweeView imgGoods = holder.getView(R.id.img_sub_goods);
                 imgGoods.setImageURI(Constant.IMG_HOST + dataBean.getCar_img());
+                imgGoods.setAspectRatio(1);
                 holder.setText(R.id.tv_sub_title, dataBean.getName());
                 holder.setText(R.id.tv_sub_price, "¥ " + dataBean.getSell_price());
                 holder.setText(R.id.tv_sub_content, dataBean.getContent());
@@ -254,7 +255,7 @@ public class ShoppingCartActivity extends BaseActivity {
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
                 Intent intent;
                 if (recommendBean.get(position).getCategory_id() == 1) {
-                    intent = new Intent(ShoppingCartActivity.this, NewCustomizedGoodsActivity.class);
+                    intent = new Intent(ShoppingCartActivity.this, NewCustomizeGoodsActivity.class);
                 } else {
                     intent = new Intent(ShoppingCartActivity.this, WorksDetailActivity.class);
                 }
@@ -411,7 +412,7 @@ public class ShoppingCartActivity extends BaseActivity {
                 if (!isEdited) {
                     switch (dataList.get(position).getCategory_id()) {
                         case 1:
-                            Intent intent = new Intent(ShoppingCartActivity.this, NewCustomizedGoodsActivity.class);
+                            Intent intent = new Intent(ShoppingCartActivity.this, NewCustomizeGoodsActivity.class);
                             intent.putExtra("id", String.valueOf(dataList.get(position).getGoods_id()));
                             startActivity(intent);
                             break;

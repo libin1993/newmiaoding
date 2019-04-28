@@ -57,7 +57,7 @@ public class MessageCenterActivity extends BaseActivity {
         ButterKnife.bind(this);
         tvHeaderTitle.setText(R.string.msg_center);
         initData();
-
+        initView();
     }
 
     @Override
@@ -89,7 +89,7 @@ public class MessageCenterActivity extends BaseActivity {
                         if (messageBean.getCode() == 10000 && messageBean.getData() != null &&
                                 messageBean.getData().size() > 0) {
                             msgList.addAll(messageBean.getData());
-                            initView();
+                            adapter.notifyDataSetChanged();
                         }
                     }
                 });

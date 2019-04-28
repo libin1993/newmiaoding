@@ -141,7 +141,7 @@ public class HomepageInfoActivity extends BaseActivity {
             Intent intent;
             //1位定制商品，2为成品
             if (split[1].equals("1")) {
-                intent = new Intent(this, NewCustomizedGoodsActivity.class);
+                intent = new Intent(this, NewCustomizeGoodsActivity.class);
             } else {
                 intent = new Intent(this, WorksDetailActivity.class);
             }

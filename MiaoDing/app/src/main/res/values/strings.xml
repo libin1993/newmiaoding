@@ -420,5 +420,7 @@
     <string name="stock_pull">库存不足</string>
     <string name="null_shop_bag">您的购物袋空空如也~</string>
     <string name="hot_goods">热销商品</string>
+    <string name="new_goods">新品</string>
+    <string name="booking_order">预约订单</string>
 
 </resources>

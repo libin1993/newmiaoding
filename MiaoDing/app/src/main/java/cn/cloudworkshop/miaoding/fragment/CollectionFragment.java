@@ -49,6 +49,7 @@ import cn.cloudworkshop.miaoding.bean.CollectionBean;
 import cn.cloudworkshop.miaoding.constant.Constant;
 import cn.cloudworkshop.miaoding.ui.HomepageInfoActivity;
 import cn.cloudworkshop.miaoding.ui.MainActivity;
+import cn.cloudworkshop.miaoding.ui.NewCustomizeGoodsActivity;
 import cn.cloudworkshop.miaoding.ui.NewCustomizedGoodsActivity;
 import cn.cloudworkshop.miaoding.ui.StoreInfoActivity;
 import cn.cloudworkshop.miaoding.ui.WorksDetailActivity;
@@ -169,19 +170,19 @@ public class CollectionFragment extends BaseFragment {
             case 1:
                 rvCollection.setLayoutManager(new LinearLayoutManager(getActivity()));
                 adapter = new CommonAdapter<CollectionBean.DataBean.CollectionsBean>(getActivity(),
-                        R.layout.listitem_homepage_news, itemList) {
+                        R.layout.rv_news_item, itemList) {
                     @Override
                     protected void convert(ViewHolder holder, CollectionBean.DataBean.CollectionsBean collectionsBean, int position) {
-                        SimpleDraweeView imgNews = holder.getView(R.id.img_homepage_news);
+
+                        SimpleDraweeView imgNews = holder.getView(R.id.iv_homepage_news);
+
                         if (!TextUtils.isEmpty(collectionsBean.getImg_info())) {
                             imgNews.setAspectRatio(Float.parseFloat(collectionsBean.getImg_info()));
                         }
-                        imgNews.setImageURI(Constant.IMG_HOST + collectionsBean.getImg());
-                        holder.setText(R.id.tv_news_title, collectionsBean.getTitle());
-                        holder.setText(R.id.tv_news_content, collectionsBean.getSub_title());
 
-                        holder.setVisible(R.id.ll_home_news, false);
-                        holder.setVisible(R.id.view_news_line, false);
+                        imgNews.setImageURI(Constant.IMG_HOST + collectionsBean.getImg());
+                        holder.setText(R.id.tv_homepage_news_title, collectionsBean.getTitle());
+                        holder.setText(R.id.tv_homepage_news_content, collectionsBean.getSub_title());
                     }
                 };
                 break;
@@ -196,7 +197,7 @@ public class CollectionFragment extends BaseFragment {
                     protected void convert(ViewHolder holder, CollectionBean.DataBean.CollectionsBean itemBean, int position) {
                         SimpleDraweeView imgGoods = holder.getView(R.id.img_sub_goods);
                         imgGoods.setImageURI(Constant.IMG_HOST + itemBean.getImg());
-
+                        imgGoods.setAspectRatio(Float.parseFloat(itemBean.getImg_info()));
                         holder.setText(R.id.tv_sub_title, itemBean.getName());
                         holder.setText(R.id.tv_sub_price, "¥ " + itemBean.getPrice());
                         holder.setText(R.id.tv_sub_content, itemBean.getSub_name());
@@ -270,7 +271,7 @@ public class CollectionFragment extends BaseFragment {
                     case 2:
                         switch (itemList.get(position).getGoods_type()) {
                             case 1:
-                                intent = new Intent(getActivity(), NewCustomizedGoodsActivity.class);
+                                intent = new Intent(getActivity(), NewCustomizeGoodsActivity.class);
                                 intent.putExtra("id", String.valueOf(itemList.get(position).getRid()));
                                 break;
                             case 2:

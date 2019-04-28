@@ -30,17 +30,17 @@ public class SpaceItemDecoration extends RecyclerView.ItemDecoration {
             if (position > 0){
                 //第二列
                 if ( position % 2 == 0) {
-                    outRect.set(mSpace, 0, 0, mSpace * 2);
+                    outRect.set(mSpace*2, 0, 0, mSpace * 2);
                 } else {
-                    outRect.set(0, 0, mSpace, mSpace * 2);
+                    outRect.set(0, 0, 0, mSpace * 2);
                 }
             }
         }else {
             //第一列
             if ( position % 2 == 0) {
-                outRect.set(0, 0, mSpace, mSpace * 2);
+                outRect.set(0, 0, 0, mSpace * 2);
             } else {
-                outRect.set(mSpace, 0, 0, mSpace * 2);
+                outRect.set(mSpace*2, 0, 0, mSpace * 2);
             }
         }
 

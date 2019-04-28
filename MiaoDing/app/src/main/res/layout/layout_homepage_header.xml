@@ -17,7 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="31dp"
+        android:layout_marginTop="30dp"
         android:text="@string/hot_goods"
         android:textColor="@color/gray_20"
         android:textSize="14sp"/>
@@ -26,8 +26,8 @@
         android:id="@+id/rv_news_recommend"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
-        android:layout_marginBottom="60dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="30dp"
         android:overScrollMode="never">
     </android.support.v7.widget.RecyclerView>
 </LinearLayout>

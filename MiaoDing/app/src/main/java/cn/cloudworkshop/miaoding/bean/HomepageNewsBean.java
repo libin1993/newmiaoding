@@ -210,13 +210,32 @@ public class HomepageNewsBean {
              * hot : 0
              * ad_img_info : 0.973404
              */
-
+            private int id;
             private String name;
+
+            public int getId() {
+                return id;
+            }
+
+            public void setId(int id) {
+                this.id = id;
+            }
+
             private String content;
             private String sell_price;
             private String ad_img;
             private int hot;
             private String ad_img_info;
+
+            public int getCategory_id() {
+                return category_id;
+            }
+
+            public void setCategory_id(int category_id) {
+                this.category_id = category_id;
+            }
+
+            private int category_id;
 
             public String getName() {
                 return name;
@@ -283,6 +302,24 @@ public class HomepageNewsBean {
             private String img;
             private int link;
             private String img_info;
+            private String goods_name;
+            private String sell_price;
+
+            public String getGoods_name() {
+                return goods_name;
+            }
+
+            public void setGoods_name(String goods_name) {
+                this.goods_name = goods_name;
+            }
+
+            public String getSell_price() {
+                return sell_price;
+            }
+
+            public void setSell_price(String sell_price) {
+                this.sell_price = sell_price;
+            }
 
             public int getId() {
                 return id;

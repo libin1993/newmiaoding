@@ -169,6 +169,7 @@ public class MessageDetailActivity extends BaseActivity {
             protected void convert(ViewHolder holder, MsgDetailBean.DataBean dataBean, int position) {
                 switch (type) {
                     case 1:
+                        holder.setText(R.id.tv_notice_title, getString(R.string.dear_member));
                         holder.setText(R.id.tv_notice_time, dataBean.getCreate_time());
                         holder.setText(R.id.tv_notice_content, dataBean.getContent());
                         holder.setText(R.id.tv_notice_date, DateUtils.formatTime("yyyy-MM-dd HH:mm:ss",
@@ -189,12 +190,20 @@ public class MessageDetailActivity extends BaseActivity {
                         Glide.with(MessageDetailActivity.this)
                                 .load(Constant.IMG_HOST + dataBean.getCar_img())
                                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                                .placeholder(R.mipmap.place_holder_banner)
+                                .placeholder(R.mipmap.place_holder_goods)
+                                .dontAnimate()
                                 .into((ImageView) holder.getView(R.id.img_logistics_goods));
 
                         holder.setText(R.id.tv_logistics_name, getString(R.string.logistics_no) + dataBean.getExpress_no());
 
                         holder.setText(R.id.tv_logistics_company, getString(R.string.send_company));
+                        break;
+                    case 4:
+                        holder.setText(R.id.tv_notice_title, "尊敬的" + dataBean.getUsername() + "，您好！");
+                        holder.setText(R.id.tv_notice_time, dataBean.getCreate_time());
+                        holder.setText(R.id.tv_notice_content, dataBean.getContent());
+                        holder.setText(R.id.tv_notice_date, DateUtils.formatTime("yyyy-MM-dd HH:mm:ss",
+                                getString(R.string.year_month_day), dataBean.getCreate_time()));
                         break;
                 }
             }
@@ -206,11 +215,11 @@ public class MessageDetailActivity extends BaseActivity {
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
                 switch (type) {
                     case 2:
-                        if (msgList.get(position).getGoods_id() > 0){
+                        if (msgList.get(position).getGoods_id() > 0) {
                             Intent intent2 = null;
                             switch (msgList.get(position).getCategory_id()) {
                                 case 1:
-                                    intent2 = new Intent(MessageDetailActivity.this, NewCustomizedGoodsActivity.class);
+                                    intent2 = new Intent(MessageDetailActivity.this, NewCustomizeGoodsActivity.class);
                                     break;
                                 case 2:
                                     intent2 = new Intent(MessageDetailActivity.this, WorksDetailActivity.class);
@@ -273,6 +282,10 @@ public class MessageDetailActivity extends BaseActivity {
             case 3:
                 layoutId = R.layout.listitem_logistics_message;
                 tvHeaderTitle.setText(R.string.logistics_notice);
+                break;
+            case 4:
+                layoutId = R.layout.listitem_notice_message;
+                tvHeaderTitle.setText(R.string.booking_order);
                 break;
         }
     }

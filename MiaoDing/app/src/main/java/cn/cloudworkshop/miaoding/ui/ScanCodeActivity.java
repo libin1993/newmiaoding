@@ -97,7 +97,7 @@ public class ScanCodeActivity extends BaseActivity {
                         if (scanBean.getCode() == 10000) {
                             switch (scanBean.getData().getCategory_id()) {
                                 case 1:
-                                    toGoodsDetail(NewCustomizedGoodsActivity.class, String.valueOf(scanBean.getData().getGoods_id()));
+                                    toGoodsDetail(NewCustomizeGoodsActivity.class, String.valueOf(scanBean.getData().getGoods_id()));
                                     break;
                                 case 2:
                                     toGoodsDetail(WorksDetailActivity.class, String.valueOf(scanBean.getData().getGoods_id()));

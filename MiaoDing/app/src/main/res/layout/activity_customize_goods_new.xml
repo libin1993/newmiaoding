@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:fitsSystemWindows="true">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_customize_goods"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="55dp">
+    </android.support.v7.widget.RecyclerView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+            <ImageView
+                android:id="@+id/iv_add_collection"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:scaleType="center"
+                android:src="@mipmap/icon_cancel_like"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+            <ImageView
+                android:id="@+id/iv_goods_consult"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:scaleType="center"
+                android:src="@mipmap/icon_consult_large"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/tv_buy_customize"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/dark_gray_15"
+            android:gravity="center"
+            android:text="@string/buy"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"/>
+
+
+    </LinearLayout>
+
+
+    <ImageView
+        android:id="@+id/iv_back_goods"
+        android:layout_width="50dp"
+        android:layout_height="70dp"
+        android:scaleType="center"
+        android:src="@mipmap/icon_back_white"/>
+
+    <ImageView
+        android:id="@+id/iv_share_goods"
+        android:layout_width="50dp"
+        android:layout_height="70dp"
+        android:layout_alignParentRight="true"
+        android:scaleType="center"
+        android:src="@mipmap/icon_share_goods"/>
+
+    <include
+        layout="@layout/loading_error"/>
+
+</RelativeLayout>

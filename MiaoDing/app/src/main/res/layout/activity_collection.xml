@@ -3,7 +3,7 @@
               xmlns:app="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:background="@color/light_gray_ed"
+              android:background="@android:color/white"
               android:fitsSystemWindows="true"
               android:orientation="vertical">
 
@@ -25,8 +25,14 @@
         app:tl_textSelectColor="@color/dark_gray_22"
         app:tl_textUnselectColor="@color/dark_gray_22"
         app:tl_indicator_margin_bottom="10dp"
-        app:tl_textsize="14sp">
+        app:tl_textsize="14sp"
+        app:tl_textBold="SELECT">
     </com.flyco.tablayout.SlidingTabLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/line_gray_e5"/>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/vp_collection"

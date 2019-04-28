@@ -47,6 +47,15 @@ public class CustomizedGoodsListBean {
         private String ad_img;
         private double ad_img_info;
         private String content;
+        private int is_new;
+
+        public int getIs_new() {
+            return is_new;
+        }
+
+        public void setIs_new(int is_new) {
+            this.is_new = is_new;
+        }
 
         public double getAd_img_info() {
             return ad_img_info;
