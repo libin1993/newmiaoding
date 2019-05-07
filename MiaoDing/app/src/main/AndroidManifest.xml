@@ -244,6 +244,7 @@
             android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".ui.PayOrderActivity"/>
         <activity android:name=".ui.NewCustomizeGoodsActivity"/>
+        <activity android:name=".ui.BodyDataActivity"/>
 
         <service android:name="com.amap.api.location.APSService"/>
         <service

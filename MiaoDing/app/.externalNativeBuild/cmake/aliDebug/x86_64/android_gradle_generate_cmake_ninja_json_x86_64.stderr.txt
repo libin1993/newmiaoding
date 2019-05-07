@@ -1,0 +1,2 @@
+CMake Error: Unable to open check cache file for write. C:/Users/Administrator/Desktop/newmiaoding/MiaoDing/app/.externalNativeBuild/cmake/aliDebug/x86_64/CMakeFiles/CMakeTmp/CMakeFiles/cmake.check_cache
+CMake Error: Internal CMake error, TryCompile configure of cmake failed

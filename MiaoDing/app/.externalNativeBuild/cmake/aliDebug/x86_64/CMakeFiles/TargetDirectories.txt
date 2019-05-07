@@ -1,2 +1,0 @@
-E:/newmiaoding/MiaoDing/app/.externalNativeBuild/cmake/aliDebug/x86_64/CMakeFiles/edit_cache.dir
-E:/newmiaoding/MiaoDing/app/.externalNativeBuild/cmake/aliDebug/x86_64/CMakeFiles/rebuild_cache.dir

@@ -35,6 +35,7 @@ import cn.cloudworkshop.miaoding.constant.Constant;
 import cn.cloudworkshop.miaoding.ui.ApplyJoinActivity;
 import cn.cloudworkshop.miaoding.ui.ApplyMeasureActivity;
 import cn.cloudworkshop.miaoding.ui.AppointmentActivity;
+import cn.cloudworkshop.miaoding.ui.BodyDataActivity;
 import cn.cloudworkshop.miaoding.ui.CameraFormActivity;
 import cn.cloudworkshop.miaoding.ui.CollectionActivity;
 import cn.cloudworkshop.miaoding.ui.DressingResultActivity;
@@ -262,7 +263,7 @@ public class MyCenterFragment extends BaseFragment {
                         startActivity(intent);
                         break;
                     case 7:
-                        ContactService.contactService(getActivity());
+                        startActivity(new Intent(getActivity(), BodyDataActivity.class));
                         break;
                     case 8:
                         inviteFriends();

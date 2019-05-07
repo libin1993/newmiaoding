@@ -23,7 +23,7 @@ rule CUSTOM_COMMAND
 # Rule for re-running cmake.
 
 rule RERUN_CMAKE
-  command = D:\Application\sdk\cmake\3.6.4111459\bin\cmake.exe -HE:\newmiaoding\MiaoDing\app -BE:\newmiaoding\MiaoDing\app\.externalNativeBuild\cmake\m360Debug\armeabi-v7a
+  command = C:\software\sdk\cmake\3.6.4111459\bin\cmake.exe -HC:\Users\Administrator\Desktop\newmiaoding\MiaoDing\app -BC:\Users\Administrator\Desktop\newmiaoding\MiaoDing\app\.externalNativeBuild\cmake\m360Debug\armeabi-v7a
   description = Re-running CMake...
   generator = 1
 
@@ -32,7 +32,7 @@ rule RERUN_CMAKE
 # Rule for cleaning all built files.
 
 rule CLEAN
-  command = D:\Application\sdk\cmake\3.6.4111459\bin\ninja.exe -t clean
+  command = C:\software\sdk\cmake\3.6.4111459\bin\ninja.exe -t clean
   description = Cleaning all built files...
 
 
@@ -40,6 +40,6 @@ rule CLEAN
 # Rule for printing all primary targets available.
 
 rule HELP
-  command = D:\Application\sdk\cmake\3.6.4111459\bin\ninja.exe -t targets
+  command = C:\software\sdk\cmake\3.6.4111459\bin\ninja.exe -t targets
   description = All primary targets available:
 

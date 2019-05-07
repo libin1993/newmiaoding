@@ -1,2 +1,2 @@
-E:/newmiaoding/MiaoDing/app/.externalNativeBuild/cmake/huaweiRelease/x86_64/CMakeFiles/edit_cache.dir
-E:/newmiaoding/MiaoDing/app/.externalNativeBuild/cmake/huaweiRelease/x86_64/CMakeFiles/rebuild_cache.dir
+C:/Users/Administrator/Desktop/newmiaoding/MiaoDing/app/.externalNativeBuild/cmake/huaweiRelease/x86_64/CMakeFiles/edit_cache.dir
+C:/Users/Administrator/Desktop/newmiaoding/MiaoDing/app/.externalNativeBuild/cmake/huaweiRelease/x86_64/CMakeFiles/rebuild_cache.dir

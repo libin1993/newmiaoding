@@ -205,6 +205,8 @@ public class Constant {
     public static final String GOODS_DECODE = NEW_HOST + "/user/goods/goods_category";
     //商品id加密
     public static final String GOODS_ENCODE = NEW_HOST + "/user/user/get_goods_id_encrypted";
+    //形体数据
+    public static final String BODY_DATA = NEW_HOST + "/volume/default";
 
     //WebView
     //咨讯详情
