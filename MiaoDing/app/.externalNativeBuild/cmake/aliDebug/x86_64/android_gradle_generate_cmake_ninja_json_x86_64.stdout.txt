@@ -9,7 +9,7 @@
 -- Detecting CXX compiler ABI info
 -- Detecting CXX compiler ABI info - done
 -- Detecting CXX compile features
--- Detecting CXX compile features - failed
--- Configuring incomplete, errors occurred!
-See also "C:/Users/Administrator/Desktop/newmiaoding/MiaoDing/app/.externalNativeBuild/cmake/aliDebug/x86_64/CMakeFiles/CMakeOutput.log".
-See also "C:/Users/Administrator/Desktop/newmiaoding/MiaoDing/app/.externalNativeBuild/cmake/aliDebug/x86_64/CMakeFiles/CMakeError.log".
+-- Detecting CXX compile features - done
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Users/Administrator/Desktop/newmiaoding/MiaoDing/app/.externalNativeBuild/cmake/aliDebug/x86_64

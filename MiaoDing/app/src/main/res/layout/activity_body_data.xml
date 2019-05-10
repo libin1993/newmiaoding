@@ -29,7 +29,7 @@
 
                 <ImageView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="81dp"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="30dp"
                     android:scaleType="center"
@@ -39,19 +39,19 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="30dp"
+                    android:layout_marginTop="20dp"
                     android:text="根据您的形体数据，未找到合适的成衣，请尝试妙定量体定制"
-                    android:textColor="@color/gray_88"
-                    android:textSize="12sp"/>
+                    android:textColor="@color/gray_7e"
+                    android:textSize="11sp"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="30dp"
-                    android:layout_marginTop="50dp"
-                    android:layout_marginBottom="20dp"
+                    android:layout_marginTop="64dp"
+                    android:layout_marginBottom="8dp"
                     android:text="您的量体数据："
-                    android:textColor="@color/gray_88"
+                    android:textColor="@color/gray_66"
                     android:textSize="14sp"/>
             </LinearLayout>
 
@@ -63,7 +63,8 @@
                     android:id="@+id/rv_body_data"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:overScrollMode="never">
+                    android:overScrollMode="never"
+                    android:layout_marginBottom="38dp">
 
                 </android.support.v7.widget.RecyclerView>
             </RelativeLayout>
@@ -79,44 +80,45 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="30dp"
-                    android:layout_marginTop="50dp"
                     android:layout_marginBottom="20dp"
                     android:text="根据您的量体数据，如购买成衣，推荐尺码为："
-                    android:textColor="@color/gray_88"
-                    android:textSize="12sp"/>
+                    android:textColor="@color/gray_66"
+                    android:textSize="11sp"/>
 
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="50dp">
+                    android:layout_height="67dp">
 
                     <cn.cloudworkshop.miaoding.view.ObliqueLine
                         android:id="@+id/oblique_line"
                         android:layout_width="20dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="60dp"
                         android:layout_centerInParent="true"/>
 
                     <TextView
                         android:id="@+id/tv_recommend_height"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginRight="30dp"
+                        android:layout_width="67dp"
+                        android:layout_height="67dp"
+                        android:layout_marginRight="41dp"
                         android:layout_toLeftOf="@id/oblique_line"
                         android:background="@drawable/circle_orange"
                         android:gravity="center"
                         android:textColor="@android:color/white"
-                        android:textSize="18sp"/>
+                        android:textSize="20sp"
+                        android:textStyle="bold"/>
 
                     <TextView
                         android:id="@+id/tv_recommend_size"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginLeft="30dp"
+                        android:layout_width="67dp"
+                        android:layout_height="67dp"
+                        android:layout_marginLeft="41dp"
                         android:layout_toRightOf="@id/oblique_line"
                         android:background="@drawable/circle_orange"
                         android:gravity="center"
                         android:textColor="@android:color/white"
-                        android:textSize="18sp"/>
+                        android:textSize="20sp"
+                        android:textStyle="bold"/>
 
                 </RelativeLayout>
 
@@ -127,8 +129,8 @@
                     android:layout_marginTop="50dp"
                     android:layout_marginBottom="20dp"
                     android:text="*尺码建议仅供参考，追求完美合身效果，请选择妙定量身定制"
-                    android:textColor="@color/gray_88"
-                    android:textSize="12sp"/>
+                    android:textColor="@color/gray_66"
+                    android:textSize="11sp"/>
 
             </LinearLayout>
 

@@ -85,6 +85,7 @@ public class BodyDataActivity extends BaseActivity {
                             mIvNullBodyData.setVisibility(View.VISIBLE);
                             mSvBodyData.setVisibility(View.GONE);
                         }
+
                     }
                 });
     }
