@@ -65,7 +65,7 @@ public class DressingResultActivity extends BaseActivity {
         //支持H5 DOM Storage
         ws.setDomStorageEnabled(true);
         webView.getSettings().setBlockNetworkImage(false); // 解决图片不显示
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             webView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         }
 
@@ -102,7 +102,7 @@ public class DressingResultActivity extends BaseActivity {
                 }
                 break;
             case R.id.img_header_share:
-                ShareUtils.showShare(this, SharedPreferencesUtils.getStr(this,
+                ShareUtils.showShare(this, Constant.IMG_HOST + SharedPreferencesUtils.getStr(this,
                         "avatar"), shareTitle, shareContent, shareUrl);
                 break;
         }

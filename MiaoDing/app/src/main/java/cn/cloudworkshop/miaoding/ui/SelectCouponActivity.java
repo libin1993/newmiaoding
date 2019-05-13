@@ -207,7 +207,7 @@ public class SelectCouponActivity extends BaseActivity {
                 TextView tvMoney = holder.getView(R.id.tv_coupon_money);
                 tvMoney.setTypeface(DisplayUtils.setTextType(SelectCouponActivity.this));
                 tvMoney.setText("¥" + (int) Float.parseFloat(invalidTicketsBean.getMoney()));
-                holder.setText(R.id.tv_coupon_range, invalidTicketsBean.getTitle());
+                holder.setText(R.id.tv_coupon_range, invalidTicketsBean.getSub_title());
                 holder.setText(R.id.tv_coupon_discount, invalidTicketsBean.getRe_marks());
                 String term = getString(R.string.validity_term) + "：" + DateUtils.formatTime(
                         "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd", invalidTicketsBean.getS_time())

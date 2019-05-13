@@ -134,12 +134,10 @@ public class MyCouponFragment extends BaseFragment {
                         .append(getString(R.string.to))
                         .append(DateUtils.formatTime("yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd", dataBean.getE_time()));
                 holder.setText(R.id.tv_coupon_term, sb.toString());
-
             }
         };
 
         rvCoupon.setAdapter(adapter);
-
     }
 
     /**
