@@ -1,2 +1,0 @@
-E:/newmiaoding/MiaoDing/app/.externalNativeBuild/cmake/yingyongbaoDebug/armeabi/CMakeFiles/edit_cache.dir
-E:/newmiaoding/MiaoDing/app/.externalNativeBuild/cmake/yingyongbaoDebug/armeabi/CMakeFiles/rebuild_cache.dir

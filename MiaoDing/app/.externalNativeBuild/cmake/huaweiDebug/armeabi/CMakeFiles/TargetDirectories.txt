@@ -1,2 +1,0 @@
-E:/newmiaoding/MiaoDing/app/.externalNativeBuild/cmake/huaweiDebug/armeabi/CMakeFiles/edit_cache.dir
-E:/newmiaoding/MiaoDing/app/.externalNativeBuild/cmake/huaweiDebug/armeabi/CMakeFiles/rebuild_cache.dir
